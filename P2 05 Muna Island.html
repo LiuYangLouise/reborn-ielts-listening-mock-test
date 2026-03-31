@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 雅思密卷练习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== 全局与首页样式 ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+            background-color: #1A1A1A;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        body.light-mode { background-color: #FFFFFF; color: #1A1A1A; }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            min-height: 600px;
+            background-color: #1A1A1A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        body.light-mode .container { background-color: #FFFFFF; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); }
+        .logo-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 60px; }
+        .logo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+        .hexagon-icon { position: relative; width: 60px; height: 70px; margin-bottom: 15px; }
+        .hexagon {
+            position: absolute;
+            width: 60px;
+            height: 70px;
+            background-color: transparent;
+            border: 2px solid #FFFFFF;
+            border-radius: 2px;
+            animation: hexagonGroupAppear 3.5s ease-in-out infinite;
+            opacity: 0;
+        }
+        body.light-mode .hexagon { border-color: #1A1A1A; }
+        .hexagon:nth-child(1) { top: 0; left: 0; }
+        .hexagon:nth-child(2) { top: 10px; left: 35px; transform: scale(0.85); opacity: 0.8; }
+        .hexagon:nth-child(3) { top: 10px; left: -35px; transform: scale(0.85); opacity: 0.8; }
+        .hexagon:nth-child(4) { top: 40px; left: 18px; transform: scale(0.7); opacity: 0.6; }
+        .hexagon:nth-child(5) { top: 40px; left: -18px; transform: scale(0.7); opacity: 0.6; }
+        @keyframes hexagonGroupAppear {
+            0% { opacity: 0; transform: scale(0.8) rotate(10deg); }
+            20% { opacity: 1; transform: scale(1) rotate(0); }
+            80% { opacity: 1; transform: scale(1) rotate(0); }
+            100% { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+        }
+        .logo-main { font-size: 2.5rem; font-weight: 700; letter-spacing: 1px; line-height: 1.2; color: #FFFFFF; }
+        body.light-mode .logo-main { color: #1A1A1A; }
+        .logo-sub { font-size: 1.5rem; font-weight: 500; margin-top: 8px; line-height: 1.2; color: #FFFFFF; }
+        body.light-mode .logo-sub { color: #1A1A1A; }
+        .subtitle { font-size: 1.1rem; font-weight: 300; color: #CCCCCC; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+        body.light-mode .subtitle { color: #666666; }
+        .main-content { width: 100%; max-width: 400px; text-align: center; margin: 20px 0; }
+        .password-card {
+            background: #262626;
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3a3a3a;
+        }
+        body.light-mode .password-card { background: #F5F5F5; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); border: 1px solid #ddd; }
+        .password-label { font-size: 1.2rem; font-weight: 500; margin-bottom: 20px; color: #CCCCCC; }
+        body.light-mode .password-label { color: #333; }
+        .password-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 1rem;
+            background-color: #1A1A1A;
+            border: 1px solid #3a3a3a;
+            border-radius: 12px;
+            color: #FFFFFF;
+            text-align: center;
+            outline: none;
+        }
+        body.light-mode .password-input { background-color: #FFFFFF; border: 1px solid #ccc; color: #1A1A1A; }
+        .error-message { margin-top: 15px; font-size: 0.85rem; color: #ff6b6b; min-height: 40px; }
+        .confirm-btn {
+            margin-top: 25px;
+            background-color: #2c2c2c;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 28px;
+            color: #FFFFFF;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 0 #121212;
+            transform: translateY(-2px);
+        }
+        body.light-mode .confirm-btn { background-color: #e0e0e0; color: #1A1A1A; box-shadow: 0 5px 0 #b0b0b0; }
+        .confirm-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #121212; }
+        .footer { width: 100%; padding-top: 30px; border-top: 1px solid #262626; font-size: 0.9rem; color: #999999; text-align: center; }
+        body.light-mode .footer { border-top-color: #E0E0E0; color: #666666; }
+        .copyright { font-weight: 300; font-size: 1rem; margin-bottom: 30px; }
+        .date-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 8px; }
+        .date-item { display: flex; flex-direction: column; align-items: center; min-width: 50px; }
+        .date-value { font-size: 1.8rem; font-weight: 600; color: #FFFFFF; line-height: 1; }
+        body.light-mode .date-value { color: #1A1A1A; }
+        .date-label { font-size: 0.8rem; color: #999999; margin-top: 4px; }
+        .weekday { font-size: 1rem; color: #CCCCCC; margin-bottom: 5px; }
+        .for-every-reborner { font-size: 0.7rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #CCCCCC; margin-top: 5px; }
+        .theme-slider-container { position: absolute; top: 20px; right: 20px; }
+        .theme-slider { width: 60px; height: 30px; background-color: #262626; border-radius: 15px; position: relative; cursor: pointer; }
+        body.light-mode .theme-slider { background-color: #E0E0E0; }
+        .slider-dot { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; background-color: #FFFFFF; border-radius: 50%; transition: all 0.3s ease; }
+        body.light-mode .slider-dot { background-color: #1A1A1A; left: 33px; }
+        .hidden-page { display: none; }
+        #p2ExamContainer { width: 100%; max-width: 1400px; margin: 0 auto; background: transparent; display: none; }
+        
+        /* ========== P2 Muna Island 完整样式 ========== */
+        :root {
+            --bg-soft: #f0f7f5;
+            --panel-white: #ffffff;
+            --primary-green: #0F6B6B;
+            --primary-light: #e0f0f0;
+            --border-light: #d4e2e2;
+            --text-dark: #1f3a3a;
+            --text-soft: #2a5f5f;
+            --shadow-sm: 0 8px 20px rgba(0,0,0,0.05);
+            --answered-bg: #e0f2f0;
+            --answered-border: #0F6B6B;
+            --correct-bg: #dcfce7;
+            --correct-border: #4ade80;
+            --incorrect-bg: #fee2e2;
+            --incorrect-border: #f87171;
+        }
+        body.light-mode { --bg-soft: #f0f7f5; --panel-white: #ffffff; --primary-green: #0F6B6B; }
+        .master-container { max-width: 1200px; margin: 0 auto; }
+        .reborn-header {
+            background: var(--panel-white);
+            border-radius: 32px;
+            padding: 18px 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+        .reborn-header h1 {
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--primary-green);
+            letter-spacing: 1px;
+            margin: 0;
+        }
+        .reborn-header p {
+            font-size: 14px;
+            color: var(--text-soft);
+            margin-top: 6px;
+        }
+        .audio-section, .instruction-box, .questions-panel {
+            background: var(--panel-white);
+            border-radius: 28px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: 24px;
+        }
+        .audio-section { padding: 16px 24px; }
+        .instruction-box, .questions-panel { padding: 20px 28px; }
+        .audio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .badge {
+            font-weight: 600;
+            color: var(--primary-green);
+            background: var(--primary-light);
+            padding: 5px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-sm, .btn-primary {
+            background: var(--primary-light);
+            border: 1px solid var(--border-light);
+            padding: 6px 16px;
+            border-radius: 32px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--primary-green);
+        }
+        .btn-primary { background: var(--primary-green); color: white; border: none; padding: 8px 24px; }
+        .import-bar { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .audio-player { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 12px; }
+        .play-pause-btn {
+            background: var(--primary-green);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 44px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .play-pause-btn:hover { transform: scale(1.05); background: #0a5252; }
+        .play-pause-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .progress-container { flex: 1; cursor: pointer; min-width: 200px; }
+        .progress-bar-wrapper { width: 100%; height: 6px; background: #dfecec; border-radius: 10px; overflow: hidden; }
+        .progress-bar { width: 0; height: 100%; background: var(--primary-green); border-radius: 10px; transition: width 0.1s linear; }
+        .time-display { font-size: 13px; font-family: monospace; min-width: 110px; color: var(--text-soft); }
+        .speed-select {
+            background: var(--bg-soft);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+        .no-audio { background: #fef5e7; border-radius: 20px; padding: 16px; text-align: center; color: #8faa9e; font-size: 14px; }
+        .group { border: 1px solid var(--border-light); border-radius: 20px; padding: 18px 22px; margin: 24px 0; }
+        .group h4 { color: var(--primary-green); font-weight: 600; margin-bottom: 12px; font-size: 1.2rem; }
+        .instructions { background: var(--bg-soft); padding: 10px 14px; border-radius: 14px; margin-bottom: 20px; font-size: 14px; }
+        p { margin: 12px 0; line-height: 1.7; }
+        label { display: block; margin: 12px 0; cursor: pointer; }
+        input[type="radio"] { margin-right: 8px; cursor: pointer; accent-color: var(--primary-green); }
+        .bottom-bar {
+            margin-top: 20px; display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 15px; background: var(--panel-white); border-radius: 60px;
+            padding: 12px 24px; border: 1px solid var(--border-light);
+        }
+        .q-nav-container { display: flex; gap: 8px; flex-wrap: wrap; }
+        .q-nav-item {
+            background: var(--bg-soft); border-radius: 30px; padding: 6px 14px;
+            font-weight: 500; font-size: 14px; cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .q-nav-item:hover { transform: scale(1.05); background: var(--primary-light); }
+        .q-nav-item.answered { background: var(--answered-bg); border-color: var(--answered-border); color: var(--primary-green); }
+        .q-nav-item.correct { background: var(--correct-bg); border-color: var(--correct-border); }
+        .q-nav-item.incorrect { background: var(--incorrect-bg); border-color: var(--incorrect-border); }
+        .bb-center { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        #timer { font-family: monospace; font-size: 18px; font-weight: 600; color: var(--primary-green); }
+        .early-submit { background: #c97e5a; color: white; border: none; padding: 8px 16px; border-radius: 32px; cursor: pointer; font-weight: 500; }
+        .results-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+        .results-table th, .results-table td { border: 1px solid var(--border-light); padding: 12px 16px; text-align: left; vertical-align: middle; }
+        .results-table th { background: var(--bg-soft); font-weight: 600; }
+        .result-correct { color: #15803d; font-weight: 600; background: var(--correct-bg); }
+        .result-incorrect { color: #b91c1c; font-weight: 600; background: var(--incorrect-bg); }
+        #toast { position: fixed; bottom: 90px; right: 24px; background: var(--primary-green); color: white; padding: 10px 20px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; font-size: 14px; }
+        #toast.show { opacity: 1; }
+        .hl { background: #fff59d; }
+        .hl-blue { background: #CEDDFE; cursor: pointer; }
+        #selbar { position: absolute; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 6px; gap: 6px; display: inline-flex; z-index: 101; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        #selbar[hidden] { display: none; }
+        #selbar button { border: 1px solid #ccc; border-radius: 8px; padding: 4px 12px; background: #f0f0f0; cursor: pointer; font-size: 12px; }
+        #notes { position: fixed; right: -420px; top: 0; bottom: 0; width: 420px; background: var(--bg-soft); border-left: 1px solid var(--border-light); transition: right 0.25s ease; z-index: 99; display: flex; flex-direction: column; }
+        body.notes-open #notes { right: 0; }
+        body.notes-open { padding-right: 420px; }
+        .side-panel-header { display: flex; justify-content: space-between; padding: 12px 16px; background: var(--panel-white); border-bottom: 1px solid var(--border-light); font-weight: 600; }
+        #notes-list { overflow-y: auto; padding: 12px; flex: 1; }
+        .note-card { background: var(--panel-white); border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light); }
+        .note-quote { font-weight: 500; margin-bottom: 10px; padding: 6px; background: var(--bg-soft); border-radius: 8px; font-size: 13px; }
+        .note-card textarea { width: 100%; min-height: 60px; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-soft); font-family: inherit; }
+        .note-actions button { background: #fee2e2; border: 1px solid #f87171; border-radius: 20px; padding: 4px 12px; margin-top: 8px; cursor: pointer; color: #b91c1c; font-size: 12px; }
+        #toggle-notes-btn { background: var(--bg-soft); border: 1px solid var(--border-light); border-radius: 30px; padding: 6px 14px; cursor: pointer; font-size: 14px; }
+        @media (max-width: 768px) {
+            .q-nav-container { justify-content: center; }
+            .audio-player { flex-direction: column; align-items: stretch; }
+            .progress-container { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 密码页面 -->
+    <div id="passwordPage" class="container">
+        <div class="theme-slider-container">
+            <div class="theme-slider" id="themeSliderPwd"><div class="slider-dot"></div></div>
+        </div>
+        <div class="logo-section">
+            <div class="logo-container">
+                <div class="hexagon-icon"><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div></div>
+                <div class="logo-text-block"><div class="logo-main">Reborn新生留学</div><div class="logo-sub">密卷练习界面</div></div>
+            </div>
+            <div class="subtitle">Veni • Vidi • Vici</div>
+        </div>
+        <div class="main-content">
+            <div class="password-card">
+                <div class="password-label">请输入密码</div>
+                <div class="password-input-wrapper"><input type="password" id="passwordInput" class="password-input" placeholder="········" autocomplete="off"></div>
+                <div class="error-message" id="errorMsg"></div>
+                <button class="confirm-btn" id="confirmPwdBtn">确认</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="copyright">天天进步，每日新生</div>
+            <div class="date-section">
+                <div class="date-container"><div class="date-item"><div class="date-value" id="yearPwd">2026</div><div class="date-label">年</div></div><div class="date-item"><div class="date-value" id="monthPwd">01</div><div class="date-label">月</div></div><div class="date-item"><div class="date-value" id="dayPwd">15</div><div class="date-label">日</div></div></div>
+                <div class="weekday" id="weekdayPwd">星期三</div>
+                <div class="for-every-reborner">FOR EVERY REBORNER</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- P2 内容容器 - Muna Island -->
+    <div id="p2ExamContainer"></div>
+
+    <script>
+        // ======================= 密码验证逻辑 =======================
+        let currentPassword = "61211216";
+        let pendingModify = false, newPasswordStep = 0, firstNewPwd = "";
+        
+        function updateDate() {
+            const now = new Date();
+            document.getElementById('yearPwd').textContent = now.getFullYear();
+            document.getElementById('monthPwd').textContent = String(now.getMonth() + 1).padStart(2, '0');
+            document.getElementById('dayPwd').textContent = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            document.getElementById('weekdayPwd').textContent = weekdays[now.getDay()];
+        }
+        
+        function setupTheme() {
+            const slider = document.getElementById('themeSliderPwd');
+            const toggle = () => {
+                document.body.classList.toggle('light-mode');
+                localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            };
+            if(slider) slider.addEventListener('click', toggle);
+            if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        }
+        
+        function handlePassword() {
+            const input = document.getElementById('passwordInput');
+            const errorDiv = document.getElementById('errorMsg');
+            const val = input.value;
+            
+            if(val === "liuyangfromxinchangzhejiang") {
+                pendingModify = true; newPasswordStep = 0; firstNewPwd = "";
+                input.value = ""; errorDiv.textContent = ""; return;
+            }
+            if(pendingModify) {
+                if(newPasswordStep === 0) { firstNewPwd = val; newPasswordStep = 1; input.value = ""; return; }
+                else if(newPasswordStep === 1) {
+                    if(val === firstNewPwd && val.length > 0) currentPassword = firstNewPwd;
+                    pendingModify = false; newPasswordStep = 0; firstNewPwd = "";
+                    input.value = ""; errorDiv.textContent = ""; return;
+                }
+            }
+            if(val === currentPassword) { loadP2Exam(); } 
+            else { errorDiv.textContent = "密码错误，请重试"; input.value = ""; input.focus(); pendingModify = false; }
+        }
+        
+        // Muna Island 题目
+        const MUNA_ISLAND_QUESTIONS_HTML = `
+          <div class="group">
+            <h4>Questions 11-20</h4>
+            <p class="instructions">Choose the correct letter <b>A, B or C</b>.</p>
+            <p><b>Muna Island</b></p>
+            
+            <p><b>11.</b> How much should visitors tip taxi drivers on the island?</p>
+            <label><input type="radio" name="q11" value="A"> <b>A</b> as much as they feel right</label>
+            <label><input type="radio" name="q11" value="B"> <b>B</b> no tip at all</label>
+            <label><input type="radio" name="q11" value="C"> <b>C</b> 10% tip</label>
+            
+            <p><b>12.</b> What is mentioned about the medical service on the island?</p>
+            <label><input type="radio" name="q12" value="A"> <b>A</b> It will be charged.</label>
+            <label><input type="radio" name="q12" value="B"> <b>B</b> Visitors should contact their insurance company.</label>
+            <label><input type="radio" name="q12" value="C"> <b>C</b> Visitors have to find the hotel doctor.</label>
+            
+            <p><b>13.</b> The tour guide says the tap water</p>
+            <label><input type="radio" name="q13" value="A"> <b>A</b> contains no mineral.</label>
+            <label><input type="radio" name="q13" value="B"> <b>B</b> is unsafe.</label>
+            <label><input type="radio" name="q13" value="C"> <b>C</b> has an unusual taste.</label>
+            
+            <p><b>14.</b> What point is made about bottled water?</p>
+            <label><input type="radio" name="q14" value="A"> <b>A</b> It is expensive.</label>
+            <label><input type="radio" name="q14" value="B"> <b>B</b> The bottle is not always sealed.</label>
+            <label><input type="radio" name="q14" value="C"> <b>C</b> It isn't sold everywhere.</label>
+            
+            <p><b>15.</b> What feature is mentioned about the bus on the island?</p>
+            <label><input type="radio" name="q15" value="A"> <b>A</b> frequent</label>
+            <label><input type="radio" name="q15" value="B"> <b>B</b> not punctual</label>
+            <label><input type="radio" name="q15" value="C"> <b>C</b> not comfortable</label>
+            
+            <p><b>16.</b> How can visitors know the destination of the bus on the island?</p>
+            <label><input type="radio" name="q16" value="A"> <b>A</b> find it in front of the bus</label>
+            <label><input type="radio" name="q16" value="B"> <b>B</b> check it with the driver</label>
+            <label><input type="radio" name="q16" value="C"> <b>C</b> find it at the bus stop</label>
+            
+            <p><b>17.</b> What does the tour guide advise visitors to do before renting a car?</p>
+            <label><input type="radio" name="q17" value="A"> <b>A</b> find a taxi company</label>
+            <label><input type="radio" name="q17" value="B"> <b>B</b> go to the hotel reception</label>
+            <label><input type="radio" name="q17" value="C"> <b>C</b> compare the price in advance</label>
+            
+            <p><b>18.</b> When they rent a car, it's important for visitors to know</p>
+            <label><input type="radio" name="q18" value="A"> <b>A</b> the mileage is limited.</label>
+            <label><input type="radio" name="q18" value="B"> <b>B</b> what is included in the price.</label>
+            <label><input type="radio" name="q18" value="C"> <b>C</b> fuel is included in the price.</label>
+            
+            <p><b>19.</b> How can visitors find a taxi easily?</p>
+            <label><input type="radio" name="q19" value="A"> <b>A</b> call the taxi company</label>
+            <label><input type="radio" name="q19" value="B"> <b>B</b> look for a taxi in advance</label>
+            <label><input type="radio" name="q19" value="C"> <b>C</b> stop a taxi on the street</label>
+            
+            <p><b>20.</b> What is suggested by the tour guide about the taxi fee?</p>
+            <label><input type="radio" name="q20" value="A"> <b>A</b> make sure no extra money is asked</label>
+            <label><input type="radio" name="q20" value="B"> <b>B</b> check what is included in the fee</label>
+            <label><input type="radio" name="q20" value="C"> <b>C</b> agree the price with the driver in advance</label>
+          </div>
+          <div class="results-in-page"></div>
+        `;
+        
+        const ANSWER_KEY = {
+            q11: 'A', q12: 'A', q13: 'C', q14: 'B', q15: 'C',
+            q16: 'B', q17: 'C', q18: 'B', q19: 'C', q20: 'C'
+        };
+        
+        const Q_LIST = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+        
+        // 全局变量
+        let audioElement = null, examStarted = false, examCompleted = false, firstPlayActive = false;
+        let timerSeconds = 0, timerInterval = null, userAnswers = {}, isFinished = false;
+        
+        function formatTime(seconds) { 
+            if(isNaN(seconds)) return '00:00'; 
+            let m = Math.floor(seconds/60), s = Math.floor(seconds%60); 
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; 
+        }
+        
+        function escapeHtml(s) { return s ? s.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) : ''; }
+        
+        function loadP2Exam() {
+            document.getElementById('passwordPage').classList.add('hidden-page');
+            const container = document.getElementById('p2ExamContainer');
+            container.style.display = 'block';
+            
+            container.innerHTML = `
+            <div class="master-container">
+                <div class="reborn-header">
+                    <h1>🏝️ Reborn新生留学 · IELTS Listening · Muna Island (Section 2)</h1>
+                    <p>Travel guide talk · Multiple choice questions</p>
+                </div>
+                <div class="audio-section" id="audioSection"></div>
+                <div class="instruction-box">
+                    <h3>📌 Test Instructions</h3>
+                    <div>
+                        <p>• <strong>Questions 11-20:</strong> Multiple choice (choose A, B or C).<br>
+                        • 🎧 <strong>Exam mode:</strong> Import audio (MP3/MP4), click <strong>Confirm & Start Exam</strong> to begin.<br>
+                        • Once started, audio plays automatically. <strong>No pause, no seek, no speed change</strong> during first play.<br>
+                        • During exam, you can answer all questions by selecting the radio buttons.<br>
+                        • After audio finishes or click <strong>Early Submit</strong>, click <strong>Finish</strong> to submit and view answers.<br>
+                        • Use <strong>Notes</strong> panel to save personal notes; highlight text by selecting and clicking "Highlight" or "Note".</p>
+                    </div>
+                </div>
+                <div class="questions-panel" id="questionsPanel"></div>
+                <div class="bottom-bar">
+                    <div id="qNavContainer" class="q-nav-container"></div>
+                    <div class="bb-center">
+                        <span id="timer">00:00</span>
+                        <button id="earlySubmitBtn" class="early-submit" disabled>Early Submit</button>
+                        <button id="finishBtn" disabled>Finish</button>
+                        <button id="saveBtn">Save</button>
+                        <button id="clearBtn">Clear All</button>
+                        <button id="toggle-notes-btn">📝 Notes</button>
+                    </div>
+                </div>
+            </div>
+            <div id="notes">
+                <div class="side-panel-header"><span>📔 My Notes</span><button id="notes-close" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button></div>
+                <div id="notes-list"></div>
+            </div>
+            <div id="selbar" hidden><button data-act="hl">✨ Highlight</button><button data-act="note">📝 Note</button><button data-act="del">🗑️ Clear</button></div>
+            <div id="toast">Saved</div>
+            `;
+            
+            initP2Full();
+        }
+        
+        function initP2Full() {
+            function showToast(msg) { let t = document.getElementById('toast'); if(t) { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1500); } }
+            function updateTimerUI() { let timerSpan = document.getElementById('timer'); if(timerSpan) timerSpan.textContent = formatTime(timerSeconds); }
+            function startTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = setInterval(()=>{ timerSeconds++; updateTimerUI(); },1000); }
+            function stopTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = null; }
+            
+            function saveToLocal() { let notesHTML = document.getElementById('notes-list') ? document.getElementById('notes-list').innerHTML : ''; localStorage.setItem('reborn_muna_island', JSON.stringify({ userAnswers, timerSeconds, isFinished, notesHTML })); }
+            function loadFromLocal() { 
+                let raw = localStorage.getItem('reborn_muna_island'); 
+                if(raw) { let d = JSON.parse(raw); userAnswers = d.userAnswers || {}; timerSeconds = d.timerSeconds || 0; isFinished = d.isFinished || false; if(d.notesHTML && document.getElementById('notes-list')) document.getElementById('notes-list').innerHTML = d.notesHTML; updateTimerUI(); if(isFinished) finishTest(); renderQuestions(); } else renderQuestions(); 
+            }
+            
+            function renderQuestions() { let panel = document.getElementById('questionsPanel'); if(panel) panel.innerHTML = MUNA_ISLAND_QUESTIONS_HTML; attachRadioEvents(); buildNav(); restoreAnswers(); }
+            function attachRadioEvents() { document.querySelectorAll('input[type="radio"]').forEach(r => { r.addEventListener('change', (e) => { if(!isFinished) { userAnswers[e.target.name] = e.target.value; updateNav(); saveToLocal(); } }); }); }
+            function restoreAnswers() { for(let i=11;i<=20;i++) { if(userAnswers['q'+i]) { let r = document.querySelector(`input[name="q${i}"][value="${userAnswers['q'+i]}"]`); if(r) r.checked = true; } } }
+            
+            function buildNav() { let nav = document.getElementById('qNavContainer'); if(!nav) return; nav.innerHTML = ''; Q_LIST.forEach(num => { let div = document.createElement('div'); div.className = 'q-nav-item'; div.textContent = num; div.onclick = () => { let target = document.querySelector(`input[name="q${num}"]`)?.closest('.group'); if(target) target.scrollIntoView({ behavior: 'smooth', block: 'center' }); }; nav.appendChild(div); }); updateNav(); }
+            function updateNav() { let items = document.querySelectorAll('.q-nav-item'); Q_LIST.forEach((num, idx) => { let item = items[idx]; if(!item) return; let answered = !!userAnswers['q'+num]; item.classList.toggle('answered', answered); if(isFinished) { let correct = userAnswers['q'+num] === ANSWER_KEY['q'+num]; item.classList.add(correct ? 'correct' : 'incorrect'); } }); }
+            
+            function finishTest() {
+                if(isFinished) return; isFinished = true; stopTimer(); 
+                let finishBtn = document.getElementById('finishBtn'), earlyBtn = document.getElementById('earlySubmitBtn');
+                if(finishBtn) finishBtn.disabled = true; if(earlyBtn) earlyBtn.disabled = true;
+                
+                for(let i=11;i<=20;i++) { let correct = ANSWER_KEY['q'+i], userVal = userAnswers['q'+i]; document.querySelectorAll(`input[name="q${i}"]`).forEach(r => { let label = r.closest('label'); if(r.value === correct) label.style.background = 'var(--correct-bg)'; if(userVal && r.value === userVal && userVal !== correct) label.style.background = 'var(--incorrect-bg)'; }); }
+                
+                let tableHTML = '<h4>📊 Answer Review</h4><table class="results-table"><thead> <th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th> </thead><tbody>';
+                for(let i=11;i<=20;i++) { let user = userAnswers['q'+i] || '—'; let correct = ANSWER_KEY['q'+i]; let isCorrect = user === correct; tableHTML += `|<td style="font-weight:600">${i}</td><td>${escapeHtml(user)}</td><td>${correct}</td><td class="${isCorrect?'result-correct':'result-incorrect'}">${isCorrect?'✔ Correct':'✖ Incorrect'}</td>`; }
+                tableHTML += '</tbody> </table>'; let resultsDiv = document.querySelector('.results-in-page'); if(resultsDiv) resultsDiv.innerHTML = tableHTML; updateNav(); showToast('Answers submitted'); }
+            
+            function clearAll() { if(confirm('Clear all progress?')) { localStorage.removeItem('reborn_muna_island'); location.reload(); } }
+            
+            // 音频播放器
+            function renderAudioManager() {
+                let audioSec = document.getElementById('audioSection');
+                if(!audioSec) return;
+                audioSec.innerHTML = `
+                    <div class="audio-header"><span class="badge">🎧 Audio Player</span></div>
+                    <div class="import-bar">
+                        <button class="btn-primary" id="importAudioBtn">📁 Import Audio (MP3/MP4)</button>
+                        <button class="btn-sm" id="clearAudioBtn">🗑️ Clear Audio</button>
+                    </div>
+                    <div id="audioPlayerPlaceholder"></div>
+                `;
+                document.getElementById('importAudioBtn')?.addEventListener('click', () => {
+                    let inp = document.createElement('input'); inp.type='file'; inp.accept='audio/*';
+                    inp.onchange = e => {
+                        if(e.target.files[0]) {
+                            if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+                            let url = URL.createObjectURL(e.target.files[0]);
+                            audioElement = new Audio(url);
+                            let placeholder = document.getElementById('audioPlayerPlaceholder');
+                            if(placeholder) {
+                                placeholder.innerHTML = `
+                                    <div class="audio-player">
+                                        <button class="play-pause-btn" id="playPauseBtn">▶</button>
+                                        <div class="progress-container" id="progressWrap">
+                                            <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
+                                        </div>
+                                        <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+                                        <select id="speedSelect" class="speed-select">
+                                            <option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option>
+                                        </select>
+                                    </div>
+                                    <div class="import-bar" style="margin-top:12px">
+                                        <button class="btn-primary" id="confirmStartBtn">✅ Confirm & Start Exam</button>
+                                    </div>
+                                `;
+                                setupAudioControls();
+                            }
+                        }
+                    };
+                    inp.click();
+                });
+                document.getElementById('clearAudioBtn')?.addEventListener('click', () => {
+                    if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+                    audioElement = null; examStarted = false; examCompleted = false; firstPlayActive = false;
+                    document.getElementById('finishBtn').disabled = true;
+                    document.getElementById('earlySubmitBtn').disabled = true;
+                    renderAudioManager();
+                    showToast('Audio cleared');
+                });
+            }
+            
+            function setupAudioControls() {
+                let playBtn = document.getElementById('playPauseBtn');
+                let progressWrap = document.getElementById('progressWrap');
+                let progBar = document.getElementById('progressBar');
+                let timeSpan = document.getElementById('timeDisplay');
+                let speedSelect = document.getElementById('speedSelect');
+                let confirmBtn = document.getElementById('confirmStartBtn');
+                
+                function updateProgress() {
+                    if(audioElement.duration) {
+                        progBar.style.width = `${(audioElement.currentTime/audioElement.duration)*100}%`;
+                        timeSpan.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
+                    }
+                }
+                audioElement.ontimeupdate = updateProgress;
+                audioElement.onloadedmetadata = updateProgress;
+                
+                speedSelect.onchange = () => { if(!firstPlayActive || examCompleted) audioElement.playbackRate = parseFloat(speedSelect.value); };
+                
+                let scrubbing = false;
+                progressWrap.onmousedown = (e) => { if(!firstPlayActive || examCompleted) { scrubbing = true; setProgress(e); } };
+                window.onmousemove = (e) => { if(scrubbing) setProgress(e); };
+                window.onmouseup = () => scrubbing = false;
+                function setProgress(e) { if(!audioElement.duration) return; let rect=progressWrap.getBoundingClientRect(); let p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); audioElement.currentTime=p*audioElement.duration; updateProgress(); }
+                
+                playBtn.onclick = () => {
+                    if(firstPlayActive && !examCompleted) { showToast('First play must complete without interruption'); return; }
+                    if(audioElement.paused) {
+                        audioElement.play();
+                        if(!examStarted && !firstPlayActive) {
+                            firstPlayActive = true; examStarted = true;
+                            document.getElementById('finishBtn').disabled = false;
+                            document.getElementById('earlySubmitBtn').disabled = false;
+                            startTimer();
+                            audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+                        }
+                    } else { audioElement.pause(); }
+                    updatePlayButton();
+                };
+                
+                function updatePlayButton() { if(playBtn) playBtn.textContent = audioElement.paused ? '▶' : '❚❚'; }
+                audioElement.onplay = updatePlayButton;
+                audioElement.onpause = updatePlayButton;
+                
+                confirmBtn.onclick = () => {
+                    if(!audioElement) { showToast('No audio loaded'); return; }
+                    if(examStarted) { showToast('Exam already started'); return; }
+                    firstPlayActive = true; examStarted = true;
+                    document.getElementById('finishBtn').disabled = false;
+                    document.getElementById('earlySubmitBtn').disabled = false;
+                    startTimer();
+                    audioElement.play();
+                    audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+                };
+            }
+            
+            // 笔记系统
+            function initNotesSystem() {
+                let selbar = document.getElementById('selbar');
+                let currentRange = null;
+                document.addEventListener('mouseup', (e) => {
+                    if(e.target.closest('#selbar, #notes')) return;
+                    let sel = window.getSelection();
+                    if(!sel.isCollapsed && sel.toString().trim()) {
+                        currentRange = sel.getRangeAt(0);
+                        let rect = currentRange.getBoundingClientRect();
+                        if(selbar) { selbar.hidden = false; selbar.style.left = `${window.scrollX + rect.left + rect.width/2 - 80}px`; selbar.style.top = `${window.scrollY + rect.top - 45}px`; }
+                    } else if(selbar) selbar.hidden = true;
+                });
+                if(selbar) {
+                    selbar.addEventListener('click', (e) => {
+                        let act = e.target.dataset.act;
+                        if(!act || !currentRange) return;
+                        if(act === 'hl') { let span = document.createElement('span'); span.className = 'hl'; try { currentRange.surroundContents(span); } catch(e) {} }
+                        else if(act === 'note') {
+                            let span = document.createElement('span'); span.className = 'hl-blue'; let hid = 'note_'+Date.now(); span.dataset.hid = hid;
+                            try {
+                                currentRange.surroundContents(span);
+                                let card = document.createElement('div'); card.className = 'note-card'; card.dataset.hid = hid;
+                                card.innerHTML = `<div class="note-quote">${escapeHtml(span.textContent)}</div><textarea placeholder="Write your note..."></textarea><div class="note-actions"><button data-del="${hid}">Delete</button></div>`;
+                                card.querySelector('button').onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
+                                card.querySelector('textarea').addEventListener('input', () => saveToLocal());
+                                document.getElementById('notes-list').prepend(card);
+                                document.body.classList.add('notes-open');
+                                saveToLocal();
+                            } catch(e) {}
+                        }
+                        selbar.hidden = true; window.getSelection().removeAllRanges();
+                    });
+                }
+                let toggleBtn = document.getElementById('toggle-notes-btn'), closeBtn = document.getElementById('notes-close');
+                if(toggleBtn) toggleBtn.onclick = () => document.body.classList.toggle('notes-open');
+                if(closeBtn) closeBtn.onclick = () => document.body.classList.remove('notes-open');
+                
+                // 恢复笔记内容
+                const savedData = localStorage.getItem('reborn_muna_island');
+                if(savedData) {
+                    try {
+                        const data = JSON.parse(savedData);
+                        if(data.notesHTML && document.getElementById('notes-list')) {
+                            document.getElementById('notes-list').innerHTML = data.notesHTML;
+                            document.querySelectorAll('.note-card').forEach(card => {
+                                const hid = card.dataset.hid;
+                                const delBtn = card.querySelector('button');
+                                const textarea = card.querySelector('textarea');
+                                if(delBtn) delBtn.onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
+                                if(textarea) textarea.addEventListener('input', () => saveToLocal());
+                            });
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            document.getElementById('finishBtn').onclick = () => { if(!isFinished && examCompleted) finishTest(); else if(!examCompleted) showToast("Wait for audio to finish or use Early Submit"); else finishTest(); };
+            document.getElementById('earlySubmitBtn').onclick = () => { if(examStarted && !examCompleted) { if(confirm('Early submission?')) { if(audioElement) audioElement.pause(); examStarted = false; examCompleted = true; finishTest(); } } };
+            document.getElementById('saveBtn').onclick = () => { saveToLocal(); showToast('Progress saved'); };
+            document.getElementById('clearBtn').onclick = clearAll;
+            
+            renderAudioManager();
+            initNotesSystem();
+            loadFromLocal();
+        }
+        
+        document.getElementById('confirmPwdBtn').addEventListener('click', handlePassword);
+        document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
+        updateDate(); setupTheme(); setInterval(updateDate, 86400000);
+    </script>
+</body>
+</html>

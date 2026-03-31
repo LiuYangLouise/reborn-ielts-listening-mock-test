@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Reborn新生留学 · Velleya Listening Mock Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-soft: #f0f7f5;
+      --panel-white: #ffffff;
+      --primary-green: #0F6B6B;
+      --primary-light: #e0f0f0;
+      --primary-dark: #0a5555;
+      --accent-warm: #c97e5a;
+      --border-light: #d4e2e2;
+      --text-dark: #1f3a3a;
+      --text-soft: #2a5f5f;
+      --shadow-sm: 0 8px 20px rgba(0,0,0,0.05);
+      --answered-bg: #e0f2f0;
+      --answered-border: #0F6B6B;
+      --correct-bg: #dcfce7;
+      --correct-border: #4ade80;
+      --correct-text: #15803d;
+      --incorrect-bg: #fee2e2;
+      --incorrect-border: #f87171;
+      --incorrect-text: #b91c1c;
+    }
+
+    html.font-regular { font-size: 16px; }
+    html.font-large { font-size: 18px; }
+    html.font-xlarge { font-size: 20px; }
+
+    body.dark-mode {
+      --bg-soft: #1f2937;
+      --panel-white: #1f2937;
+      --border-light: #374151;
+      --text-dark: #e2e8f0;
+      --text-soft: #cbd5e1;
+      --primary-green: #60a5fa;
+      --primary-light: #2d3748;
+      --shadow-sm: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    body {
+      background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-dark);
+      font-weight: 400;
+      padding: 24px 28px;
+      min-height: 100vh;
+    }
+
+    .master-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Reborn header (muban style) */
+    .reborn-header {
+      background: var(--panel-white);
+      border-radius: 32px;
+      padding: 18px 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      text-align: center;
+    }
+    .reborn-header h1 {
+      font-weight: 700;
+      font-size: 28px;
+      color: var(--primary-green);
+      letter-spacing: 1px;
+      margin: 0;
+    }
+    .reborn-header p {
+      font-size: 14px;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+
+    .top-zone {
+      background: transparent;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* audio section */
+    .audio-section {
+      background: var(--panel-white);
+      border-radius: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      padding: 16px 24px;
+    }
+    .audio-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .audio-title-badge {
+      font-weight: 600;
+      color: var(--primary-green);
+      background: var(--primary-light);
+      padding: 5px 16px;
+      border-radius: 40px;
+      font-size: 14px;
+    }
+    .btn-sm {
+      background: white;
+      border: 1px solid var(--border-light);
+      padding: 6px 16px;
+      border-radius: 32px;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+      color: var(--primary-green);
+    }
+    .btn-sm.danger {
+      color: var(--accent-warm);
+      border-color: #f0cfc0;
+    }
+    .audio-player {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .play-pause-btn {
+      background: var(--primary-green);
+      border: none;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 44px;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+    .play-pause-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .progress-container {
+      flex: 1;
+      cursor: pointer;
+      min-width: 200px;
+    }
+    .progress-bar-wrapper {
+      width: 100%;
+      height: 6px;
+      background: #dfecec;
+      border-radius: 10px;
+    }
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--primary-green);
+      border-radius: 10px;
+    }
+    .time-display {
+      font-size: 13px;
+      font-family: monospace;
+      min-width: 110px;
+    }
+    .speed-select {
+      padding: 5px 10px;
+      border-radius: 24px;
+      border: 1px solid var(--border-light);
+      background: white;
+      color: var(--text-dark);
+    }
+    .no-audio {
+      background: #fef5e7;
+      border-radius: 20px;
+      padding: 16px 20px;
+      text-align: center;
+      color: #8faa9e;
+      font-weight: 500;
+      border: 1px dashed var(--border-light);
+    }
+    .import-bar {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-start;
+    }
+    .btn-import {
+      background: var(--primary-green);
+      color: white;
+      border: none;
+      padding: 8px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-import.reset {
+      background: var(--accent-warm);
+    }
+
+    /* instruction box */
+    .instruction-box {
+      background: var(--panel-white);
+      border-radius: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      padding: 20px 28px;
+    }
+    .instruction-box h3 {
+      color: var(--primary-green);
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--primary-green);
+      padding-left: 16px;
+    }
+    .instruction-text-content {
+      line-height: 1.55;
+      background: var(--bg-soft);
+      padding: 16px 20px;
+      border-radius: 20px;
+    }
+
+    /* questions panel */
+    .questions-panel {
+      background: var(--panel-white);
+      border-radius: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      padding: 20px 28px;
+      margin-bottom: 24px;
+    }
+
+    .group {
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .group h4 {
+      color: var(--primary-green);
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+    .instructions {
+      background: var(--bg-soft);
+      padding: 10px 14px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+    p {
+      margin: 12px 0;
+      line-height: 1.7;
+    }
+    b, strong {
+      font-weight: 500;
+    }
+    input.blank {
+      border: 1.5px solid var(--border-light);
+      border-radius: 8px;
+      padding: 6px 12px;
+      width: 150px;
+      margin: 0 6px;
+      background: var(--panel-white);
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+    input.blank:focus {
+      border-color: var(--primary-green);
+      outline: none;
+    }
+    input.blank.input-correct {
+      border-color: var(--correct-border);
+      background: var(--correct-bg);
+    }
+    input.blank.input-incorrect {
+      border-color: var(--incorrect-border);
+      background: var(--incorrect-bg);
+    }
+
+    /* bottom bar */
+    .bottom-bar {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      background: var(--panel-white);
+      border-radius: 60px;
+      padding: 12px 24px;
+      border: 1px solid var(--border-light);
+    }
+    .q-nav-container {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .q-nav-item {
+      background: var(--bg-soft);
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .q-nav-item.answered {
+      background: var(--answered-bg);
+      border-color: var(--answered-border);
+      color: var(--primary-green);
+    }
+    .q-nav-item.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct-border);
+    }
+    .q-nav-item.incorrect {
+      background: var(--incorrect-bg);
+      border-color: var(--incorrect-border);
+    }
+    .bb-center {
+      display: flex;
+      gap: 12px;
+    }
+    button {
+      background: var(--primary-light);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--primary-green);
+      transition: 0.2s;
+    }
+    #timer {
+      font-weight: 500;
+      font-family: monospace;
+      font-size: 1.1rem;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+    }
+    .results-table th, .results-table td {
+      border: 1px solid var(--border-light);
+      padding: 10px;
+      text-align: left;
+    }
+    .results-table th {
+      background: var(--bg-soft);
+      font-weight: 500;
+    }
+    .result-correct { color: #15803d; font-weight: 500; }
+    .result-incorrect { color: #b91c1c; font-weight: 500; }
+
+    /* notes panel */
+    body.notes-open {
+      padding-right: 420px;
+    }
+    #notes {
+      position: fixed;
+      right: -420px;
+      top: 0;
+      bottom: 80px;
+      width: 420px;
+      background: var(--bg-soft);
+      border-left: 1px solid var(--border-light);
+      transition: right 0.25s ease;
+      z-index: 99;
+      display: flex;
+      flex-direction: column;
+    }
+    body.notes-open #notes { right: 0; }
+    .side-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--panel-white);
+    }
+    .side-panel-header span { font-weight: 500; }
+    .side-panel-close {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+    #notes-list {
+      overflow-y: auto;
+      padding: 16px;
+      flex: 1;
+    }
+    .note-card {
+      background: var(--panel-white);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-light);
+    }
+    .note-quote {
+      font-weight: 500;
+      margin-bottom: 12px;
+      background: var(--bg-soft);
+      padding: 8px;
+      border-radius: 6px;
+    }
+    .note-card textarea {
+      width: 100%;
+      min-height: 70px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 8px;
+      background: var(--bg-soft);
+      color: var(--text-dark);
+    }
+    .note-actions button {
+      border: 1px solid var(--incorrect-border);
+      background: transparent;
+      border-radius: 20px;
+      padding: 6px 16px;
+      margin-top: 8px;
+      cursor: pointer;
+      color: var(--incorrect-text);
+    }
+
+    /* highlighter */
+    .hl { background: #fff59d; cursor: pointer; }
+    body.dark-mode .hl { background: #a16207; }
+    .hl-blue { background: #ceddfe; cursor: pointer; }
+    body.dark-mode .hl-blue { background: #312e81; }
+    #selbar {
+      position: fixed;
+      background: var(--panel-white);
+      border: 1px solid var(--border-light);
+      border-radius: 40px;
+      box-shadow: var(--shadow-sm);
+      padding: 6px 12px;
+      display: inline-flex;
+      gap: 8px;
+      z-index: 1001;
+    }
+    #selbar[hidden] { display: none; }
+    #selbar button {
+      background: var(--bg-soft);
+      border: none;
+      border-radius: 30px;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* transcript */
+    .transcript-panel {
+      margin-top: 12px;
+      border-top: 1px solid var(--border-light);
+      padding-top: 12px;
+    }
+    .transcript-locked-box {
+      background: #f5e6d3;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      color: var(--accent-warm);
+      border: 1px dashed #e2c7a8;
+    }
+    .transcript-visible-box {
+      background: var(--bg-soft);
+      border-radius: 16px;
+      padding: 12px 16px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .transcript-visible-box p { margin: 8px 0; font-size: 13px; }
+    details summary {
+      cursor: pointer;
+      color: var(--primary-green);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .answer-highlight {
+      background: #dbeafe;
+      padding: 2px 4px;
+      border-radius: 4px;
+      border-bottom: 2px solid #93c5fd;
+    }
+    body.dark-mode .answer-highlight { background: #1e3a8a; }
+
+    #toast {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      background: var(--primary-green);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 40px;
+      opacity: 0;
+      transition: 0.2s;
+      z-index: 1000;
+    }
+    #toast.show { opacity: 1; }
+  </style>
+</head>
+<body class="font-regular">
+<div class="master-container">
+  <div class="reborn-header">
+    <h1>📖 Reborn新生留学 Listening Mock Test · Velleya Valley</h1>
+    <p>IELTS Listening Practice · First play must be uninterrupted; transcript & review available after submission</p>
+  </div>
+
+  <div class="top-zone">
+    <div class="audio-section" id="audioSection"></div>
+    <div class="instruction-box">
+      <h3>📌 Test Instructions</h3>
+      <div class="instruction-text-content">
+        <p><strong>Section · Velleya weekend break</strong></p>
+        <p>• <strong>Questions 1-10:</strong> Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.<br>
+        • 🎧 <strong>Exam mode:</strong> After importing audio, the <strong>first playback must play from start to end without interruption</strong> — no pause, no seeking, no speed change, and transcript is locked.<br>
+        • ✅ After the audio finishes, click <strong>Finish</strong> to submit your answers. Transcript and full playback controls (pause, seek, speed) will then be unlocked.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="questions-panel" id="questionsPanel"></div>
+
+  <div class="bottom-bar">
+    <div id="qNavContainer" class="q-nav-container"></div>
+    <div class="bb-center">
+      <span id="timer">00:00</span>
+      <button id="finishBtn">Finish</button>
+      <button id="saveBtn">Save</button>
+      <button id="clearBtn">Clear</button>
+      <button id="toggleNotesBtn">Notes</button>
+    </div>
+  </div>
+</div>
+
+<div id="notes">
+  <div class="side-panel-header">
+    <span>My Notes</span>
+    <button id="notesClose" class="side-panel-close">&times;</button>
+  </div>
+  <div id="notesList"></div>
+</div>
+
+<div id="selbar" hidden>
+  <button data-act="hl">Highlight</button>
+  <button data-act="note">Note</button>
+  <button data-act="del">Clear</button>
+</div>
+<div id="toast">✅ Saved</div>
+
+<script>
+  // ======================== CONFIG (Velleya original) ========================
+  const CONFIG = {
+    localStorageKey: 'reborn_velleya_v2',
+    questionList: ['1','2','3','4','5','6','7','8','9','10'],
+    answerKey: {
+      q1: 'Garden', q2: 'Beach', q3: 'Rooftop', q4: 'Talk',
+      q5: 'Museum', q6: 'Glass', q7: 'Opera', q8: 'Massage',
+      q9: 'Donkey', q10: 'Lamb'
+    },
+    transcriptLines: [
+      "Hi, I'm interested in taking a weekend break in Valia. Can you provide me with some options?",
+      "Of course, I highly recommend our holiday package, priced at 280 per person. It includes accommodation, meals, and a range of activities.",
+      "That sounds great. What can I expect from the accommodation?",
+      "We have carefully selected a reputable hotel for our clients. Each room is well-appointed with a private bathroom, TV, and other amenities. Additionally, you'll enjoy a delightful view of the garden from your room.",
+      "That sounds lovely. Are there any other unique features of the hotel?",
+      "Absolutely. The hotel boasts a private beach located just 1 kilometer away. It's the perfect place to unwind and soak up the sun.",
+      "That's fantastic. What activities are included in the package?",
+      "Your holiday starts with a Friday dinner on the rooftop terrace of the hotel, where you can bask in the breathtaking sunset.",
+      "That sounds romantic. Are there any other activities planned?",
+      "Certainly. After dinner, you have two options. You can either join a lively dance session, which is popular among energetic young people, or attend a talk by a specialist.",
+      "I think the second one is better. What's planned for Saturday morning?",
+      "In the morning, we have a private tour to a museum with a knowledgeable guide. It's a fantastic opportunity to immerse yourself in the local culture.",
+      "That sounds interesting. What about Saturday afternoon?",
+      "Actually, in the morning, we also pay a visit to a studio, which is renowned for using glass to make an array of ornaments. It is a one-hour trip. Then after lunch, in the afternoon, we've arranged a coach trip to watch an opera. It will be a delightful cultural experience.",
+      "That's a nice addition. What about Sunday morning?",
+      "You have the option to take a leisurely walk nearby, or you can book a complimentary massage to relax and unwind. It's a service that the hotel specializes in.",
+      "I'll definitely do that. My wife loves them.",
+      "Great choice. On Sunday afternoon, we have an exciting hill climbing trip planned. You'll have the opportunity to ride a donkey and enjoy the breathtaking views.",
+      "That sounds like an adventure, and what's planned for Sunday evening?",
+      "Sunday evening will have a barbecue dinner at a restaurant located at the top of the hill. Our speciality is grilled lamb. It's a must-try dish.",
+      "That sounds absolutely delicious. I'm convinced I'll book the holiday package. Thank you for your assistance."
+    ]
+  };
+
+  // Global state
+  let audioElement = null;
+  let audioSrc = null;
+  let isFirstPlayActive = false;
+  let firstPlayCompleted = false;
+  let timerSeconds = 0;
+  let timerInterval = null;
+  let isFinished = false;
+  let userAnswers = {};
+
+  // DOM elements
+  const questionsPanel = document.getElementById('questionsPanel');
+  const qNavContainer = document.getElementById('qNavContainer');
+  const timerSpan = document.getElementById('timer');
+  const finishBtn = document.getElementById('finishBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+  const notesClose = document.getElementById('notesClose');
+  const notesDiv = document.getElementById('notes');
+  const notesList = document.getElementById('notesList');
+  const audioSection = document.getElementById('audioSection');
+  const toastDiv = document.getElementById('toast');
+
+  function showToast(msg) {
+    toastDiv.textContent = msg;
+    toastDiv.classList.add('show');
+    setTimeout(() => toastDiv.classList.remove('show'), 1500);
+  }
+
+  function updateTimerUI() {
+    let mins = Math.floor(timerSeconds / 60);
+    let secs = timerSeconds % 60;
+    timerSpan.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+  }
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (!isFinished) { timerSeconds++; updateTimerUI(); }
+    }, 1000);
+  }
+  function stopTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = null; }
+
+  // Render questions (original Velleya format)
+  function renderQuestions() {
+    const answers = userAnswers;
+    const html = `
+      <div class="group">
+        <h4>Questions 1-10 · Velleya weekend break</h4>
+        <p class="instructions">Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.</p>
+        <p><b>Example:</b> Cost of holiday: £280 per person</p>
+        <p style="margin-top:20px;"><b>Hotel information</b><br>Amenities: bathroom, and TV.</p>
+        <p>Each room has a view of the <b>1.</b> <input type="text" name="q1" class="blank" value="${escapeHtml(answers.q1 || '')}" autocomplete="off"></p>
+        <p>Access to a private <b>2.</b> <input type="text" name="q2" class="blank" value="${escapeHtml(answers.q2 || '')}" autocomplete="off"> (1 km)</p>
+        <p><b>Friday evening:</b><br>dinner on the <b>3.</b> <input type="text" name="q3" class="blank" value="${escapeHtml(answers.q3 || '')}" autocomplete="off"> terrace</p>
+        <p>dance or listen to a special <b>4.</b> <input type="text" name="q4" class="blank" value="${escapeHtml(answers.q4 || '')}" autocomplete="off"> after breakfast</p>
+        <p><b>Saturday morning:</b><br>have a guided tour to a local <b>5.</b> <input type="text" name="q5" class="blank" value="${escapeHtml(answers.q5 || '')}" autocomplete="off"></p>
+        <p>visit a studio famous for making <b>6.</b> <input type="text" name="q6" class="blank" value="${escapeHtml(answers.q6 || '')}" autocomplete="off"> ornaments</p>
+        <p><b>Saturday afternoon:</b><br>Go to the <b>7.</b> <input type="text" name="q7" class="blank" value="${escapeHtml(answers.q7 || '')}" autocomplete="off"> by coach</p>
+        <p><b>Sunday morning:</b><br>Book a free <b>8.</b> <input type="text" name="q8" class="blank" value="${escapeHtml(answers.q8 || '')}" autocomplete="off"></p>
+        <p><b>Sunday afternoon:</b><br>Climb a hill by taking a <b>9.</b> <input type="text" name="q9" class="blank" value="${escapeHtml(answers.q9 || '')}" autocomplete="off"> ride</p>
+        <p><b>Sunday evening:</b><br>a barbecue dinner (including grilled <b>10.</b> <input type="text" name="q10" class="blank" value="${escapeHtml(answers.q10 || '')}" autocomplete="off">)</p>
+      </div>
+      <div class="results-in-page"></div>
+    `;
+    questionsPanel.innerHTML = html;
+    attachInputEvents();
+    buildNav();
+    updateNav();
+  }
+
+  function attachInputEvents() {
+    document.querySelectorAll('input.blank').forEach(inp => {
+      inp.removeEventListener('input', handleInputChange);
+      inp.addEventListener('input', handleInputChange);
+    });
+  }
+  function handleInputChange(e) {
+    if (isFinished) return;
+    userAnswers[e.target.name] = e.target.value;
+    updateNav();
+    saveToLocal();
+  }
+  function normalize(str) { return String(str || '').trim().toLowerCase(); }
+  function updateNav() {
+    CONFIG.questionList.forEach(q => {
+      const nav = qNavContainer.querySelector(`[data-qnum="${q}"]`);
+      if (!nav) return;
+      const val = userAnswers[`q${q}`] || '';
+      nav.classList.toggle('answered', val !== '');
+      if (isFinished) {
+        const correct = CONFIG.answerKey[`q${q}`];
+        const isCorrect = normalize(val) === normalize(correct);
+        nav.classList.remove('correct', 'incorrect');
+        nav.classList.add(isCorrect ? 'correct' : 'incorrect');
+      }
+    });
+  }
+  function buildNav() {
+    qNavContainer.innerHTML = '';
+    CONFIG.questionList.forEach(q => {
+      const div = document.createElement('div');
+      div.className = 'q-nav-item';
+      div.dataset.qnum = q;
+      div.textContent = q;
+      div.addEventListener('click', () => {
+        const inp = document.querySelector(`input[name="q${q}"]`);
+        if (inp) inp.closest('.group')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      qNavContainer.appendChild(div);
+    });
+  }
+
+  function finishTest() {
+    if (isFinished) return;
+    isFinished = true;
+    stopTimer();
+    // Grade inputs and add color classes
+    document.querySelectorAll('input.blank').forEach(inp => {
+      const q = inp.name.replace('q', '');
+      const correct = CONFIG.answerKey[`q${q}`];
+      const user = inp.value;
+      const isCorrect = normalize(user) === normalize(correct);
+      inp.classList.add(isCorrect ? 'input-correct' : 'input-incorrect');
+    });
+    // Build results table
+    let resultHtml = '<h4>📊 Answer Review</h4><table class="results-table"><thead><tr><th>Q</th><th>Your Answer</th><th>Correct</th><th>Result</th></tr></thead><tbody>';
+    CONFIG.questionList.forEach(q => {
+      const user = userAnswers[`q${q}`] || '';
+      const correct = CONFIG.answerKey[`q${q}`];
+      const isCorrect = normalize(user) === normalize(correct);
+      resultHtml += `<tr><td><b>${q}</b></td><td>${escapeHtml(user) || '<i>empty</i>'}</td><td>${escapeHtml(correct)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔' : '✖'}</td></tr>`;
+    });
+    resultHtml += '</tbody></table>';
+    const existing = document.querySelector('.results-in-page');
+    if (existing) existing.innerHTML = resultHtml;
+    else {
+      const div = document.createElement('div');
+      div.className = 'results-in-page';
+      div.innerHTML = resultHtml;
+      questionsPanel.appendChild(div);
+    }
+    updateNav();
+    finishBtn.textContent = 'Submitted';
+    finishBtn.disabled = true;
+    firstPlayCompleted = true;
+    isFirstPlayActive = false;
+    renderAudioManager(); // unlock full controls
+    showToast('Answers submitted. Transcript and review controls unlocked.');
+  }
+
+  function saveToLocal() {
+    const data = { userAnswers, timerSeconds, isFinished, firstPlayCompleted };
+    localStorage.setItem(CONFIG.localStorageKey, JSON.stringify(data));
+  }
+  function loadFromLocal() {
+    const raw = localStorage.getItem(CONFIG.localStorageKey);
+    if (raw) {
+      try {
+        const d = JSON.parse(raw);
+        userAnswers = d.userAnswers || {};
+        timerSeconds = d.timerSeconds || 0;
+        isFinished = d.isFinished || false;
+        firstPlayCompleted = d.firstPlayCompleted || false;
+        updateTimerUI();
+        if (isFinished) finishTest();
+      } catch(e) {}
+    }
+    renderQuestions();
+  }
+  function clearAll() {
+    if (confirm('Clear all progress, answers and notes?')) {
+      localStorage.removeItem(CONFIG.localStorageKey);
+      window.location.reload();
+    }
+  }
+
+  // ======================== AUDIO MODULE with strict first-play rules ========================
+  function renderAudioManager() {
+    if (!audioElement) {
+      audioSection.innerHTML = `
+        <div class="audio-card-header"><span class="audio-title-badge">🎧 Audio Player</span></div>
+        <div class="no-audio">No audio loaded. Import MP3 / MP4 / M4A.<br>⚠️ First play must complete without interruption. Transcript unlocks after submission.</div>
+        <div class="import-bar"><button class="btn-import" id="triggerAudioImportBtn">📁 Import Audio (MP3/MP4)</button><button class="btn-import reset" id="clearAudioBtn">🗑️ Clear Audio</button></div>
+      `;
+      document.getElementById('triggerAudioImportBtn')?.addEventListener('click', () => document.getElementById('audioFileInputHidden').click());
+      document.getElementById('clearAudioBtn')?.addEventListener('click', () => clearAudio());
+      renderTranscriptPanel();
+      return;
+    }
+    const isLocked = isFirstPlayActive && !firstPlayCompleted;
+    const canFullControl = firstPlayCompleted || isFinished;
+    audioSection.innerHTML = `
+      <div class="audio-card-header"><span class="audio-title-badge">🎵 Current Audio</span><div class="audio-actions"><button class="btn-sm danger" id="deleteAudioInternalBtn">🗑️ Delete</button></div></div>
+      <div class="audio-player">
+        <button class="play-pause-btn" id="audioPlayPauseBtn" ${isLocked ? 'disabled' : ''}>${audioElement.paused ? '▶' : '❚❚'}</button>
+        <div class="progress-container" id="audioProgressWrap" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}">
+          <div class="progress-bar-wrapper"><div class="progress-bar" id="audioProgressBar"></div></div>
+        </div>
+        <div class="time-display" id="audioTimeDisplay">00:00 / 00:00</div>
+        <select id="speedSelect" class="speed-select" ${isLocked ? 'disabled' : ''}>
+          <option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option>
+        </select>
+      </div>
+      <div class="import-bar" style="margin-top:12px;"><button class="btn-import reset" id="clearAudioBtn2">🗑️ Clear Audio</button></div>
+    `;
+    const playBtn = document.getElementById('audioPlayPauseBtn');
+    const progressWrap = document.getElementById('audioProgressWrap');
+    const progBar = document.getElementById('audioProgressBar');
+    const timeSpan = document.getElementById('audioTimeDisplay');
+    const speedSelect = document.getElementById('speedSelect');
+    function updateProgress() {
+      if (audioElement.duration) {
+        progBar.style.width = `${(audioElement.currentTime / audioElement.duration) * 100}%`;
+        timeSpan.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
+      }
+    }
+    audioElement.ontimeupdate = updateProgress;
+    audioElement.onloadedmetadata = updateProgress;
+    if (!isLocked && canFullControl) {
+      speedSelect.onchange = () => audioElement.playbackRate = parseFloat(speedSelect.value);
+      let scrubbing = false;
+      progressWrap.onmousedown = (e) => { if (!isLocked) { scrubbing = true; setProgress(e); } };
+      window.onmousemove = (e) => { if (scrubbing && !isLocked) setProgress(e); };
+      window.onmouseup = () => scrubbing = false;
+      function setProgress(e) { if (!audioElement.duration) return; const rect = progressWrap.getBoundingClientRect(); let p = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)); audioElement.currentTime = p * audioElement.duration; updateProgress(); }
+    } else {
+      if (speedSelect) speedSelect.disabled = true;
+      progressWrap.style.cursor = 'not-allowed';
+    }
+    if (playBtn) {
+      playBtn.onclick = () => {
+        if (isLocked) { showToast('First play must complete without interruption'); return; }
+        if (audioElement.paused) {
+          audioElement.play().catch(e=>console.log);
+          if (!firstPlayCompleted && !isFirstPlayActive) {
+            isFirstPlayActive = true;
+            const onEnded = () => {
+              if (!firstPlayCompleted && isFirstPlayActive) {
+                firstPlayCompleted = true;
+                isFirstPlayActive = false;
+                showToast('First listening completed. Click Finish to submit answers and unlock transcript.');
+                renderAudioManager();
+                renderTranscriptPanel();
+                audioElement.removeEventListener('ended', onEnded);
+              }
+            };
+            audioElement.addEventListener('ended', onEnded);
+            renderAudioManager();
+          }
+        } else {
+          if (isFirstPlayActive && !firstPlayCompleted) { showToast('Cannot pause during first play'); return; }
+          audioElement.pause();
+          renderAudioManager();
+        }
+      };
+    }
+    document.getElementById('deleteAudioInternalBtn')?.addEventListener('click', () => clearAudio());
+    document.getElementById('clearAudioBtn2')?.addEventListener('click', () => clearAudio());
+    renderTranscriptPanel();
+  }
+
+  function renderTranscriptPanel() {
+    const existing = audioSection.querySelector('.transcript-panel');
+    if (existing) existing.remove();
+    const panelDiv = document.createElement('div');
+    panelDiv.className = 'transcript-panel';
+    if (!isFinished) {
+      panelDiv.innerHTML = `
+        <details>
+          <summary>🔒 Transcript</summary>
+          <div class="transcript-locked-box">
+            Transcript will be available after submitting your answers (Finish).
+          </div>
+        </details>
+      `;
+    } else {
+      const transcriptHtml = CONFIG.transcriptLines.map(l => `<p>${escapeHtml(l)}</p>`).join('');
+      panelDiv.innerHTML = `
+        <details open>
+          <summary>📄 Transcript (Unlocked)</summary>
+          <div class="transcript-visible-box">${transcriptHtml}</div>
+        </details>
+      `;
+    }
+    audioSection.appendChild(panelDiv);
+  }
+
+  function formatTime(sec) { if(isNaN(sec)) return '00:00'; let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+  function clearAudio() {
+    if (audioElement) { audioElement.pause(); audioElement.src = ''; if(audioSrc) URL.revokeObjectURL(audioSrc); }
+    audioElement = null; audioSrc = null; isFirstPlayActive = false; firstPlayCompleted = false;
+    renderAudioManager();
+    showToast('Audio cleared');
+  }
+  function handleAudioImport(file) {
+    if (!file) return;
+    if (!file.name.match(/\.(mp3|mp4|m4a)$/i) && file.type !== 'audio/mpeg' && file.type !== 'audio/mp4') {
+      showToast('Please select MP3 / MP4 / M4A format'); return;
+    }
+    if (audioElement) clearAudio();
+    const url = URL.createObjectURL(file);
+    audioSrc = url;
+    audioElement = new Audio(url);
+    isFirstPlayActive = false;
+    firstPlayCompleted = false;
+    renderAudioManager();
+    showToast(`Loaded: ${file.name}`);
+  }
+  function escapeHtml(str) { return str.replace(/[&<>]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[c])); }
+  function setupFileInput() {
+    const inp = document.createElement('input'); inp.type = 'file'; inp.id = 'audioFileInputHidden'; inp.accept = 'audio/*,video/mp4'; inp.style.display = 'none';
+    document.body.appendChild(inp);
+    inp.addEventListener('change', (e) => { if(e.target.files.length) handleAudioImport(e.target.files[0]); inp.value = ''; });
+    document.body.addEventListener('click', (e) => { if(e.target.id === 'triggerAudioImportBtn') inp.click(); });
+  }
+
+  // Notes & Highlighter (simplified but functional)
+  let currentSelbarTarget = null;
+  function initHighlighter() {
+    const selbar = document.getElementById('selbar');
+    document.addEventListener('mouseup', (e) => {
+      if (e.target.closest('#selbar, #notes')) return;
+      const sel = window.getSelection();
+      if (!sel.isCollapsed && sel.toString().trim()) {
+        const rect = sel.getRangeAt(0).getBoundingClientRect();
+        if (rect.width) {
+          selbar.hidden = false;
+          selbar.style.left = `${window.scrollX + rect.left + rect.width/2 - 80}px`;
+          selbar.style.top = `${window.scrollY + rect.top - 40}px`;
+          currentSelbarTarget = null;
+        }
+      } else {
+        selbar.hidden = true;
+      }
+    });
+    selbar.addEventListener('click', (e) => {
+      const act = e.target.closest('button')?.dataset.act;
+      const sel = window.getSelection();
+      if (!sel.isCollapsed && act) {
+        const range = sel.getRangeAt(0);
+        const span = document.createElement('span');
+        span.className = act === 'hl' ? 'hl' : 'hl-blue';
+        if (act === 'note') span.dataset.hid = 'note_' + Date.now();
+        try { range.surroundContents(span); } catch { span.appendChild(range.extractContents()); range.insertNode(span); }
+        if (act === 'note') {
+          const hid = span.dataset.hid;
+          const card = document.createElement('div');
+          card.className = 'note-card';
+          card.dataset.hid = hid;
+          card.innerHTML = `<div class="note-quote">${escapeHtml(span.textContent.slice(0, 80))}</div><textarea placeholder="Write note..."></textarea><div class="note-actions"><button data-act="delNote">Delete</button></div>`;
+          card.querySelector('[data-act="delNote"]').onclick = () => { span.remove(); card.remove(); };
+          notesList.prepend(card);
+          document.body.classList.add('notes-open');
+        }
+        sel.removeAllRanges();
+        selbar.hidden = true;
+      } else if (act === 'del' && currentSelbarTarget) {
+        currentSelbarTarget.remove();
+        currentSelbarTarget = null;
+        selbar.hidden = true;
+      }
+    });
+  }
+
+  function initNotesToggle() {
+    toggleNotesBtn.addEventListener('click', () => document.body.classList.toggle('notes-open'));
+    notesClose.addEventListener('click', () => document.body.classList.remove('notes-open'));
+  }
+
+  // Init
+  function init() {
+    setupFileInput();
+    renderAudioManager();
+    loadFromLocal();
+    startTimer();
+    initHighlighter();
+    initNotesToggle();
+    finishBtn.onclick = () => { if (!isFinished) finishTest(); else showToast('Already submitted'); };
+    saveBtn.onclick = () => { saveToLocal(); showToast('Progress saved'); };
+    clearBtn.onclick = () => clearAll();
+  }
+  init();
+</script>
+</body>
+</html>

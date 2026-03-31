@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Reborn新生留学 · 密卷系统 | 雅思听力模拟 · Buildings Made of Plastic</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+    /* ==================== 密码页样式 ==================== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+        background-color: #1A1A1A;
+        color: #FFFFFF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+    body.light-mode { background-color: #FFFFFF; color: #1A1A1A; }
+    .password-container {
+        width: 100%;
+        max-width: 800px;
+        min-height: 600px;
+        background-color: #1A1A1A;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 40px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    body.light-mode .password-container { background-color: #FFFFFF; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+    .hidden-page { display: none !important; }
+    .logo-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 60px; }
+    .logo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+    .hexagon-icon { position: relative; width: 60px; height: 70px; margin-bottom: 15px; }
+    .hexagon {
+        position: absolute;
+        width: 60px;
+        height: 70px;
+        background-color: transparent;
+        border: 2px solid #FFFFFF;
+        border-radius: 2px;
+        animation: hexagonGroupAppear 3.5s ease-in-out infinite;
+        opacity: 0;
+    }
+    body.light-mode .hexagon { border-color: #1A1A1A; }
+    .hexagon:nth-child(1) { top: 0; left: 0; }
+    .hexagon:nth-child(2) { top: 10px; left: 35px; transform: scale(0.85); opacity: 0.8; }
+    .hexagon:nth-child(3) { top: 10px; left: -35px; transform: scale(0.85); opacity: 0.8; }
+    .hexagon:nth-child(4) { top: 40px; left: 18px; transform: scale(0.7); opacity: 0.6; }
+    .hexagon:nth-child(5) { top: 40px; left: -18px; transform: scale(0.7); opacity: 0.6; }
+    @keyframes hexagonGroupAppear {
+        0% { opacity: 0; transform: scale(0.8) rotate(10deg); }
+        20% { opacity: 1; transform: scale(1) rotate(0); }
+        80% { opacity: 1; transform: scale(1) rotate(0); }
+        100% { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+    }
+    .logo-main { font-size: 2.5rem; font-weight: 700; line-height: 1.2; }
+    .logo-sub { font-size: 1.5rem; font-weight: 500; margin-top: 8px; }
+    .subtitle { font-size: 1.1rem; font-weight: 300; color: #CCCCCC; letter-spacing: 3px; margin-top: 10px; }
+    .main-content { width: 100%; max-width: 400px; text-align: center; margin: 20px 0; }
+    .password-card { background: #262626; border-radius: 16px; padding: 30px 25px; border: 1px solid #3a3a3a; }
+    body.light-mode .password-card { background: #F5F5F5; border: 1px solid #ddd; }
+    .password-label { font-size: 1.2rem; font-weight: 500; margin-bottom: 20px; color: #CCCCCC; }
+    .password-input { width: 100%; padding: 14px 18px; background-color: #1A1A1A; border: 1px solid #3a3a3a; border-radius: 12px; color: #FFFFFF; text-align: center; outline: none; }
+    body.light-mode .password-input { background-color: #FFFFFF; border: 1px solid #ccc; color: #1A1A1A; }
+    .error-message { margin-top: 15px; font-size: 0.85rem; color: #ff6b6b; min-height: 40px; }
+    .confirm-btn { margin-top: 25px; background-color: #2c2c2c; border: none; border-radius: 40px; padding: 12px 28px; color: #FFFFFF; font-size: 1rem; cursor: pointer; width: 100%; box-shadow: 0 5px 0 #121212; transform: translateY(-2px); transition: 0.1s; }
+    .confirm-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #121212; }
+    .footer { width: 100%; padding-top: 30px; border-top: 1px solid #262626; text-align: center; }
+    .date-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 8px; }
+    .date-value { font-size: 1.8rem; font-weight: 600; }
+    .theme-slider-container { position: absolute; top: 20px; right: 20px; }
+    .theme-slider { width: 60px; height: 30px; background-color: #262626; border-radius: 15px; position: relative; cursor: pointer; }
+    .slider-dot { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; background-color: #FFFFFF; border-radius: 50%; transition: all 0.3s ease; }
+    body.light-mode .slider-dot { background-color: #1A1A1A; left: 33px; }
+    
+    /* ==================== P3 样式 (Buildings Made of Plastic) ==================== */
+    :root {
+        --bg-soft: #f0f7f5;
+        --panel-white: #ffffff;
+        --primary-green: #0F6B6B;
+        --primary-light: #e0f0f0;
+        --border-light: #d4e2e2;
+        --text-dark: #1f3a3a;
+        --answered-bg: #e0f2f0;
+        --correct-bg: #dcfce7;
+        --incorrect-bg: #fee2e2;
+    }
+    .p3-wrapper { width: 100%; max-width: 1200px; margin: 0 auto; }
+    .reborn-header, .audio-section, .instruction-box, .questions-panel, .bottom-bar {
+        background: var(--panel-white);
+        border-radius: 28px;
+        padding: 18px 28px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-light);
+    }
+    body.light-mode .reborn-header, body.light-mode .audio-section, 
+    body.light-mode .instruction-box, body.light-mode .questions-panel, 
+    body.light-mode .bottom-bar { background: var(--panel-white); color: var(--text-dark); }
+    .reborn-header h1 { font-size: 28px; color: var(--primary-green); margin-bottom: 8px; }
+    .btn-primary { background: var(--primary-green); color: white; border: none; padding: 8px 24px; border-radius: 32px; cursor: pointer; font-weight: 500; }
+    .btn-sm { background: var(--primary-light); border: 1px solid var(--border-light); padding: 6px 16px; border-radius: 32px; cursor: pointer; color: var(--primary-green); }
+    .group { border: 1px solid var(--border-light); border-radius: 20px; padding: 18px 22px; margin: 24px 0; }
+    .group h4 { color: var(--primary-green); margin-bottom: 16px; font-size: 1.3rem; }
+    .radio-option { margin: 12px 0; display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 6px 8px; border-radius: 8px; transition: 0.2s; }
+    .radio-option:hover { background: var(--primary-light); }
+    .drag-pool { background: var(--bg-soft); padding: 16px; border-radius: 16px; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+    .drag-option { background: var(--panel-white); border: 1px solid var(--border-light); border-radius: 24px; padding: 8px 16px; cursor: grab; user-select: none; transition: 0.2s; }
+    .drag-option:active { cursor: grabbing; }
+    .match-slot { min-width: 220px; min-height: 44px; padding: 6px 12px; border-radius: 10px; border: 2px dashed var(--border-light); background: var(--bg-soft); display: inline-flex; align-items: center; transition: 0.2s; }
+    .tag { display: inline-flex; padding: 6px 14px; background: var(--primary-light); border: 1px solid var(--primary-green); border-radius: 24px; cursor: grab; font-size: 0.9rem; }
+    .bottom-bar { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 15px; }
+    .q-nav-container { display: flex; flex-wrap: wrap; gap: 8px; }
+    .q-nav-item { background: var(--bg-soft); border-radius: 30px; padding: 6px 14px; cursor: pointer; font-weight: 500; transition: 0.2s; }
+    .q-nav-item:hover { background: var(--primary-light); }
+    .q-nav-item.answered { background: var(--answered-bg); border: 1px solid var(--primary-green); }
+    .q-nav-item.correct { background: var(--correct-bg); border-color: #4ade80; }
+    .q-nav-item.incorrect { background: var(--incorrect-bg); border-color: #f87171; }
+    .results-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    .results-table th, .results-table td { border: 1px solid var(--border-light); padding: 12px; text-align: left; }
+    .result-correct { background: var(--correct-bg); color: #15803d; font-weight: 600; }
+    .result-incorrect { background: var(--incorrect-bg); color: #b91c1c; font-weight: 600; }
+    #toast { position: fixed; bottom: 90px; right: 24px; background: var(--primary-green); color: white; padding: 10px 20px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; font-size: 14px; }
+    #toast.show { opacity: 1; }
+    .match-row { display: flex; align-items: center; gap: 20px; margin: 16px 0; flex-wrap: wrap; }
+    .matching-flex { display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+    .match-list { flex: 2; min-width: 360px; }
+    .matching-options { flex: 1.5; min-width: 240px; }
+    .hidden-in-pool { display: none !important; }
+    .drag-over { border-color: var(--primary-green); background: var(--primary-light); }
+    .filled { border-style: solid; border-color: var(--primary-green); background: var(--primary-light); }
+    .bb-center { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .early-submit { background: #c97e5a; color: white; border: none; padding: 8px 16px; border-radius: 32px; cursor: pointer; font-weight: 500; }
+    .audio-player { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 12px; }
+    .play-pause-btn { background: var(--primary-green); border: none; color: white; width: 44px; height: 44px; border-radius: 44px; font-size: 18px; cursor: pointer; transition: 0.2s; }
+    .progress-container { flex: 1; cursor: pointer; min-width: 200px; }
+    .progress-bar-wrapper { width: 100%; height: 6px; background: #dfecec; border-radius: 10px; }
+    .progress-bar { width: 0; height: 100%; background: var(--primary-green); border-radius: 10px; }
+    .import-bar { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .no-audio { padding: 20px; text-align: center; color: #8faa9e; }
+    .audio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .badge { font-weight: 600; color: var(--primary-green); background: var(--primary-light); padding: 5px 16px; border-radius: 40px; font-size: 14px; }
+    .instructions { background: var(--bg-soft); padding: 10px 14px; border-radius: 14px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .match-slot { min-width: 200px; } .bottom-bar { flex-direction: column; } .bb-center { justify-content: center; } }
+    
+    /* Notes & Highlighter */
+    .hl { background: #fff59d; }
+    .hl-blue { background: #CEDDFE; cursor: pointer; }
+    #selbar { position: absolute; background: white; border-radius: 10px; padding: 6px; gap: 6px; display: inline-flex; z-index: 101; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    #selbar[hidden] { display: none; }
+    #selbar button { border: 1px solid #ccc; border-radius: 8px; padding: 4px 12px; background: #f0f0f0; cursor: pointer; }
+    .note-card { background: var(--panel-white); border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light); }
+    .note-quote { font-weight: 500; margin-bottom: 10px; padding: 6px; background: var(--bg-soft); border-radius: 8px; }
+    .note-card textarea { width: 100%; min-height: 60px; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-soft); color: var(--text-dark); }
+    .note-actions button { background: transparent; border: 1px solid #f87171; color: #b91c1c; border-radius: 20px; padding: 4px 12px; margin-top: 8px; cursor: pointer; }
+    body.notes-open { padding-right: 420px; }
+    #notes { position: fixed; right: -420px; top: 0; bottom: 64px; width: 420px; background: var(--bg-soft); border-left: 1px solid var(--border-light); transition: right 0.25s ease; z-index: 99; display: flex; flex-direction: column; }
+    body.notes-open #notes { right: 0; }
+    .side-panel-header { display: flex; justify-content: space-between; padding: 12px 16px; background: var(--panel-white); border-bottom: 1px solid var(--border-light); }
+    #notes-list { overflow-y: auto; padding: 12px; flex: 1; }
+    #toggle-notes-btn { background: var(--bg-soft); border: 1px solid var(--border-light); border-radius: 30px; padding: 6px 14px; cursor: pointer; }
+</style>
+</head>
+<body>
+    <!-- 密码页面 -->
+    <div id="passwordPage" class="password-container">
+        <div class="theme-slider-container"><div class="theme-slider" id="themeSliderPwd"><div class="slider-dot"></div></div></div>
+        <div class="logo-section">
+            <div class="logo-container">
+                <div class="hexagon-icon"><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div></div>
+                <div class="logo-text-block"><div class="logo-main">Reborn新生留学</div><div class="logo-sub">密卷练习界面</div></div>
+            </div>
+            <div class="subtitle">Veni • Vidi • Vici</div>
+        </div>
+        <div class="main-content">
+            <div class="password-card">
+                <div class="password-label">请输入密码</div>
+                <input type="password" id="passwordInput" class="password-input" placeholder="········" autocomplete="off">
+                <div class="error-message" id="errorMsg"></div>
+                <button class="confirm-btn" id="confirmPwdBtn">确认</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="copyright">天天进步，每日新生</div>
+            <div class="date-container"><div class="date-item"><div class="date-value" id="yearPwd">2026</div><div class="date-label">年</div></div><div class="date-item"><div class="date-value" id="monthPwd">01</div><div class="date-label">月</div></div><div class="date-item"><div class="date-value" id="dayPwd">15</div><div class="date-label">日</div></div></div>
+            <div class="weekday" id="weekdayPwd">星期三</div>
+            <div class="for-every-reborner">FOR EVERY REBORNER</div>
+        </div>
+    </div>
+
+    <!-- P3 做题页面容器 (Buildings Made of Plastic) -->
+    <div id="p3Container" class="hidden-page p3-wrapper"></div>
+    <div id="toast"></div>
+    <div id="selbar" hidden><button data-act="hl">Highlight</button><button data-act="note">Note</button><button data-act="del">Clear</button></div>
+    <div id="notes">
+        <div class="side-panel-header"><span>My Notes</span><button id="notes-close" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div id="notes-list"></div>
+    </div>
+
+    <script>
+        // ==================== 密码管理 ====================
+        let currentPassword = "61211216";
+        let pendingModify = false, newPasswordStep = 0, firstNewPwd = "";
+        
+        function updateDate() {
+            const now = new Date();
+            document.getElementById('yearPwd').textContent = now.getFullYear();
+            document.getElementById('monthPwd').textContent = String(now.getMonth() + 1).padStart(2,'0');
+            document.getElementById('dayPwd').textContent = String(now.getDate()).padStart(2,'0');
+            document.getElementById('weekdayPwd').textContent = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][now.getDay()];
+        }
+        
+        function setupTheme() {
+            const slider = document.getElementById('themeSliderPwd');
+            if(slider) {
+                slider.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+                });
+            }
+            if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        }
+        
+        function handlePassword() {
+            const input = document.getElementById('passwordInput');
+            const errorDiv = document.getElementById('errorMsg');
+            const val = input.value;
+            
+            if(val === "liuyangfromxinchangzhejiang") {
+                pendingModify = true;
+                newPasswordStep = 0;
+                input.value = "";
+                errorDiv.textContent = "";
+                return;
+            }
+            
+            if(pendingModify) {
+                if(newPasswordStep === 0) {
+                    firstNewPwd = val;
+                    newPasswordStep = 1;
+                    input.value = "";
+                    errorDiv.textContent = "";
+                    return;
+                } else if(newPasswordStep === 1) {
+                    if(val === firstNewPwd && val.length > 0) currentPassword = firstNewPwd;
+                    pendingModify = false;
+                    newPasswordStep = 0;
+                    input.value = "";
+                    errorDiv.textContent = "";
+                    return;
+                }
+            }
+            
+            if(val === currentPassword) {
+                document.getElementById('passwordPage').classList.add('hidden-page');
+                document.getElementById('p3Container').classList.remove('hidden-page');
+                if(!window.p3Loaded) loadP3Content();
+            } else {
+                errorDiv.textContent = "密码错误，请重试";
+                input.value = "";
+                input.focus();
+                pendingModify = false;
+            }
+        }
+        
+        // ==================== Buildings Made of Plastic 完整功能 ====================
+        let p3Audio = null, p3AudioSrc = null, p3ExamStarted = false, p3ExamCompleted = false, p3FirstPlayActive = false;
+        let p3TimerSeconds = 0, p3TimerInterval = null, p3UserAnswers = {}, p3IsFinished = false;
+        
+        // 题目内容 - Buildings Made of Plastic
+        const P3_QUESTIONS_HTML = `
+            <div class="group">
+                <h4>Questions 21-24</h4>
+                <p class="instructions">Choose the correct letter, <b>A</b>, <b>B</b> or <b>C</b>.</p>
+                <p><b>21</b> Why did buildings made of plastic fail to please the public in the 1960s?</p>
+                <div class="radio-option"><input type="radio" name="q21" value="A"><label><b>A</b> People didn't think they were good for the environment.</label></div>
+                <div class="radio-option"><input type="radio" name="q21" value="B"><label><b>B</b> People didn't want to live in them.</label></div>
+                <div class="radio-option"><input type="radio" name="q21" value="C"><label><b>C</b> People didn't find them visually appealing.</label></div>
+                <p><b>22</b> In the 1960s and 1970s, engineers were unable to overcome the problem of</p>
+                <div class="radio-option"><input type="radio" name="q22" value="A"><label><b>A</b> damage caused in the production process.</label></div>
+                <div class="radio-option"><input type="radio" name="q22" value="B"><label><b>B</b> the effects of light and water.</label></div>
+                <div class="radio-option"><input type="radio" name="q22" value="C"><label><b>C</b> the potential danger of wind.</label></div>
+                <p><b>23</b> Luke and Millie agree to try to get more information about present-day plastics from</p>
+                <div class="radio-option"><input type="radio" name="q23" value="A"><label><b>A</b> journals.</label></div>
+                <div class="radio-option"><input type="radio" name="q23" value="B"><label><b>B</b> a PhD student.</label></div>
+                <div class="radio-option"><input type="radio" name="q23" value="C"><label><b>C</b> websites.</label></div>
+                <p><b>24</b> What do Luke and Millie agree about the article by Peterson?</p>
+                <div class="radio-option"><input type="radio" name="q24" value="A"><label><b>A</b> It provided useful examples.</label></div>
+                <div class="radio-option"><input type="radio" name="q24" value="B"><label><b>B</b> It was easy to understand.</label></div>
+                <div class="radio-option"><input type="radio" name="q24" value="C"><label><b>C</b> It was a good introduction to the topic.</label></div>
+            </div>
+            <div class="group">
+                <h4>Questions 25-30</h4>
+                <p class="instructions">What description applies to each of the following structures?<br>Choose <b>SIX</b> answers from the box and write the correct letter, <b>A-G</b>, next to questions 25-30.</p>
+                <div class="matching-flex">
+                    <div class="match-list">
+                        <div class="match-row"><span class="match-q"><b>25</b> the 'house of the future' (1957)</span><span class="match-slot" data-q="25"></span></div>
+                        <div class="match-row"><span class="match-q"><b>26</b> the 'wonderhouse' (1964)</span><span class="match-slot" data-q="26"></span></div>
+                        <div class="match-row"><span class="match-q"><b>27</b> spaceship houses (1968-78)</span><span class="match-slot" data-q="27"></span></div>
+                        <div class="match-row"><span class="match-q"><b>28</b> foam houses (1979-83)</span><span class="match-slot" data-q="28"></span></div>
+                        <div class="match-row"><span class="match-q"><b>29</b> plastic exhibition hall</span><span class="match-slot" data-q="29"></span></div>
+                        <div class="match-row"><span class="match-q"><b>30</b> New Zealand house</span><span class="match-slot" data-q="30"></span></div>
+                    </div>
+                    <div class="matching-options">
+                        <strong>Features</strong>
+                        <div class="drag-pool">
+                            <div class="drag-option" draggable="true" data-value="A">A easy to transport</div>
+                            <div class="drag-option" draggable="true" data-value="B">B not much room inside</div>
+                            <div class="drag-option" draggable="true" data-value="C">C made from recycled materials</div>
+                            <div class="drag-option" draggable="true" data-value="D">D designed to promote technology</div>
+                            <div class="drag-option" draggable="true" data-value="E">E never actually built</div>
+                            <div class="drag-option" draggable="true" data-value="F">F easy to keep clean</div>
+                            <div class="drag-option" draggable="true" data-value="G">G very strong construction</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="results-in-page"></div>
+        `;
+        
+        const P3_ANSWER_KEY = { single: { q21: 'B', q22: 'B', q23: 'A', q24: 'B' }, matching: { q25: 'G', q26: 'E', q27: 'B', q28: 'D', q29: 'A', q30: 'C' } };
+        const P3_Q_LIST = ['21','22','23','24','25','26','27','28','29','30'];
+        
+        function p3ShowToast(msg) { let t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1500); }
+        function p3UpdateTimerUI() { let m = Math.floor(p3TimerSeconds/60), s = p3TimerSeconds%60; document.getElementById('p3Timer') && (document.getElementById('p3Timer').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`); }
+        function p3StartTimer() { if(p3TimerInterval) clearInterval(p3TimerInterval); p3TimerInterval = setInterval(() => { p3TimerSeconds++; p3UpdateTimerUI(); }, 1000); }
+        function p3StopTimer() { if(p3TimerInterval) clearInterval(p3TimerInterval); p3TimerInterval = null; }
+        function p3FormatTime(s) { if(isNaN(s)) return '00:00'; let m = Math.floor(s/60), sec = Math.floor(s%60); return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; }
+        
+        function p3ClearAudio() {
+            if(p3Audio) { p3Audio.pause(); if(p3AudioSrc) URL.revokeObjectURL(p3AudioSrc); }
+            p3Audio = null; p3AudioSrc = null; p3ExamStarted = false; p3ExamCompleted = false; p3FirstPlayActive = false;
+            const finishBtn = document.getElementById('p3FinishBtn'); if(finishBtn) finishBtn.disabled = true;
+            const earlyBtn = document.getElementById('p3EarlySubmitBtn'); if(earlyBtn) earlyBtn.disabled = true;
+            p3RenderAudioManager();
+            p3ShowToast('Audio cleared');
+        }
+        
+        function p3HandleAudioImport(file) {
+            if(!file || !file.name.match(/\.(mp3|mp4|m4a|wav)$/i)) { p3ShowToast('MP3/MP4/M4A only'); return; }
+            if(p3Audio) p3ClearAudio();
+            let url = URL.createObjectURL(file);
+            p3AudioSrc = url;
+            p3Audio = new Audio(url);
+            p3ExamStarted = false; p3ExamCompleted = false; p3FirstPlayActive = false;
+            const finishBtn = document.getElementById('p3FinishBtn'); if(finishBtn) finishBtn.disabled = true;
+            const earlyBtn = document.getElementById('p3EarlySubmitBtn'); if(earlyBtn) earlyBtn.disabled = true;
+            p3RenderAudioManager();
+            p3ShowToast(`Loaded: ${file.name}`);
+        }
+        
+        function p3RenderAudioManager() {
+            const section = document.getElementById('p3AudioSection');
+            if(!section) return;
+            if(!p3Audio) {
+                section.innerHTML = `<div class="audio-header"><span class="badge">🎧 Audio Player</span></div><div class="no-audio">No audio loaded. Import MP3 / MP4.<br>⚠️ First play must complete without interruption.</div><div class="import-bar"><button class="btn-primary" id="p3ImportAudioBtn">📁 Import Audio</button><button class="btn-sm" id="p3ClearAudioBtn">🗑️ Clear</button></div>`;
+                const importBtn = document.getElementById('p3ImportAudioBtn');
+                const clearBtn = document.getElementById('p3ClearAudioBtn');
+                if(importBtn) importBtn.addEventListener('click', () => document.getElementById('p3AudioFileInput').click());
+                if(clearBtn) clearBtn.addEventListener('click', p3ClearAudio);
+                return;
+            }
+            const isLocked = p3FirstPlayActive && !p3ExamCompleted;
+            section.innerHTML = `
+                <div class="audio-header"><span class="badge">🎵 Current Audio</span><button class="btn-sm" id="p3DeleteAudioBtn">🗑️ Delete</button></div>
+                <div class="audio-player">
+                    <button class="play-pause-btn" id="p3PlayPauseBtn" ${isLocked ? 'disabled' : ''}>${p3Audio.paused ? '▶' : '❚❚'}</button>
+                    <div class="progress-container" id="p3ProgressWrap" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}">
+                        <div class="progress-bar-wrapper"><div class="progress-bar" id="p3ProgressBar"></div></div>
+                    </div>
+                    <div class="time-display" id="p3TimeDisplay">00:00 / 00:00</div>
+                    <select id="p3SpeedSelect" ${isLocked ? 'disabled' : ''}><option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option></select>
+                </div>
+                <div class="import-bar"><button class="btn-primary" id="p3ConfirmStartBtn">✅ Confirm & Start Exam</button><button class="btn-sm" id="p3ClearAudioBtn2">🗑️ Clear</button></div>
+            `;
+            const playBtn = document.getElementById('p3PlayPauseBtn');
+            if(playBtn) {
+                playBtn.onclick = () => {
+                    if(isLocked) { p3ShowToast('First play must complete without interruption'); return; }
+                    if(p3Audio.paused) {
+                        p3Audio.play();
+                        if(!p3ExamStarted && !p3FirstPlayActive) {
+                            p3FirstPlayActive = true; p3ExamStarted = true;
+                            document.getElementById('p3FinishBtn').disabled = false;
+                            document.getElementById('p3EarlySubmitBtn').disabled = false;
+                            p3StartTimer();
+                            p3Audio.addEventListener('ended', () => { p3ExamCompleted = true; p3ExamStarted = false; p3FirstPlayActive = false; p3ShowToast('Audio finished.'); p3RenderAudioManager(); });
+                            p3RenderAudioManager();
+                        }
+                    } else { p3Audio.pause(); p3RenderAudioManager(); }
+                };
+            }
+            const confirmBtn = document.getElementById('p3ConfirmStartBtn');
+            if(confirmBtn) confirmBtn.onclick = () => {
+                if(!p3Audio) { p3ShowToast('No audio loaded'); return; }
+                if(p3ExamStarted) { p3ShowToast('Exam already started'); return; }
+                p3FirstPlayActive = true; p3ExamStarted = true;
+                document.getElementById('p3FinishBtn').disabled = false;
+                document.getElementById('p3EarlySubmitBtn').disabled = false;
+                p3StartTimer();
+                p3Audio.play();
+                p3Audio.addEventListener('ended', () => { p3ExamCompleted = true; p3ExamStarted = false; p3FirstPlayActive = false; p3ShowToast('Audio finished.'); p3RenderAudioManager(); });
+                p3RenderAudioManager();
+            };
+            document.getElementById('p3DeleteAudioBtn')?.addEventListener('click', p3ClearAudio);
+            document.getElementById('p3ClearAudioBtn2')?.addEventListener('click', p3ClearAudio);
+        }
+        
+        function p3AttachDragDropEvents() {
+            const dragOptions = document.querySelectorAll('.drag-option');
+            const dropSlots = document.querySelectorAll('.match-slot');
+            dragOptions.forEach(opt => {
+                opt.setAttribute('draggable', 'true');
+                opt.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', opt.dataset.value));
+            });
+            dropSlots.forEach(slot => {
+                slot.addEventListener('dragover', e => e.preventDefault());
+                slot.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const value = e.dataTransfer.getData('text/plain');
+                    const sourceOpt = document.querySelector(`.drag-option[data-value="${value}"]`);
+                    if(!sourceOpt) return;
+                    const existingTag = slot.querySelector('.tag');
+                    if(existingTag) {
+                        const oldVal = existingTag.dataset.value;
+                        const oldOpt = document.querySelector(`.drag-option[data-value="${oldVal}"]`);
+                        if(oldOpt) oldOpt.classList.remove('hidden-in-pool');
+                        existingTag.remove();
+                    }
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.dataset.value = value;
+                    tag.textContent = sourceOpt.textContent;
+                    slot.innerHTML = '';
+                    slot.appendChild(tag);
+                    slot.classList.add('filled');
+                    sourceOpt.classList.add('hidden-in-pool');
+                    p3UserAnswers[`q${slot.dataset.q}`] = value;
+                    p3UpdateNav();
+                    p3SaveToLocal();
+                });
+            });
+            const pool = document.querySelector('.drag-pool');
+            if(pool) {
+                pool.addEventListener('dragover', e => e.preventDefault());
+                pool.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const tag = e.dataTransfer.getData('text/plain');
+                    const slotWithTag = document.querySelector(`.tag[data-value="${tag}"]`)?.closest('.match-slot');
+                    if(slotWithTag) {
+                        const opt = document.querySelector(`.drag-option[data-value="${tag}"]`);
+                        if(opt) opt.classList.remove('hidden-in-pool');
+                        slotWithTag.innerHTML = '';
+                        slotWithTag.classList.remove('filled');
+                        delete p3UserAnswers[`q${slotWithTag.dataset.q}`];
+                        p3UpdateNav();
+                        p3SaveToLocal();
+                    }
+                });
+            }
+        }
+        
+        function p3AttachRadioEvents() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', e => { if(p3IsFinished) return; p3UserAnswers[e.target.name] = e.target.value; p3UpdateNav(); p3SaveToLocal(); });
+            });
+        }
+        
+        function p3BuildNav() {
+            const container = document.getElementById('p3QNavContainer');
+            if(!container) return;
+            container.innerHTML = '';
+            P3_Q_LIST.forEach(num => {
+                let div = document.createElement('div');
+                div.className = 'q-nav-item';
+                div.dataset.qnum = num;
+                div.textContent = num;
+                div.addEventListener('click', () => {
+                    if(parseInt(num) <= 24) document.querySelector(`input[name="q${num}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    else document.querySelector(`.match-slot[data-q="${num}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+                container.appendChild(div);
+            });
+            p3UpdateNav();
+        }
+        
+        function p3UpdateNav() {
+            P3_Q_LIST.forEach(num => {
+                const navItem = document.querySelector(`.q-nav-item[data-qnum="${num}"]`);
+                if(!navItem) return;
+                let answered = false;
+                if(parseInt(num) <= 24) answered = !!document.querySelector(`input[name="q${num}"]:checked`);
+                else answered = !!document.querySelector(`.match-slot[data-q="${num}"] .tag`);
+                navItem.classList.toggle('answered', answered);
+                if(p3IsFinished) {
+                    let correct = false;
+                    if(parseInt(num) <= 24) {
+                        const checked = document.querySelector(`input[name="q${num}"]:checked`);
+                        correct = checked?.value === P3_ANSWER_KEY.single[`q${num}`];
+                    } else {
+                        const tag = document.querySelector(`.match-slot[data-q="${num}"] .tag`);
+                        correct = tag?.dataset.value === P3_ANSWER_KEY.matching[`q${num}`];
+                    }
+                    navItem.classList.add(correct ? 'correct' : 'incorrect');
+                }
+            });
+        }
+        
+        function p3RestoreUserAnswers() {
+            for(let i=21; i<=24; i++) {
+                if(p3UserAnswers[`q${i}`]) {
+                    const radio = document.querySelector(`input[name="q${i}"][value="${p3UserAnswers[`q${i}`]}"]`);
+                    if(radio) radio.checked = true;
+                }
+            }
+            for(let i=25; i<=30; i++) {
+                if(p3UserAnswers[`q${i}`]) {
+                    const slot = document.querySelector(`.match-slot[data-q="${i}"]`);
+                    const opt = document.querySelector(`.drag-option[data-value="${p3UserAnswers[`q${i}`]}"]`);
+                    if(slot && opt && !slot.classList.contains('filled')) {
+                        const tag = document.createElement('span');
+                        tag.className = 'tag';
+                        tag.dataset.value = p3UserAnswers[`q${i}`];
+                        tag.textContent = opt.textContent;
+                        slot.innerHTML = '';
+                        slot.appendChild(tag);
+                        slot.classList.add('filled');
+                        opt.classList.add('hidden-in-pool');
+                    }
+                }
+            }
+        }
+        
+        function p3FinishTest() {
+            if(p3IsFinished) return;
+            p3IsFinished = true;
+            p3StopTimer();
+            document.getElementById('p3FinishBtn').disabled = true;
+            document.getElementById('p3EarlySubmitBtn').disabled = true;
+            
+            for(let i=21; i<=24; i++) {
+                const correct = P3_ANSWER_KEY.single[`q${i}`];
+                const userRadio = document.querySelector(`input[name="q${i}"]:checked`);
+                if(userRadio) {
+                    const label = userRadio.closest('.radio-option');
+                    if(userRadio.value === correct) label.style.background = 'var(--correct-bg)';
+                    else label.style.background = 'var(--incorrect-bg)';
+                }
+                const correctInput = document.querySelector(`input[name="q${i}"][value="${correct}"]`);
+                if(correctInput && (!userRadio || userRadio.value !== correct)) {
+                    correctInput.closest('.radio-option').style.background = 'var(--correct-bg)';
+                }
+            }
+            for(let i=25; i<=30; i++) {
+                const slot = document.querySelector(`.match-slot[data-q="${i}"]`);
+                const tag = slot?.querySelector('.tag');
+                const correctVal = P3_ANSWER_KEY.matching[`q${i}`];
+                if(tag && tag.dataset.value === correctVal) { slot.style.borderColor = '#4ade80'; slot.style.backgroundColor = 'var(--correct-bg)'; }
+                else { slot.style.borderColor = '#f87171'; slot.style.backgroundColor = 'var(--incorrect-bg)'; }
+            }
+            
+            let html = '<h4>📊 Answer Review</h4><table class="results-table"><thead>汽<th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th> </thead><tbody>';
+            for(let i=21; i<=30; i++) {
+                let userAns = '', correctAns = '', isCorrect = false;
+                if(i<=24) {
+                    const checked = document.querySelector(`input[name="q${i}"]:checked`);
+                    userAns = checked ? (checked.value === 'A' ? 'A' : checked.value === 'B' ? 'B' : 'C') : '<i>No Answer</i>';
+                    correctAns = P3_ANSWER_KEY.single[`q${i}`];
+                    isCorrect = checked?.value === correctAns;
+                } else {
+                    const tag = document.querySelector(`.match-slot[data-q="${i}"] .tag`);
+                    userAns = tag ? tag.textContent : '<i>No Answer</i>';
+                    const correctLetter = P3_ANSWER_KEY.matching[`q${i}`];
+                    const correctOpt = document.querySelector(`.drag-option[data-value="${correctLetter}"]`);
+                    correctAns = correctOpt ? correctOpt.textContent : correctLetter;
+                    isCorrect = tag?.dataset.value === correctLetter;
+                }
+                html += `<tr><td style="font-weight:600">${i}</td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td></tr>`;
+            }
+            html += '</tbody></table>';
+            let container = document.querySelector('.results-in-page');
+            if(!container) { container = document.createElement('div'); container.className = 'results-in-page'; document.getElementById('p3QuestionsPanel').appendChild(container); }
+            container.innerHTML = html;
+            p3UpdateNav();
+            p3ShowToast('Answers submitted. Review table displayed.');
+        }
+        
+        function p3SaveToLocal() { localStorage.setItem('reborn_plastic_buildings', JSON.stringify({ userAnswers: p3UserAnswers, timerSeconds: p3TimerSeconds, isFinished: p3IsFinished })); }
+        function p3LoadFromLocal() {
+            const raw = localStorage.getItem('reborn_plastic_buildings');
+            if(raw) {
+                try { const d = JSON.parse(raw); p3UserAnswers = d.userAnswers || {}; p3TimerSeconds = d.timerSeconds || 0; p3IsFinished = d.isFinished || false; p3UpdateTimerUI(); if(p3IsFinished) p3FinishTest(); else p3RestoreUserAnswers(); } catch(e){}
+            }
+        }
+        function p3ClearAll() { if(confirm('Clear all progress?')) { localStorage.removeItem('reborn_plastic_buildings'); window.location.reload(); } }
+        
+        function loadP3Content() {
+            const container = document.getElementById('p3Container');
+            container.innerHTML = `
+                <div class="reborn-header"><h1>🏗️ Reborn新生留学 · IELTS Listening · Buildings Made of Plastic (Section 3)</h1><p>Architecture students discussion · Multiple choice + Matching</p></div>
+                <div class="audio-section" id="p3AudioSection"></div>
+                <div class="instruction-box"><h3>📌 Test Instructions</h3><p>• Import audio (MP3/MP4), click Confirm & Start Exam to begin.<br>• First play: no pause, no seek, no speed change.<br>• Q21-24: Choose A, B or C.<br>• Q25-30: Drag correct feature to each structure.<br>• After audio finishes, click Finish to submit and view results.<br>• Use Notes panel to save personal notes; highlight text by selecting text.</p></div>
+                <div class="questions-panel" id="p3QuestionsPanel"></div>
+                <div class="bottom-bar"><div id="p3QNavContainer" class="q-nav-container"></div><div class="bb-center"><span id="p3Timer">00:00</span><button id="p3EarlySubmitBtn" class="early-submit" disabled>Early Submit</button><button id="p3FinishBtn" disabled>Finish</button><button id="p3SaveBtn">Save</button><button id="p3ClearAllBtn">Clear All</button><button id="p3ToggleNotesBtn">📝 Notes</button></div></div>
+            `;
+            document.getElementById('p3QuestionsPanel').innerHTML = P3_QUESTIONS_HTML;
+            
+            let fileInput = document.createElement('input');
+            fileInput.type = 'file'; fileInput.id = 'p3AudioFileInput'; fileInput.accept = 'audio/*,video/mp4'; fileInput.style.display = 'none';
+            document.body.appendChild(fileInput);
+            fileInput.addEventListener('change', e => { if(e.target.files.length) p3HandleAudioImport(e.target.files[0]); fileInput.value = ''; });
+            
+            p3RenderAudioManager();
+            p3AttachRadioEvents();
+            p3AttachDragDropEvents();
+            p3BuildNav();
+            p3LoadFromLocal();
+            
+            document.getElementById('p3FinishBtn').onclick = () => { if(!p3IsFinished && p3ExamCompleted) p3FinishTest(); else if(!p3ExamCompleted && p3Audio) p3ShowToast("Wait for audio to finish or use Early Submit"); else if(!p3Audio) p3ShowToast("Load audio and start exam first"); else p3FinishTest(); };
+            document.getElementById('p3EarlySubmitBtn').onclick = () => { if(!p3ExamStarted || p3ExamCompleted) p3ShowToast("Exam not in progress"); else { if(confirm("Early submission will end exam?")) { if(p3Audio) p3Audio.pause(); p3ExamStarted = false; p3ExamCompleted = true; p3FirstPlayActive = false; p3FinishTest(); } } };
+            document.getElementById('p3SaveBtn').onclick = () => { p3SaveToLocal(); p3ShowToast('Progress saved'); };
+            document.getElementById('p3ClearAllBtn').onclick = () => p3ClearAll();
+            
+            const toggleNotesBtn = document.getElementById('p3ToggleNotesBtn');
+            const notesClose = document.getElementById('notes-close');
+            if(toggleNotesBtn) toggleNotesBtn.onclick = () => document.body.classList.toggle('notes-open');
+            if(notesClose) notesClose.onclick = () => document.body.classList.remove('notes-open');
+            
+            window.p3Loaded = true;
+        }
+        
+        function escapeHtml(s) { return s ? s.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) : ''; }
+        
+        document.getElementById('confirmPwdBtn').addEventListener('click', handlePassword);
+        document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
+        updateDate();
+        setupTheme();
+        setInterval(updateDate, 86400000);
+    </script>
+</body>
+</html>

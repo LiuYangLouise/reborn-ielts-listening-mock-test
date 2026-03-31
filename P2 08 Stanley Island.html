@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Reborn新生留学 · 雅思密卷练习</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+    /* ========== 全局与首页样式 ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+        background-color: #1A1A1A;
+        color: #FFFFFF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+    body.light-mode { background-color: #FFFFFF; color: #1A1A1A; }
+    .container {
+        width: 100%;
+        max-width: 800px;
+        min-height: 600px;
+        background-color: #1A1A1A;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 40px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    body.light-mode .container { background-color: #FFFFFF; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); }
+    .logo-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 60px; }
+    .logo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+    .hexagon-icon { position: relative; width: 60px; height: 70px; margin-bottom: 15px; }
+    .hexagon {
+        position: absolute;
+        width: 60px;
+        height: 70px;
+        background-color: transparent;
+        border: 2px solid #FFFFFF;
+        border-radius: 2px;
+        animation: hexagonGroupAppear 3.5s ease-in-out infinite;
+        opacity: 0;
+    }
+    body.light-mode .hexagon { border-color: #1A1A1A; }
+    .hexagon:nth-child(1) { top: 0; left: 0; }
+    .hexagon:nth-child(2) { top: 10px; left: 35px; transform: scale(0.85); opacity: 0.8; }
+    .hexagon:nth-child(3) { top: 10px; left: -35px; transform: scale(0.85); opacity: 0.8; }
+    .hexagon:nth-child(4) { top: 40px; left: 18px; transform: scale(0.7); opacity: 0.6; }
+    .hexagon:nth-child(5) { top: 40px; left: -18px; transform: scale(0.7); opacity: 0.6; }
+    @keyframes hexagonGroupAppear {
+        0% { opacity: 0; transform: scale(0.8) rotate(10deg); }
+        20% { opacity: 1; transform: scale(1) rotate(0); }
+        80% { opacity: 1; transform: scale(1) rotate(0); }
+        100% { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+    }
+    .logo-main { font-size: 2.5rem; font-weight: 700; letter-spacing: 1px; line-height: 1.2; color: #FFFFFF; }
+    body.light-mode .logo-main { color: #1A1A1A; }
+    .logo-sub { font-size: 1.5rem; font-weight: 500; margin-top: 8px; line-height: 1.2; color: #FFFFFF; }
+    body.light-mode .logo-sub { color: #1A1A1A; }
+    .subtitle { font-size: 1.1rem; font-weight: 300; color: #CCCCCC; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+    body.light-mode .subtitle { color: #666666; }
+    .main-content { width: 100%; max-width: 400px; text-align: center; margin: 20px 0; }
+    .password-card {
+        background: #262626;
+        border-radius: 16px;
+        padding: 30px 25px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid #3a3a3a;
+    }
+    body.light-mode .password-card { background: #F5F5F5; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); border: 1px solid #ddd; }
+    .password-label { font-size: 1.2rem; font-weight: 500; margin-bottom: 20px; color: #CCCCCC; }
+    body.light-mode .password-label { color: #333; }
+    .password-input {
+        width: 100%;
+        padding: 14px 18px;
+        font-size: 1rem;
+        background-color: #1A1A1A;
+        border: 1px solid #3a3a3a;
+        border-radius: 12px;
+        color: #FFFFFF;
+        text-align: center;
+        outline: none;
+    }
+    body.light-mode .password-input { background-color: #FFFFFF; border: 1px solid #ccc; color: #1A1A1A; }
+    .error-message { margin-top: 15px; font-size: 0.85rem; color: #ff6b6b; min-height: 40px; }
+    .confirm-btn {
+        margin-top: 25px;
+        background-color: #2c2c2c;
+        border: none;
+        border-radius: 40px;
+        padding: 12px 28px;
+        color: #FFFFFF;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        width: 100%;
+        box-shadow: 0 5px 0 #121212;
+        transform: translateY(-2px);
+    }
+    body.light-mode .confirm-btn { background-color: #e0e0e0; color: #1A1A1A; box-shadow: 0 5px 0 #b0b0b0; }
+    .confirm-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #121212; }
+    .footer { width: 100%; padding-top: 30px; border-top: 1px solid #262626; font-size: 0.9rem; color: #999999; text-align: center; }
+    body.light-mode .footer { border-top-color: #E0E0E0; color: #666666; }
+    .copyright { font-weight: 300; font-size: 1rem; margin-bottom: 30px; }
+    .date-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 8px; }
+    .date-item { display: flex; flex-direction: column; align-items: center; min-width: 50px; }
+    .date-value { font-size: 1.8rem; font-weight: 600; color: #FFFFFF; line-height: 1; }
+    body.light-mode .date-value { color: #1A1A1A; }
+    .date-label { font-size: 0.8rem; color: #999999; margin-top: 4px; }
+    .weekday { font-size: 1rem; color: #CCCCCC; margin-bottom: 5px; }
+    .for-every-reborner { font-size: 0.7rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #CCCCCC; margin-top: 5px; }
+    .theme-slider-container { position: absolute; top: 20px; right: 20px; }
+    .theme-slider { width: 60px; height: 30px; background-color: #262626; border-radius: 15px; position: relative; cursor: pointer; }
+    body.light-mode .theme-slider { background-color: #E0E0E0; }
+    .slider-dot { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; background-color: #FFFFFF; border-radius: 50%; transition: all 0.3s ease; }
+    body.light-mode .slider-dot { background-color: #1A1A1A; left: 33px; }
+    .hidden-page { display: none; }
+    #p2ExamContainer { width: 100%; max-width: 1400px; margin: 0 auto; background: transparent; display: none; }
+    
+    /* ========== P2 Stanley Island 完整样式 ========== */
+    :root {
+        --bg-soft: #f0f7f5;
+        --panel-white: #ffffff;
+        --primary-green: #0F6B6B;
+        --primary-light: #e0f0f0;
+        --border-light: #d4e2e2;
+        --text-dark: #1f3a3a;
+        --text-soft: #2a5f5f;
+        --shadow-sm: 0 8px 20px rgba(0,0,0,0.05);
+        --answered-bg: #e0f2f0;
+        --answered-border: #0F6B6B;
+        --correct-bg: #dcfce7;
+        --correct-border: #4ade80;
+        --incorrect-bg: #fee2e2;
+        --incorrect-border: #f87171;
+    }
+    body.light-mode { --bg-soft: #f0f7f5; --panel-white: #ffffff; --primary-green: #0F6B6B; }
+    .master-container { max-width: 1200px; margin: 0 auto; }
+    .reborn-header {
+        background: var(--panel-white);
+        border-radius: 32px;
+        padding: 18px 28px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-light);
+        text-align: center;
+    }
+    .reborn-header h1 { font-weight: 700; font-size: 28px; color: var(--primary-green); margin: 0; }
+    .reborn-header p { font-size: 14px; color: var(--text-soft); margin-top: 6px; }
+    .audio-section, .instruction-box, .questions-panel {
+        background: var(--panel-white);
+        border-radius: 28px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-light);
+        margin-bottom: 24px;
+    }
+    .audio-section { padding: 16px 24px; }
+    .instruction-box, .questions-panel { padding: 20px 28px; }
+    .audio-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .badge { font-weight: 600; color: var(--primary-green); background: var(--primary-light); padding: 5px 16px; border-radius: 40px; font-size: 14px; display: inline-block; }
+    .btn-sm, .btn-primary { background: var(--primary-light); border: 1px solid var(--border-light); padding: 6px 16px; border-radius: 32px; font-weight: 500; cursor: pointer; color: var(--primary-green); }
+    .btn-primary { background: var(--primary-green); color: white; border: none; padding: 8px 24px; }
+    .import-bar { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .audio-player { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 12px; }
+    .play-pause-btn { background: var(--primary-green); border: none; color: white; width: 44px; height: 44px; border-radius: 44px; font-size: 18px; cursor: pointer; transition: all 0.2s; }
+    .play-pause-btn:hover { transform: scale(1.05); background: #0a5252; }
+    .play-pause-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .progress-container { flex: 1; cursor: pointer; min-width: 200px; }
+    .progress-bar-wrapper { width: 100%; height: 6px; background: #dfecec; border-radius: 10px; overflow: hidden; }
+    .progress-bar { width: 0; height: 100%; background: var(--primary-green); border-radius: 10px; transition: width 0.1s linear; }
+    .time-display { font-size: 13px; font-family: monospace; min-width: 110px; color: var(--text-soft); }
+    .speed-select { background: var(--bg-soft); border: 1px solid var(--border-light); border-radius: 20px; padding: 6px 12px; font-size: 13px; cursor: pointer; color: var(--text-dark); }
+    .no-audio { background: #fef5e7; border-radius: 20px; padding: 16px; text-align: center; color: #8faa9e; font-size: 14px; }
+    .group { border: 1px solid var(--border-light); border-radius: 20px; padding: 18px 22px; margin: 24px 0; }
+    .group h4 { color: var(--primary-green); font-weight: 600; margin-bottom: 12px; font-size: 1.2rem; }
+    .instructions { background: var(--bg-soft); padding: 10px 14px; border-radius: 14px; margin-bottom: 20px; font-size: 14px; }
+    p { margin: 12px 0; line-height: 1.8; }
+    label { display: block; cursor: pointer; margin: 8px 0; padding: 4px 0; }
+    input[type="radio"] { margin-right: 10px; cursor: pointer; accent-color: var(--primary-green); }
+    input.blank {
+        border: 1.5px solid var(--border-light);
+        border-radius: 8px;
+        padding: 8px 12px;
+        width: 180px;
+        font-size: 0.95rem;
+        background: var(--bg-soft);
+        color: var(--text-dark);
+        transition: all 0.2s;
+        margin: 0 6px;
+    }
+    input.blank:focus { outline: none; border-color: var(--primary-green); box-shadow: 0 0 0 2px var(--primary-light); }
+    input.blank.correct-highlight { border-color: #4ade80; background: #dcfce7; }
+    input.blank.incorrect-highlight { border-color: #f87171; background: #fee2e2; }
+    
+    .location-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    .location-table th, .location-table td { border: 1px solid var(--border-light); padding: 12px 8px; text-align: left; vertical-align: middle; }
+    .location-table th { background: var(--bg-soft); font-weight: 600; width: 40%; }
+    .location-table td { text-align: center; }
+    .location-table td:first-child { text-align: left; }
+    .location-table input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+    
+    .bottom-bar {
+        margin-top: 20px; display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: 15px; background: var(--panel-white); border-radius: 60px;
+        padding: 12px 24px; border: 1px solid var(--border-light);
+    }
+    .q-nav-container { display: flex; gap: 8px; flex-wrap: wrap; }
+    .q-nav-item {
+        background: var(--bg-soft); border-radius: 30px; padding: 6px 14px;
+        font-weight: 500; font-size: 14px; cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s;
+    }
+    .q-nav-item:hover { transform: scale(1.05); background: var(--primary-light); }
+    .q-nav-item.answered { background: var(--answered-bg); border-color: var(--answered-border); color: var(--primary-green); }
+    .q-nav-item.correct { background: var(--correct-bg); border-color: var(--correct-border); }
+    .q-nav-item.incorrect { background: var(--incorrect-bg); border-color: var(--incorrect-border); }
+    .bb-center { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    #timer { font-family: monospace; font-size: 18px; font-weight: 600; color: var(--primary-green); }
+    .early-submit { background: #c97e5a; color: white; border: none; padding: 8px 16px; border-radius: 32px; cursor: pointer; font-weight: 500; }
+    .results-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    .results-table th, .results-table td { border: 1px solid var(--border-light); padding: 12px 16px; text-align: left; vertical-align: middle; }
+    .results-table th { background: var(--bg-soft); font-weight: 600; }
+    .result-correct { color: #15803d; font-weight: 600; background: var(--correct-bg); }
+    .result-incorrect { color: #b91c1c; font-weight: 600; background: var(--incorrect-bg); }
+    #toast { position: fixed; bottom: 90px; right: 24px; background: var(--primary-green); color: white; padding: 10px 20px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; font-size: 14px; }
+    #toast.show { opacity: 1; }
+    .hl { background: #fff59d; }
+    .hl-blue { background: #CEDDFE; cursor: pointer; }
+    #selbar { position: absolute; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 6px; gap: 6px; display: inline-flex; z-index: 101; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    #selbar[hidden] { display: none; }
+    #selbar button { border: 1px solid #ccc; border-radius: 8px; padding: 4px 12px; background: #f0f0f0; cursor: pointer; font-size: 12px; }
+    #notes { position: fixed; right: -420px; top: 0; bottom: 0; width: 420px; background: var(--bg-soft); border-left: 1px solid var(--border-light); transition: right 0.25s ease; z-index: 99; display: flex; flex-direction: column; }
+    body.notes-open #notes { right: 0; }
+    body.notes-open { padding-right: 420px; }
+    .side-panel-header { display: flex; justify-content: space-between; padding: 12px 16px; background: var(--panel-white); border-bottom: 1px solid var(--border-light); font-weight: 600; }
+    #notes-list { overflow-y: auto; padding: 12px; flex: 1; }
+    .note-card { background: var(--panel-white); border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light); }
+    .note-quote { font-weight: 500; margin-bottom: 10px; padding: 6px; background: var(--bg-soft); border-radius: 8px; font-size: 13px; }
+    .note-card textarea { width: 100%; min-height: 60px; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-soft); font-family: inherit; }
+    .note-actions button { background: #fee2e2; border: 1px solid #f87171; border-radius: 20px; padding: 4px 12px; margin-top: 8px; cursor: pointer; color: #b91c1c; font-size: 12px; }
+    #toggle-notes-btn { background: var(--bg-soft); border: 1px solid var(--border-light); border-radius: 30px; padding: 6px 14px; cursor: pointer; font-size: 14px; }
+    @media (max-width: 768px) {
+        .q-nav-container { justify-content: center; }
+        .audio-player { flex-direction: column; align-items: stretch; }
+        .progress-container { width: 100%; }
+        .location-table th, .location-table td { padding: 8px 4px; font-size: 12px; }
+        input.blank { width: 150px; }
+    }
+</style>
+</head>
+<body>
+    <!-- 密码页面 -->
+    <div id="passwordPage" class="container">
+        <div class="theme-slider-container">
+            <div class="theme-slider" id="themeSliderPwd"><div class="slider-dot"></div></div>
+        </div>
+        <div class="logo-section">
+            <div class="logo-container">
+                <div class="hexagon-icon"><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div></div>
+                <div class="logo-text-block"><div class="logo-main">Reborn新生留学</div><div class="logo-sub">密卷练习界面</div></div>
+            </div>
+            <div class="subtitle">Veni • Vidi • Vici</div>
+        </div>
+        <div class="main-content">
+            <div class="password-card">
+                <div class="password-label">请输入密码</div>
+                <div class="password-input-wrapper"><input type="password" id="passwordInput" class="password-input" placeholder="········" autocomplete="off"></div>
+                <div class="error-message" id="errorMsg"></div>
+                <button class="confirm-btn" id="confirmPwdBtn">确认</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="copyright">天天进步，每日新生</div>
+            <div class="date-section">
+                <div class="date-container"><div class="date-item"><div class="date-value" id="yearPwd">2026</div><div class="date-label">年</div></div><div class="date-item"><div class="date-value" id="monthPwd">01</div><div class="date-label">月</div></div><div class="date-item"><div class="date-value" id="dayPwd">15</div><div class="date-label">日</div></div></div>
+                <div class="weekday" id="weekdayPwd">星期三</div>
+                <div class="for-every-reborner">FOR EVERY REBORNER</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- P2 内容容器 -->
+    <div id="p2ExamContainer"></div>
+
+    <script>
+        // ======================= 密码验证逻辑 =======================
+        let currentPassword = "61211216";
+        let pendingModify = false, newPasswordStep = 0, firstNewPwd = "";
+        
+        function updateDate() {
+            const now = new Date();
+            document.getElementById('yearPwd').textContent = now.getFullYear();
+            document.getElementById('monthPwd').textContent = String(now.getMonth() + 1).padStart(2, '0');
+            document.getElementById('dayPwd').textContent = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            document.getElementById('weekdayPwd').textContent = weekdays[now.getDay()];
+        }
+        
+        function setupTheme() {
+            const slider = document.getElementById('themeSliderPwd');
+            const toggle = () => {
+                document.body.classList.toggle('light-mode');
+                localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            };
+            if(slider) slider.addEventListener('click', toggle);
+            if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        }
+        
+        function handlePassword() {
+            const input = document.getElementById('passwordInput');
+            const errorDiv = document.getElementById('errorMsg');
+            const val = input.value;
+            
+            if(val === "liuyangfromxinchangzhejiang") {
+                pendingModify = true; newPasswordStep = 0; firstNewPwd = "";
+                input.value = ""; errorDiv.textContent = ""; return;
+            }
+            if(pendingModify) {
+                if(newPasswordStep === 0) { firstNewPwd = val; newPasswordStep = 1; input.value = ""; return; }
+                else if(newPasswordStep === 1) {
+                    if(val === firstNewPwd && val.length > 0) currentPassword = firstNewPwd;
+                    pendingModify = false; newPasswordStep = 0; firstNewPwd = "";
+                    input.value = ""; errorDiv.textContent = ""; return;
+                }
+            }
+            if(val === currentPassword) { loadP2Exam(); } 
+            else { errorDiv.textContent = "密码错误，请重试"; input.value = ""; input.focus(); pendingModify = false; }
+        }
+        
+        // Stanley Island 题目
+        const STANLEY_ISLAND_QUESTIONS_HTML = `
+          <div class="group">
+            <h4>Question 11</h4>
+            <p class="instructions">Choose the correct letter, <b>A</b>, <b>B</b> or <b>C</b>.</p>
+            <p><b>11</b> At the present time, Stanley Island can be reached by</p>
+            <label><input type="radio" name="q11" value="A"> <b>A</b> hovercraft.</label>
+            <label><input type="radio" name="q11" value="B"> <b>B</b> plane.</label>
+            <label><input type="radio" name="q11" value="C"> <b>C</b> ferry.</label>
+          </div>
+
+          <div class="group">
+            <h4>Questions 12-15</h4>
+            <p class="instructions">Where can the following facilities and attractions be found?<br>
+            Write the correct letter, <b>A, B or C</b>.</p>
+            <p><b>A</b> The North Coast &nbsp;&nbsp; <b>B</b> The South Coast &nbsp;&nbsp; <b>C</b> The East Coast</p>
+            
+            <table class="location-table">
+              <thead>
+                <tr><th>Facility/Attraction</th><th>A (North)</th><th>B (South)</th><th>C (East)</th>
+              </thead>
+              <tbody>
+                <tr><td><b>12</b> golf courses</td>
+                    <td><input type="radio" name="q12" value="A"></td>
+                    <td><input type="radio" name="q12" value="B"></td>
+                    <td><input type="radio" name="q12" value="C"></td>
+                </tr>
+                <tr><td><b>13</b> family hotels</td>
+                    <td><input type="radio" name="q13" value="A"></td>
+                    <td><input type="radio" name="q13" value="B"></td>
+                    <td><input type="radio" name="q13" value="C"></td>
+                </tr>
+                <tr><td><b>14</b> self-catering flats</td>
+                    <td><input type="radio" name="q14" value="A"></td>
+                    <td><input type="radio" name="q14" value="B"></td>
+                    <td><input type="radio" name="q14" value="C"></td>
+                </tr>
+                <tr><td><b>15</b> nature walks</td>
+                    <td><input type="radio" name="q15" value="A"></td>
+                    <td><input type="radio" name="q15" value="B"></td>
+                    <td><input type="radio" name="q15" value="C"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="group">
+            <h4>Questions 16-20</h4>
+            <p class="instructions">Complete the notes below.<br>Write <b>NO MORE THAN TWO WORDS</b> for each answer.</p>
+            <p><b>Advice to Visitors</b></p>
+            <p>• Bring your own <b>16</b> <input type="text" name="q16" class="blank" autocomplete="off"> and insect spray</p>
+            <p>• It may not be possible to use your <b>17</b> <input type="text" name="q17" class="blank" autocomplete="off"> in the western area</p>
+            <p>• Don't drink water from <b>18</b> <input type="text" name="q18" class="blank" autocomplete="off"></p>
+            <p>• Be careful of the <b>19</b> <input type="text" name="q19" class="blank" autocomplete="off"> as they bite</p>
+            <p>• Try the local <b>20</b> <input type="text" name="q20" class="blank" autocomplete="off"></p>
+          </div>
+          <div class="results-in-page"></div>
+        `;
+        
+        const ANSWER_KEY = {
+            single: { q11: 'C' },
+            location: { q12: 'C', q13: 'B', q14: 'C', q15: 'A' },
+            text: { q16: 'medication', q17: 'mobile phone', q18: 'rivers', q19: 'monkeys', q20: 'seafood' }
+        };
+        
+        const Q_LIST = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+        
+        // 全局变量
+        let audioElement = null, examStarted = false, examCompleted = false, firstPlayActive = false;
+        let timerSeconds = 0, timerInterval = null, userAnswers = {}, isFinished = false;
+        
+        function formatTime(seconds) { 
+            if(isNaN(seconds)) return '00:00'; 
+            let m = Math.floor(seconds/60), s = Math.floor(seconds%60); 
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; 
+        }
+        
+        function escapeHtml(s) { return s ? s.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) : ''; }
+        
+        function loadP2Exam() {
+            document.getElementById('passwordPage').classList.add('hidden-page');
+            const container = document.getElementById('p2ExamContainer');
+            container.style.display = 'block';
+            
+            container.innerHTML = `
+            <div class="master-container">
+                <div class="reborn-header">
+                    <h1>🏝️ Reborn新生留学 · IELTS Listening · Stanley Island (Section 2)</h1>
+                    <p>Travel tips and tourist information · Multiple choice + Location matching + Notes completion</p>
+                </div>
+                <div class="audio-section" id="audioSection"></div>
+                <div class="instruction-box">
+                    <h3>📌 Test Instructions</h3>
+                    <div>
+                        <p>• <strong>Questions 11-20:</strong> Section 2 — travel guide about Stanley Island (transport, facilities, attractions, visitor advice).<br>
+                        • 🎧 <strong>Exam mode:</strong> Import audio (MP3/MP4), click <strong>Confirm & Start Exam</strong> to begin.<br>
+                        • Once started, audio plays automatically. <strong>No pause, no seek, no speed change</strong> during first play.<br>
+                        • Q11: Choose the correct letter A, B or C.<br>
+                        • Q12-15: Match each facility/attraction to the correct coast (North/South/East).<br>
+                        • Q16-20: Complete notes with NO MORE THAN TWO WORDS.<br>
+                        • After audio finishes or click <strong>Early Submit</strong>, click <strong>Finish</strong> to submit and view detailed results.<br>
+                        • Use <strong>Notes</strong> panel to save personal notes; highlight text by selecting and clicking "Highlight" or "Note".</p>
+                    </div>
+                </div>
+                <div class="questions-panel" id="questionsPanel"></div>
+                <div class="bottom-bar">
+                    <div id="qNavContainer" class="q-nav-container"></div>
+                    <div class="bb-center">
+                        <span id="timer">00:00</span>
+                        <button id="earlySubmitBtn" class="early-submit" disabled>Early Submit</button>
+                        <button id="finishBtn" disabled>Finish</button>
+                        <button id="saveBtn">Save</button>
+                        <button id="clearBtn">Clear All</button>
+                        <button id="toggle-notes-btn">📝 Notes</button>
+                    </div>
+                </div>
+            </div>
+            <div id="notes">
+                <div class="side-panel-header"><span>📔 My Notes</span><button id="notes-close" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button></div>
+                <div id="notes-list"></div>
+            </div>
+            <div id="selbar" hidden><button data-act="hl">✨ Highlight</button><button data-act="note">📝 Note</button><button data-act="del">🗑️ Clear</button></div>
+            <div id="toast">Saved</div>
+            `;
+            
+            initP2Full();
+        }
+        
+        function initP2Full() {
+            function showToast(msg) { let t = document.getElementById('toast'); if(t) { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1500); } }
+            function updateTimerUI() { let timerSpan = document.getElementById('timer'); if(timerSpan) timerSpan.textContent = formatTime(timerSeconds); }
+            function startTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = setInterval(()=>{ timerSeconds++; updateTimerUI(); },1000); }
+            function stopTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = null; }
+            
+            function saveToLocal() { let notesHTML = document.getElementById('notes-list') ? document.getElementById('notes-list').innerHTML : ''; localStorage.setItem('reborn_stanley_island', JSON.stringify({ userAnswers, timerSeconds, isFinished, notesHTML })); }
+            function loadFromLocal() { 
+                let raw = localStorage.getItem('reborn_stanley_island'); 
+                if(raw) { let d = JSON.parse(raw); userAnswers = d.userAnswers || {}; timerSeconds = d.timerSeconds || 0; isFinished = d.isFinished || false; if(d.notesHTML && document.getElementById('notes-list')) document.getElementById('notes-list').innerHTML = d.notesHTML; updateTimerUI(); if(isFinished) finishTest(); renderQuestions(); } else renderQuestions(); 
+            }
+            
+            function renderQuestions() { let panel = document.getElementById('questionsPanel'); if(panel) panel.innerHTML = STANLEY_ISLAND_QUESTIONS_HTML; attachRadioEvents(); attachInputEvents(); buildNav(); restoreAnswers(); }
+            
+            function attachRadioEvents() { document.querySelectorAll('input[type="radio"]').forEach(r => { r.addEventListener('change', (e) => { if(!isFinished) { userAnswers[e.target.name] = e.target.value; updateNav(); saveToLocal(); } }); }); }
+            function attachInputEvents() { document.querySelectorAll('input.blank').forEach(inp => { inp.addEventListener('input', (e) => { if(!isFinished) { userAnswers[e.target.name] = e.target.value.trim(); updateNav(); saveToLocal(); } }); }); }
+            
+            function restoreAnswers() {
+                for(let i=11;i<=15;i++) { if(userAnswers['q'+i]) { let r = document.querySelector(`input[name="q${i}"][value="${userAnswers['q'+i]}"]`); if(r) r.checked = true; } }
+                for(let i=16;i<=20;i++) { if(userAnswers['q'+i] !== undefined) { let inp = document.querySelector(`input[name="q${i}"]`); if(inp) inp.value = userAnswers['q'+i]; } }
+            }
+            
+            function buildNav() { let nav = document.getElementById('qNavContainer'); if(!nav) return; nav.innerHTML = ''; Q_LIST.forEach(num => { let div = document.createElement('div'); div.className = 'q-nav-item'; div.textContent = num; div.onclick = () => { let target = document.querySelector(`input[name="q${num}"]`); if(target) target.scrollIntoView({ behavior: 'smooth', block: 'center' }); }; nav.appendChild(div); }); updateNav(); }
+            
+            function updateNav() { let items = document.querySelectorAll('.q-nav-item'); Q_LIST.forEach((num, idx) => { let item = items[idx]; if(!item) return; let answered = false; if(parseInt(num) <= 15) { let checked = document.querySelector(`input[name="q${num}"]:checked`); answered = !!checked; } else { let inp = document.querySelector(`input[name="q${num}"]`); answered = inp && inp.value.trim() !== ''; } item.classList.toggle('answered', answered); if(isFinished) { let correct = false; if(parseInt(num) <= 15) { let userVal = document.querySelector(`input[name="q${num}"]:checked`)?.value; if(num === '11') correct = userVal === ANSWER_KEY.single.q11; else correct = userVal === ANSWER_KEY.location[`q${num}`]; } else { let userVal = document.querySelector(`input[name="q${num}"]`)?.value.trim().toLowerCase(); let correctVal = ANSWER_KEY.text[`q${num}`]?.toLowerCase(); correct = userVal === correctVal; } item.classList.add(correct ? 'correct' : 'incorrect'); } }); }
+            
+            function finishTest() {
+                if(isFinished) return; isFinished = true; stopTimer(); 
+                let finishBtn = document.getElementById('finishBtn'), earlyBtn = document.getElementById('earlySubmitBtn');
+                if(finishBtn) finishBtn.disabled = true; if(earlyBtn) earlyBtn.disabled = true;
+                
+                // 单选题高亮
+                for(let i=11;i<=15;i++) {
+                    let correct = (i===11) ? ANSWER_KEY.single.q11 : ANSWER_KEY.location[`q${i}`];
+                    let userVal = document.querySelector(`input[name="q${i}"]:checked`)?.value;
+                    document.querySelectorAll(`input[name="q${i}"]`).forEach(r => {
+                        let label = r.closest('td') || r.closest('label');
+                        if(label && r.value === correct) {
+                            label.style.background = 'var(--correct-bg)';
+                            label.style.borderRadius = '8px';
+                            label.style.padding = '4px 8px';
+                        }
+                        if(userVal && r.value === userVal && userVal !== correct) {
+                            label.style.background = 'var(--incorrect-bg)';
+                            label.style.borderRadius = '8px';
+                            label.style.padding = '4px 8px';
+                        }
+                    });
+                }
+                // 填空题高亮
+                for(let i=16;i<=20;i++) { let input = document.querySelector(`input[name="q${i}"]`); if(input) { let userVal = input.value.trim().toLowerCase(); let correctVal = ANSWER_KEY.text[`q${i}`]?.toLowerCase(); if(userVal === correctVal) { input.classList.add('correct-highlight'); input.classList.remove('incorrect-highlight'); } else if(userVal !== '') { input.classList.add('incorrect-highlight'); input.classList.remove('correct-highlight'); } } }
+                
+                let tableHTML = '<h4>📊 Answer Review</h4><table class="results-table"><thead><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th></thead><tbody>';
+                for(let i=11;i<=20;i++) { let userAns = '', correctAns = '', isCorrect = false;
+                    if(i===11) {
+                        let checked = document.querySelector(`input[name="q11"]:checked`);
+                        userAns = checked ? checked.closest('label').textContent.trim() : '<i>No Answer</i>';
+                        correctAns = 'C - ferry';
+                        isCorrect = userAnswers['q11'] === 'C';
+                    } else if(i>=12 && i<=15) {
+                        let checked = document.querySelector(`input[name="q${i}"]:checked`);
+                        const coastMap = { A: 'North Coast', B: 'South Coast', C: 'East Coast' };
+                        userAns = checked ? coastMap[checked.value] : '<i>No Answer</i>';
+                        const correctLetter = ANSWER_KEY.location[`q${i}`];
+                        correctAns = coastMap[correctLetter];
+                        isCorrect = userAnswers['q'+i] === correctLetter;
+                    } else {
+                        let input = document.querySelector(`input[name="q${i}"]`);
+                        userAns = input && input.value.trim() ? input.value.trim() : '<i>No Answer</i>';
+                        correctAns = ANSWER_KEY.text[`q${i}`];
+                        isCorrect = userAnswers['q'+i]?.toLowerCase() === correctAns.toLowerCase();
+                    }
+                    tableHTML += `|<td style="font-weight:600">${i}</td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td>`;
+                }
+                tableHTML += '</tbody></table>'; let resultsDiv = document.querySelector('.results-in-page'); if(resultsDiv) resultsDiv.innerHTML = tableHTML; updateNav(); showToast('Answers submitted'); }
+            
+            function clearAll() { if(confirm('Clear all progress?')) { localStorage.removeItem('reborn_stanley_island'); location.reload(); } }
+            
+            // 音频播放器
+            function renderAudioManager() {
+                let audioSec = document.getElementById('audioSection');
+                if(!audioSec) return;
+                audioSec.innerHTML = `
+                    <div class="audio-header"><span class="badge">🎧 Audio Player</span></div>
+                    <div class="import-bar">
+                        <button class="btn-primary" id="importAudioBtn">📁 Import Audio (MP3/MP4)</button>
+                        <button class="btn-sm" id="clearAudioBtn">🗑️ Clear Audio</button>
+                    </div>
+                    <div id="audioPlayerPlaceholder"></div>
+                `;
+                document.getElementById('importAudioBtn')?.addEventListener('click', () => {
+                    let inp = document.createElement('input'); inp.type='file'; inp.accept='audio/*';
+                    inp.onchange = e => {
+                        if(e.target.files[0]) {
+                            if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+                            let url = URL.createObjectURL(e.target.files[0]);
+                            audioElement = new Audio(url);
+                            let placeholder = document.getElementById('audioPlayerPlaceholder');
+                            if(placeholder) {
+                                placeholder.innerHTML = `
+                                    <div class="audio-player">
+                                        <button class="play-pause-btn" id="playPauseBtn">▶</button>
+                                        <div class="progress-container" id="progressWrap">
+                                            <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
+                                        </div>
+                                        <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+                                        <select id="speedSelect" class="speed-select">
+                                            <option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option>
+                                        </select>
+                                    </div>
+                                    <div class="import-bar" style="margin-top:12px">
+                                        <button class="btn-primary" id="confirmStartBtn">✅ Confirm & Start Exam</button>
+                                    </div>
+                                `;
+                                setupAudioControls();
+                            }
+                        }
+                    };
+                    inp.click();
+                });
+                document.getElementById('clearAudioBtn')?.addEventListener('click', () => {
+                    if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+                    audioElement = null; examStarted = false; examCompleted = false; firstPlayActive = false;
+                    document.getElementById('finishBtn').disabled = true;
+                    document.getElementById('earlySubmitBtn').disabled = true;
+                    renderAudioManager();
+                    showToast('Audio cleared');
+                });
+            }
+            
+            function setupAudioControls() {
+                let playBtn = document.getElementById('playPauseBtn');
+                let progressWrap = document.getElementById('progressWrap');
+                let progBar = document.getElementById('progressBar');
+                let timeSpan = document.getElementById('timeDisplay');
+                let speedSelect = document.getElementById('speedSelect');
+                let confirmBtn = document.getElementById('confirmStartBtn');
+                
+                function updateProgress() {
+                    if(audioElement.duration) {
+                        progBar.style.width = `${(audioElement.currentTime/audioElement.duration)*100}%`;
+                        timeSpan.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
+                    }
+                }
+                audioElement.ontimeupdate = updateProgress;
+                audioElement.onloadedmetadata = updateProgress;
+                
+                speedSelect.onchange = () => { if(!firstPlayActive || examCompleted) audioElement.playbackRate = parseFloat(speedSelect.value); };
+                
+                let scrubbing = false;
+                progressWrap.onmousedown = (e) => { if(!firstPlayActive || examCompleted) { scrubbing = true; setProgress(e); } };
+                window.onmousemove = (e) => { if(scrubbing) setProgress(e); };
+                window.onmouseup = () => scrubbing = false;
+                function setProgress(e) { if(!audioElement.duration) return; let rect=progressWrap.getBoundingClientRect(); let p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); audioElement.currentTime=p*audioElement.duration; updateProgress(); }
+                
+                playBtn.onclick = () => {
+                    if(firstPlayActive && !examCompleted) { showToast('First play must complete without interruption'); return; }
+                    if(audioElement.paused) {
+                        audioElement.play();
+                        if(!examStarted && !firstPlayActive) {
+                            firstPlayActive = true; examStarted = true;
+                            document.getElementById('finishBtn').disabled = false;
+                            document.getElementById('earlySubmitBtn').disabled = false;
+                            startTimer();
+                            audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+                        }
+                    } else { audioElement.pause(); }
+                    updatePlayButton();
+                };
+                
+                function updatePlayButton() { if(playBtn) playBtn.textContent = audioElement.paused ? '▶' : '❚❚'; }
+                audioElement.onplay = updatePlayButton;
+                audioElement.onpause = updatePlayButton;
+                
+                confirmBtn.onclick = () => {
+                    if(!audioElement) { showToast('No audio loaded'); return; }
+                    if(examStarted) { showToast('Exam already started'); return; }
+                    firstPlayActive = true; examStarted = true;
+                    document.getElementById('finishBtn').disabled = false;
+                    document.getElementById('earlySubmitBtn').disabled = false;
+                    startTimer();
+                    audioElement.play();
+                    audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+                };
+            }
+            
+            // 笔记系统
+            function initNotesSystem() {
+                let selbar = document.getElementById('selbar');
+                let currentRange = null;
+                document.addEventListener('mouseup', (e) => {
+                    if(e.target.closest('#selbar, #notes')) return;
+                    let sel = window.getSelection();
+                    if(!sel.isCollapsed && sel.toString().trim()) {
+                        currentRange = sel.getRangeAt(0);
+                        let rect = currentRange.getBoundingClientRect();
+                        if(selbar) { selbar.hidden = false; selbar.style.left = `${window.scrollX + rect.left + rect.width/2 - 80}px`; selbar.style.top = `${window.scrollY + rect.top - 45}px`; }
+                    } else if(selbar) selbar.hidden = true;
+                });
+                if(selbar) {
+                    selbar.addEventListener('click', (e) => {
+                        let act = e.target.dataset.act;
+                        if(!act || !currentRange) return;
+                        if(act === 'hl') { let span = document.createElement('span'); span.className = 'hl'; try { currentRange.surroundContents(span); } catch(e) {} }
+                        else if(act === 'note') {
+                            let span = document.createElement('span'); span.className = 'hl-blue'; let hid = 'note_'+Date.now(); span.dataset.hid = hid;
+                            try {
+                                currentRange.surroundContents(span);
+                                let card = document.createElement('div'); card.className = 'note-card'; card.dataset.hid = hid;
+                                card.innerHTML = `<div class="note-quote">${escapeHtml(span.textContent)}</div><textarea placeholder="Write your note..."></textarea><div class="note-actions"><button data-del="${hid}">Delete</button></div>`;
+                                card.querySelector('button').onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
+                                card.querySelector('textarea').addEventListener('input', () => saveToLocal());
+                                document.getElementById('notes-list').prepend(card);
+                                document.body.classList.add('notes-open');
+                                saveToLocal();
+                            } catch(e) {}
+                        }
+                        selbar.hidden = true; window.getSelection().removeAllRanges();
+                    });
+                }
+                let toggleBtn = document.getElementById('toggle-notes-btn'), closeBtn = document.getElementById('notes-close');
+                if(toggleBtn) toggleBtn.onclick = () => document.body.classList.toggle('notes-open');
+                if(closeBtn) closeBtn.onclick = () => document.body.classList.remove('notes-open');
+                
+                const savedData = localStorage.getItem('reborn_stanley_island');
+                if(savedData) {
+                    try {
+                        const data = JSON.parse(savedData);
+                        if(data.notesHTML && document.getElementById('notes-list')) {
+                            document.getElementById('notes-list').innerHTML = data.notesHTML;
+                            document.querySelectorAll('.note-card').forEach(card => {
+                                const hid = card.dataset.hid;
+                                const delBtn = card.querySelector('button');
+                                const textarea = card.querySelector('textarea');
+                                if(delBtn) delBtn.onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
+                                if(textarea) textarea.addEventListener('input', () => saveToLocal());
+                            });
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            document.getElementById('finishBtn').onclick = () => { if(!isFinished && examCompleted) finishTest(); else if(!examCompleted) showToast("Wait for audio to finish or use Early Submit"); else finishTest(); };
+            document.getElementById('earlySubmitBtn').onclick = () => { if(examStarted && !examCompleted) { if(confirm('Early submission?')) { if(audioElement) audioElement.pause(); examStarted = false; examCompleted = true; finishTest(); } } };
+            document.getElementById('saveBtn').onclick = () => { saveToLocal(); showToast('Progress saved'); };
+            document.getElementById('clearBtn').onclick = clearAll;
+            
+            renderAudioManager();
+            initNotesSystem();
+            loadFromLocal();
+        }
+        
+        document.getElementById('confirmPwdBtn').addEventListener('click', handlePassword);
+        document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
+        updateDate(); setupTheme(); setInterval(updateDate, 86400000);
+    </script>
+</body>
+</html>

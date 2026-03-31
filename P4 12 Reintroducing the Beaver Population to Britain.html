@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Reborn新生留学 · IELTS Listening · Reintroducing the Beaver Population (Section 4)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-soft: #f0f7f5;
+    --panel-white: #ffffff;
+    --primary-green: #0F6B6B;
+    --primary-light: #e0f0f0;
+    --border-light: #d4e2e2;
+    --text-dark: #1f3a3a;
+    --text-soft: #2a5f5f;
+    --shadow-sm: 0 8px 20px rgba(0,0,0,0.05);
+    --answered-bg: #e0f2f0;
+    --answered-border: #0F6B6B;
+    --correct-bg: #dcfce7;
+    --correct-border: #4ade80;
+    --incorrect-bg: #fee2e2;
+    --incorrect-border: #f87171;
+  }
+
+  body {
+    background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-dark);
+    padding: 24px 28px;
+    min-height: 100vh;
+  }
+
+  .master-container { max-width: 1200px; margin: 0 auto; }
+
+  .reborn-header {
+    background: var(--panel-white);
+    border-radius: 32px;
+    padding: 18px 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    text-align: center;
+  }
+  .reborn-header h1 {
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--primary-green);
+    letter-spacing: 1px;
+    margin: 0;
+  }
+  .reborn-header p {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-top: 6px;
+  }
+
+  .audio-section, .instruction-box, .questions-panel {
+    background: var(--panel-white);
+    border-radius: 28px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    margin-bottom: 24px;
+  }
+  .audio-section { padding: 16px 24px; }
+  .instruction-box, .questions-panel { padding: 20px 28px; }
+
+  .audio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .badge {
+    font-weight: 600;
+    color: var(--primary-green);
+    background: var(--primary-light);
+    padding: 5px 16px;
+    border-radius: 40px;
+    font-size: 14px;
+  }
+  .btn-sm, .btn-primary {
+    background: var(--primary-light);
+    border: 1px solid var(--border-light);
+    padding: 6px 16px;
+    border-radius: 32px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--primary-green);
+  }
+  .btn-primary { background: var(--primary-green); color: white; border: none; padding: 8px 24px; }
+  .import-bar { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .audio-player { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 12px; }
+  .play-pause-btn {
+    background: var(--primary-green); border: none; color: white;
+    width: 44px; height: 44px; border-radius: 44px; font-size: 18px;
+    cursor: pointer;
+  }
+  .play-pause-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .progress-container { flex: 1; cursor: pointer; min-width: 200px; }
+  .progress-bar-wrapper { width: 100%; height: 6px; background: #dfecec; border-radius: 10px; }
+  .progress-bar { width: 0; height: 100%; background: var(--primary-green); border-radius: 10px; }
+  .time-display { font-size: 13px; font-family: monospace; min-width: 110px; }
+  .no-audio { background: #fef5e7; border-radius: 20px; padding: 16px; text-align: center; color: #8faa9e; }
+
+  .group { border: 1px solid var(--border-light); border-radius: 20px; padding: 18px 22px; margin: 24px 0; }
+  .group h4 { color: var(--primary-green); font-weight: 600; margin-bottom: 12px; font-size: 1.2rem; }
+  .instructions { background: var(--bg-soft); padding: 10px 14px; border-radius: 14px; margin-bottom: 20px; }
+  p { margin: 12px 0; line-height: 1.8; }
+  input.blank {
+    border: 1.5px solid var(--border-light);
+    border-radius: 8px;
+    padding: 6px 12px;
+    width: 150px;
+    font-size: 0.95rem;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    transition: all 0.2s;
+    margin: 0 6px;
+  }
+  input.blank:focus { outline: none; border-color: var(--primary-green); box-shadow: 0 0 0 2px var(--primary-light); }
+  input.blank.correct-highlight { border-color: #4ade80; background: #dcfce7; }
+  input.blank.incorrect-highlight { border-color: #f87171; background: #fee2e2; }
+  h5 { font-size: 1rem; margin: 16px 0 8px 0; color: var(--primary-green); font-weight: 600; }
+
+  .bottom-bar {
+    margin-top: 20px; display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 15px; background: var(--panel-white); border-radius: 60px;
+    padding: 12px 24px; border: 1px solid var(--border-light);
+  }
+  .q-nav-container { display: flex; gap: 8px; flex-wrap: wrap; max-width: 60%; }
+  .q-nav-item {
+    background: var(--bg-soft); border-radius: 30px; padding: 6px 14px;
+    font-weight: 500; font-size: 14px; cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .q-nav-item.answered { background: var(--answered-bg); border-color: var(--answered-border); color: var(--primary-green); }
+  .q-nav-item.correct { background: var(--correct-bg); border-color: var(--correct-border); }
+  .q-nav-item.incorrect { background: var(--incorrect-bg); border-color: var(--incorrect-border); }
+  .bb-center { display: flex; gap: 12px; flex-wrap: wrap; }
+  .results-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+  .results-table th, .results-table td { border: 1px solid var(--border-light); padding: 12px 16px; text-align: left; vertical-align: middle; }
+  .results-table th { background: var(--bg-soft); font-weight: 600; }
+  .result-correct { color: #15803d; font-weight: 600; background: var(--correct-bg); }
+  .result-incorrect { color: #b91c1c; font-weight: 600; background: var(--incorrect-bg); }
+
+  #toast { position: fixed; bottom: 90px; right: 24px; background: var(--primary-green); color: white; padding: 10px 20px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; }
+  #toast.show { opacity: 1; }
+  .early-submit { background: #c97e5a; color: white; border: none; }
+
+  .hl { background: #fff59d; }
+  .hl-blue { background: #CEDDFE; cursor: pointer; }
+  #selbar { position: absolute; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 6px; gap: 6px; display: inline-flex; z-index: 101; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  #selbar[hidden] { display: none; }
+  #selbar button { border: 1px solid #ccc; border-radius: 8px; padding: 4px 12px; background: #f0f0f0; cursor: pointer; }
+  .note-card { background: var(--panel-white); border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light); }
+  .note-quote { font-weight: 500; margin-bottom: 10px; padding: 6px; background: var(--bg-soft); border-radius: 8px; }
+  .note-card textarea { width: 100%; min-height: 60px; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-soft); color: var(--text-dark); }
+  .note-actions button { background: transparent; border: 1px solid #f87171; color: #b91c1c; border-radius: 20px; padding: 4px 12px; margin-top: 8px; cursor: pointer; }
+  body.notes-open { padding-right: 420px; }
+  #notes { position: fixed; right: -420px; top: 0; bottom: 64px; width: 420px; background: var(--bg-soft); border-left: 1px solid var(--border-light); transition: right 0.25s ease; z-index: 99; display: flex; flex-direction: column; }
+  body.notes-open #notes { right: 0; }
+  .side-panel-header { display: flex; justify-content: space-between; padding: 12px 16px; background: var(--panel-white); border-bottom: 1px solid var(--border-light); }
+  #notes-list { overflow-y: auto; padding: 12px; flex: 1; }
+  #toggle-notes-btn { background: var(--bg-soft); border: 1px solid var(--border-light); border-radius: 30px; padding: 6px 14px; cursor: pointer; }
+
+  @media (max-width: 768px) {
+    .q-nav-container { max-width: 100%; justify-content: center; }
+    .bb-center { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="master-container">
+  <div class="reborn-header">
+    <h1>🦫 Reborn新生留学 · IELTS Listening · Reintroducing the Beaver Population (Section 4)</h1>
+    <p>Note completion · ONE WORD ONLY · Ecology & conservation</p>
+  </div>
+
+  <div class="audio-section" id="audioSection"></div>
+
+  <div class="instruction-box">
+    <h3>📌 Test Instructions</h3>
+    <div class="instruction-text-content">
+      <p>• <strong>Questions 31-40:</strong> Complete the notes about beaver reintroduction in Britain.<br>
+      • 🎧 <strong>Exam mode:</strong> Import audio (MP3/MP4), click <strong>Confirm & Start Exam</strong> to begin.<br>
+      • Once started, audio plays automatically. <strong>No pause, no seek, no speed change</strong> during first play.<br>
+      • Write <strong>ONE WORD ONLY</strong> for each answer.<br>
+      • After audio finishes or click <strong>Early Submit</strong>, click <strong>Finish</strong> to submit and view detailed results.<br>
+      • Use <strong>Notes</strong> panel to save personal notes; highlight text by selecting and clicking "Highlight" or "Note".</p>
+    </div>
+  </div>
+
+  <div class="questions-panel" id="questionsPanel"></div>
+
+  <div class="bottom-bar">
+    <div id="qNavContainer" class="q-nav-container"></div>
+    <div class="bb-center">
+      <span id="timer">00:00</span>
+      <button id="earlySubmitBtn" class="early-submit" disabled>Early Submit</button>
+      <button id="finishBtn" disabled>Finish</button>
+      <button id="saveBtn">Save</button>
+      <button id="clearBtn">Clear All</button>
+      <button id="toggle-notes-btn">📝 Notes</button>
+    </div>
+  </div>
+</div>
+
+<div id="notes">
+  <div class="side-panel-header"><span>My Notes</span><button id="notes-close" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button></div>
+  <div id="notes-list"></div>
+</div>
+<div id="selbar" hidden><button data-act="hl">Highlight</button><button data-act="note">Note</button><button data-act="del">Clear</button></div>
+<div id="toast">Saved</div>
+
+<script>
+// ======================== 题目内容 (Reintroducing the Beaver Population) ========================
+const QUESTIONS_HTML = `
+  <div class="group">
+    <h4>Questions 31-40</h4>
+    <p class="instructions">Complete the notes below. Write <b>ONE WORD ONLY</b> for each answer.</p>
+    <h4>🦫 Reintroducing the Beaver Population to Britain</h4>
+    
+    <h5>Background</h5>
+    <p>- Beavers were once native to Britain but were hunted extensively for their fur, meat, and a substance used in <b>31</b> <input type="text" name="q31" data-q="31" class="blank" autocomplete="off">.</p>
+    <p>- One of the key concerns about reintroducing beavers is ensuring their long-term <b>32</b> <input type="text" name="q32" data-q="32" class="blank" autocomplete="off"> from illegal hunting and predators.</p>
+    <p>- The beaver's <b>33</b> <input type="text" name="q33" data-q="33" class="blank" autocomplete="off"> plays an important role in regulating its body temperature and helping it swim efficiently.</p>
+    
+    <h5>Ecological Impact</h5>
+    <p>- The movement of beavers across different water systems is often compared to seasonal <b>34</b> <input type="text" name="q34" data-q="34" class="blank" autocomplete="off"> seen in other animal species.</p>
+    <p>- A secretion from beavers was historically used in <b>35</b> <input type="text" name="q35" data-q="35" class="blank" autocomplete="off"> production due to its strong scent.</p>
+    <p>- Some people opposed beaver reintroduction, claiming that their dam-building activities might cause <b>36</b> <input type="text" name="q36" data-q="36" class="blank" autocomplete="off"> for local communities.</p>
+    
+    <h5>Environmental Benefits</h5>
+    <p>- The presence of beavers in an area has been linked to an increase in <b>37</b> <input type="text" name="q37" data-q="37" class="blank" autocomplete="off"> as people visit to observe these animals.</p>
+    <p>- Beaver dams can help prevent <b>38</b> <input type="text" name="q38" data-q="38" class="blank" autocomplete="off"> by slowing down water flow and storing excess rainwater.</p>
+    <p>- The ponds created by beaver activity improve water quality by reducing <b>39</b> <input type="text" name="q39" data-q="39" class="blank" autocomplete="off"> levels, benefiting local ecosystems.</p>
+    <p>- Beavers contribute to biodiversity by creating habitats for fish, birds, and <b>40</b> <input type="text" name="q40" data-q="40" class="blank" autocomplete="off">, which thrive in their modified environments.</p>
+  </div>
+  <div class="results-in-page"></div>
+`;
+
+// 标准答案 (基于听力原文)
+const ANSWER_KEY = {
+  text: { 
+    q31: 'transport', q32: 'protection', q33: 'tail', q34: 'migration',
+    q35: 'perfume', q36: 'headaches', q37: 'tourism', q38: 'flood',
+    q39: 'nitrogen', q40: 'insects'
+  }
+};
+
+const Q_LIST = ['31', '32', '33', '34', '35', '36', '37', '38', '39', '40'];
+
+let audioElement = null, audioSrc = null, examStarted = false, examCompleted = false, firstPlayActive = false;
+let timerSeconds = 0, timerInterval = null, userAnswers = {}, isFinished = false;
+
+const audioSection = document.getElementById('audioSection');
+const questionsPanel = document.getElementById('questionsPanel');
+const qNavContainer = document.getElementById('qNavContainer');
+const timerSpan = document.getElementById('timer');
+const finishBtn = document.getElementById('finishBtn');
+const earlySubmitBtn = document.getElementById('earlySubmitBtn');
+const saveBtn = document.getElementById('saveBtn');
+const clearBtn = document.getElementById('clearBtn');
+const toastDiv = document.getElementById('toast');
+const notesList = document.getElementById('notes-list');
+const toggleNotesBtn = document.getElementById('toggle-notes-btn');
+const notesClose = document.getElementById('notes-close');
+
+function showToast(msg) { toastDiv.textContent = msg; toastDiv.classList.add('show'); setTimeout(() => toastDiv.classList.remove('show'), 1500); }
+function updateTimerUI() { let m=Math.floor(timerSeconds/60), s=timerSeconds%60; timerSpan.textContent=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+function startTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval=setInterval(()=>{ timerSeconds++; updateTimerUI(); },1000); }
+function stopTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval=null; }
+
+function renderQuestions() {
+  questionsPanel.innerHTML = QUESTIONS_HTML;
+  attachBlankEvents();
+  buildNav();
+  restoreUserAnswers();
+}
+
+function attachBlankEvents() {
+  document.querySelectorAll('input.blank').forEach(input => {
+    input.removeEventListener('input', handleBlankInput);
+    input.addEventListener('input', handleBlankInput);
+  });
+}
+
+function handleBlankInput(e) {
+  if(isFinished) return;
+  const name = e.target.name;
+  userAnswers[name] = e.target.value;
+  updateNav();
+  saveToLocal();
+}
+
+function buildNav() {
+  qNavContainer.innerHTML = '';
+  Q_LIST.forEach(num => {
+    let div = document.createElement('div');
+    div.className = 'q-nav-item';
+    div.dataset.qnum = num;
+    div.textContent = num;
+    div.addEventListener('click', () => {
+      let target = document.querySelector(`input[name="q${num}"]`);
+      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    qNavContainer.appendChild(div);
+  });
+  updateNav();
+}
+
+function updateNav() {
+  Q_LIST.forEach(num => {
+    const navItem = qNavContainer.querySelector(`[data-qnum="${num}"]`);
+    if(!navItem) return;
+    const input = document.querySelector(`input[name="q${num}"]`);
+    let answered = input && input.value.trim() !== '';
+    navItem.classList.toggle('answered', answered);
+    if(isFinished) {
+      let correct = false;
+      const userVal = input ? input.value.trim().toLowerCase() : '';
+      const correctVal = ANSWER_KEY.text[`q${num}`] ? ANSWER_KEY.text[`q${num}`].toLowerCase() : '';
+      correct = userVal === correctVal;
+      navItem.classList.add(correct ? 'correct' : 'incorrect');
+    } else {
+      navItem.classList.remove('correct', 'incorrect');
+    }
+  });
+}
+
+function restoreUserAnswers() {
+  for(let i=31; i<=40; i++) {
+    const saved = userAnswers[`q${i}`];
+    if(saved !== undefined) {
+      const input = document.querySelector(`input[name="q${i}"]`);
+      if(input) input.value = saved;
+    }
+  }
+}
+
+function renderAudioManager() {
+  if(!audioElement) {
+    audioSection.innerHTML = `
+      <div class="audio-header"><span class="badge">🎧 Audio Player</span></div>
+      <div class="no-audio">No audio loaded. Import MP3 / MP4 / M4A.<br>⚠️ First play must complete without interruption.</div>
+      <div class="import-bar"><button class="btn-primary" id="triggerAudioImportBtn">📁 Import Audio (MP3/MP4)</button><button class="btn-sm" id="clearAudioBtn">🗑️ Clear Audio</button></div>
+    `;
+    document.getElementById('triggerAudioImportBtn')?.addEventListener('click', () => document.getElementById('audioFileInput').click());
+    document.getElementById('clearAudioBtn')?.addEventListener('click', clearAudio);
+    return;
+  }
+  const isLocked = firstPlayActive && !examCompleted;
+  const canFullControl = examCompleted;
+  audioSection.innerHTML = `
+    <div class="audio-header"><span class="badge">🎵 Current Audio</span><button class="btn-sm" id="deleteAudioBtn">🗑️ Delete</button></div>
+    <div class="audio-player">
+      <button class="play-pause-btn" id="playPauseBtn" ${isLocked ? 'disabled' : ''}>${audioElement.paused ? '▶' : '❚❚'}</button>
+      <div class="progress-container" id="progressWrap" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}">
+        <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+      <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+      <select id="speedSelect" class="speed-select" ${isLocked ? 'disabled' : ''}>
+        <option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option>
+      </select>
+    </div>
+    <div class="import-bar"><button class="btn-primary" id="confirmStartBtn">✅ Confirm & Start Exam</button><button class="btn-sm" id="clearAudioBtn2">🗑️ Clear Audio</button></div>
+  `;
+  
+  const playBtn = document.getElementById('playPauseBtn');
+  const progressWrap = document.getElementById('progressWrap');
+  const progBar = document.getElementById('progressBar');
+  const timeSpan = document.getElementById('timeDisplay');
+  const speedSelect = document.getElementById('speedSelect');
+  
+  function updateProgress() {
+    if(audioElement.duration) {
+      progBar.style.width = `${(audioElement.currentTime/audioElement.duration)*100}%`;
+      timeSpan.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
+    }
+  }
+  audioElement.ontimeupdate = updateProgress;
+  audioElement.onloadedmetadata = updateProgress;
+  
+  if(canFullControl) {
+    speedSelect.onchange = () => audioElement.playbackRate = parseFloat(speedSelect.value);
+    let scrubbing = false;
+    progressWrap.onmousedown = (e) => { scrubbing = true; setProgress(e); };
+    window.onmousemove = (e) => { if(scrubbing) setProgress(e); };
+    window.onmouseup = () => scrubbing = false;
+    function setProgress(e) { if(!audioElement.duration) return; let rect=progressWrap.getBoundingClientRect(); let p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); audioElement.currentTime=p*audioElement.duration; updateProgress(); }
+  } else {
+    if(speedSelect) speedSelect.disabled = true;
+    progressWrap.style.cursor = 'not-allowed';
+  }
+  
+  if(playBtn) {
+    playBtn.onclick = () => {
+      if(isLocked) { showToast('First play must complete without interruption'); return; }
+      if(audioElement.paused) {
+        audioElement.play().catch(e=>console.log);
+        if(!examStarted && !firstPlayActive) {
+          firstPlayActive = true;
+          examStarted = true;
+          finishBtn.disabled = false;
+          earlySubmitBtn.disabled = false;
+          startTimer();
+          const onEnded = () => {
+            examCompleted = true;
+            examStarted = false;
+            firstPlayActive = false;
+            showToast('Audio finished. Click Finish to submit answers.');
+            renderAudioManager();
+            audioElement.removeEventListener('ended', onEnded);
+          };
+          audioElement.addEventListener('ended', onEnded);
+          renderAudioManager();
+        }
+      } else {
+        if(firstPlayActive && !examCompleted) { showToast('Cannot pause during first play'); return; }
+        audioElement.pause();
+        renderAudioManager();
+      }
+    };
+  }
+  
+  document.getElementById('confirmStartBtn')?.addEventListener('click', () => {
+    if(!audioElement) { showToast('No audio loaded'); return; }
+    if(examStarted) { showToast('Exam already started'); return; }
+    firstPlayActive = true;
+    examStarted = true;
+    finishBtn.disabled = false;
+    earlySubmitBtn.disabled = false;
+    startTimer();
+    audioElement.play().catch(e=>console.log);
+    const onEnded = () => {
+      examCompleted = true;
+      examStarted = false;
+      firstPlayActive = false;
+      showToast('Audio finished. Click Finish to submit answers.');
+      renderAudioManager();
+      audioElement.removeEventListener('ended', onEnded);
+    };
+    audioElement.addEventListener('ended', onEnded);
+    renderAudioManager();
+  });
+  
+  document.getElementById('deleteAudioBtn')?.addEventListener('click', clearAudio);
+  document.getElementById('clearAudioBtn2')?.addEventListener('click', clearAudio);
+}
+
+function formatTime(s) { if(isNaN(s)) return '00:00'; let m=Math.floor(s/60), sec=Math.floor(s%60); return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; }
+function clearAudio() {
+  if(audioElement) { audioElement.pause(); audioElement.src = ''; if(audioSrc) URL.revokeObjectURL(audioSrc); }
+  audioElement = null; audioSrc = null; examStarted = false; examCompleted = false; firstPlayActive = false;
+  finishBtn.disabled = true; earlySubmitBtn.disabled = true;
+  renderAudioManager();
+  showToast('Audio cleared');
+}
+function handleAudioImport(file) {
+  if(!file) return;
+  if(!file.name.match(/\.(mp3|mp4|m4a)$/i)) { showToast('MP3/MP4 only'); return; }
+  if(audioElement) clearAudio();
+  let url = URL.createObjectURL(file);
+  audioSrc = url;
+  audioElement = new Audio(url);
+  examStarted = false; examCompleted = false; firstPlayActive = false;
+  finishBtn.disabled = true; earlySubmitBtn.disabled = true;
+  renderAudioManager();
+  showToast(`Loaded: ${file.name}`);
+}
+
+function earlySubmit() {
+  if(!examStarted || examCompleted) { showToast("Exam not in progress"); return; }
+  if(confirm("Early submission will end the exam. Continue?")) {
+    if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+    examStarted = false;
+    examCompleted = true;
+    firstPlayActive = false;
+    finishTest();
+  }
+}
+
+function finishTest() {
+  if(isFinished) return;
+  isFinished = true;
+  stopTimer();
+  finishBtn.disabled = true;
+  earlySubmitBtn.disabled = true;
+  
+  // 高亮输入框正确/错误
+  for(let i=31; i<=40; i++) {
+    const input = document.querySelector(`input[name="q${i}"]`);
+    if(input) {
+      const userVal = input.value.trim().toLowerCase();
+      const correctVal = ANSWER_KEY.text[`q${i}`] ? ANSWER_KEY.text[`q${i}`].toLowerCase() : '';
+      if(userVal === correctVal) {
+        input.classList.add('correct-highlight');
+        input.classList.remove('incorrect-highlight');
+      } else {
+        input.classList.add('incorrect-highlight');
+        input.classList.remove('correct-highlight');
+      }
+    }
+  }
+  
+  const resultsTableHTML = generateResultsTable();
+  let resultsContainer = document.querySelector('.results-in-page');
+  if(!resultsContainer) {
+    resultsContainer = document.createElement('div');
+    resultsContainer.className = 'results-in-page';
+    questionsPanel.appendChild(resultsContainer);
+  }
+  resultsContainer.innerHTML = resultsTableHTML;
+  
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    if(el.tagName === 'INPUT') el.disabled = true;
+  });
+  updateNav();
+  showToast('Answers submitted. Review table displayed.');
+}
+
+function generateResultsTable() {
+  let tableHTML = '<h4>📊 Answer Review</h4><table class="results-table"><thead><tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th></tr></thead><tbody>';
+  
+  for(let i=31; i<=40; i++) {
+    const input = document.querySelector(`input[name="q${i}"]`);
+    let userAns = input ? input.value.trim() : '';
+    if(userAns === '') userAns = '<i>No Answer</i>';
+    const correctAns = ANSWER_KEY.text[`q${i}`] || '';
+    const userValNorm = (input ? input.value.trim().toLowerCase() : '');
+    const correctValNorm = correctAns.toLowerCase();
+    const isCorrect = userValNorm === correctValNorm;
+    tableHTML += `<tr><td><b>${i}</b></td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td></tr>`;
+  }
+  return tableHTML + '</tbody></table>';
+}
+
+function saveToLocal() {
+  const data = { userAnswers, timerSeconds, isFinished, notesHTML: notesList.innerHTML };
+  localStorage.setItem('reborn_beaver_listening', JSON.stringify(data));
+}
+function loadFromLocal() {
+  const raw = localStorage.getItem('reborn_beaver_listening');
+  if(raw) {
+    try {
+      const d = JSON.parse(raw);
+      userAnswers = d.userAnswers || {};
+      timerSeconds = d.timerSeconds || 0;
+      isFinished = d.isFinished || false;
+      if(d.notesHTML) notesList.innerHTML = d.notesHTML;
+      updateTimerUI();
+      if(isFinished) finishTest();
+      renderQuestions();
+    } catch(e) {}
+  } else {
+    renderQuestions();
+  }
+}
+function clearAll() {
+  if(confirm('Clear all progress? This will reset all answers and timer.')) {
+    localStorage.removeItem('reborn_beaver_listening');
+    window.location.reload();
+  }
+}
+
+function setupFileInput() {
+  let inp = document.createElement('input'); inp.type='file'; inp.id='audioFileInput'; inp.accept='audio/*,video/mp4'; inp.style.display='none';
+  document.body.appendChild(inp);
+  inp.addEventListener('change', e=>{ if(e.target.files.length) handleAudioImport(e.target.files[0]); inp.value=''; });
+}
+
+// ========== Notes & Highlight System ==========
+let selbar = document.getElementById('selbar');
+let currentSelectionRange = null;
+
+function handleMouseUp(e) {
+  if(e.target.closest('#selbar, #notes, .bottom-bar')) return;
+  let sel = window.getSelection();
+  if(!sel.isCollapsed && sel.toString().trim().length > 0) {
+    let range = sel.getRangeAt(0);
+    let rect = range.getBoundingClientRect();
+    if(rect.width > 0 && rect.height > 0) {
+      currentSelectionRange = range;
+      selbar.hidden = false;
+      selbar.style.left = `${window.scrollX + rect.left + rect.width/2 - 60}px`;
+      selbar.style.top = `${window.scrollY + rect.top - 40}px`;
+    } else {
+      selbar.hidden = true;
+    }
+  } else {
+    selbar.hidden = true;
+  }
+}
+
+function handleSelbarAction(e) {
+  let act = e.target.closest('button')?.dataset.act;
+  if(!act) return;
+  if(!currentSelectionRange) return;
+  let span = document.createElement('span');
+  if(act === 'hl') span.className = 'hl';
+  else if(act === 'note') span.className = 'hl-blue';
+  else if(act === 'del') {
+    let parent = currentSelectionRange.commonAncestorContainer;
+    let hlSpan = parent.nodeType === 3 ? parent.parentElement : parent;
+    if(hlSpan.classList && (hlSpan.classList.contains('hl') || hlSpan.classList.contains('hl-blue'))) {
+      let textNode = document.createTextNode(hlSpan.textContent);
+      hlSpan.parentNode.replaceChild(textNode, hlSpan);
+    }
+    selbar.hidden = true;
+    return;
+  }
+  try {
+    currentSelectionRange.surroundContents(span);
+    if(act === 'note') {
+      let hid = 'note_' + Date.now();
+      span.dataset.hid = hid;
+      let quote = span.textContent.trim();
+      let card = document.createElement('div');
+      card.className = 'note-card';
+      card.dataset.hid = hid;
+      card.innerHTML = `<div class="note-quote">${escapeHtml(quote)}</div><textarea placeholder="Write your note..."></textarea><div class="note-actions"><button data-del="${hid}">Delete</button></div>`;
+      let delBtn = card.querySelector('button');
+      delBtn.onclick = () => {
+        let targetSpan = document.querySelector(`[data-hid="${hid}"]`);
+        if(targetSpan) {
+          let textNode = document.createTextNode(targetSpan.textContent);
+          targetSpan.parentNode.replaceChild(textNode, targetSpan);
+        }
+        card.remove();
+      };
+      notesList.prepend(card);
+      document.body.classList.add('notes-open');
+    }
+  } catch(e) { console.warn(e); }
+  selbar.hidden = true;
+  window.getSelection().removeAllRanges();
+}
+
+function initNotesSystem() {
+  document.addEventListener('mouseup', handleMouseUp);
+  selbar.addEventListener('click', handleSelbarAction);
+  toggleNotesBtn.addEventListener('click', () => document.body.classList.toggle('notes-open'));
+  notesClose.addEventListener('click', () => document.body.classList.remove('notes-open'));
+}
+
+function escapeHtml(s) { return s ? s.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) : ''; }
+
+function init() {
+  setupFileInput();
+  renderAudioManager();
+  loadFromLocal();
+  startTimer();
+  initNotesSystem();
+  finishBtn.onclick = () => { if(!isFinished && examCompleted) finishTest(); else if(!examCompleted && audioElement) showToast("Wait for audio to finish or use Early Submit"); else if(!isFinished && !audioElement) showToast("Load audio and start exam first"); else finishTest(); };
+  earlySubmitBtn.onclick = () => earlySubmit();
+  saveBtn.onclick = () => { saveToLocal(); showToast('Progress saved'); };
+  clearBtn.onclick = () => clearAll();
+}
+init();
+</script>
+</body>
+</html>

@@ -90,6 +90,11 @@
             margin-bottom: 8px;
         }
         
+        .logo-sub {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
         .subtitle {
             font-size: 1.1rem;
             color: #CCCCCC;
@@ -242,8 +247,9 @@
     </div>
 
     <script>
-        // 密码
+        // ====================== 你的密码 ======================
         const MY_PASSWORD = "61211216";
+        // =====================================================
 
         // 主题切换
         const themeSwitch = document.getElementById('themeSwitch');
@@ -251,13 +257,13 @@
             document.body.classList.toggle('light-mode');
         });
 
-        // 密码验证 → 跳转到听力主目录
+        // 密码验证
         function checkPassword() {
             const input = document.getElementById('pwd').value;
             const tip = document.getElementById('tip');
 
             if (input === MY_PASSWORD) {
-                // ✅ 这里修复了！正确跳转到听力主页
+                // 密码正确 → 跳转到听力主目录
                 window.location.href = "main_listening.html";
             } else {
                 tip.textContent = "密码错误，请重试";
