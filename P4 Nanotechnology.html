@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Reborn新生留学 · 雅思密卷练习 · Nanotechnology</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    /* ========== 全局与首页样式 ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+      background-color: #1A1A1A;
+      color: #FFFFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+    body.light-mode { background-color: #FFFFFF; color: #1A1A1A; }
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .theme-slider-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .theme-slider {
+      width: 60px;
+      height: 30px;
+      background-color: #262626;
+      border-radius: 15px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    body.light-mode .theme-slider { background-color: #E0E0E0; }
+    .slider-dot {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background-color: #FFFFFF;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    body.light-mode .slider-dot { background-color: #1A1A1A; left: 33px; }
+    
+    /* ========== 考试主样式 ========== */
+    :root {
+      --bg-soft: #f0f7f5;
+      --panel-white: #ffffff;
+      --primary-green: #0F6B6B;
+      --primary-light: #e0f0f0;
+      --border-light: #d4e2e2;
+      --text-dark: #1f3a3a;
+      --text-soft: #2a5f5f;
+      --shadow-sm: 0 8px 20px rgba(0,0,0,0.05);
+      --answered-bg: #e0f2f0;
+      --answered-border: #0F6B6B;
+      --correct-bg: #dcfce7;
+      --correct-border: #4ade80;
+      --incorrect-bg: #fee2e2;
+      --incorrect-border: #f87171;
+    }
+    
+    /* 深色模式覆盖 */
+    body:not(.light-mode) {
+      --bg-soft: #2a2a2a;
+      --panel-white: #1e1e1e;
+      --primary-green: #4a9e9e;
+      --primary-light: #2a4a4a;
+      --border-light: #444444;
+      --text-dark: #e0e0e0;
+      --text-soft: #cccccc;
+      --answered-bg: #2a4a4a;
+      --answered-border: #4a9e9e;
+      --correct-bg: #1a3a2a;
+      --correct-border: #4ade80;
+      --incorrect-bg: #3a1a1a;
+      --incorrect-border: #f87171;
+    }
+    
+    body:not(.light-mode) .exam-master,
+    body:not(.light-mode) .reborn-header,
+    body:not(.light-mode) .audio-section,
+    body:not(.light-mode) .instruction-box,
+    body:not(.light-mode) .questions-panel,
+    body:not(.light-mode) .group,
+    body:not(.light-mode) .bottom-bar,
+    body:not(.light-mode) .results-table td {
+      color: #e0e0e0;
+    }
+    
+    body:not(.light-mode) label,
+    body:not(.light-mode) p,
+    body:not(.light-mode) .instructions,
+    body:not(.light-mode) li {
+      color: #e0e0e0;
+    }
+    
+    body:not(.light-mode) .results-table th {
+      background: #0F6B6B;
+      color: white;
+    }
+    
+    body:not(.light-mode) .result-correct {
+      color: #4ade80;
+      background: #1a3a2a;
+    }
+    
+    body:not(.light-mode) .result-incorrect {
+      color: #f87171;
+      background: #3a1a1a;
+    }
+    
+    /* Logo区域样式 - 保留品牌但去除外部链接，仅装饰 */
+    .logo-section {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+    }
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .hexagon-icon {
+      position: relative;
+      width: 60px;
+      height: 70px;
+      margin-bottom: 15px;
+    }
+    .hexagon {
+      position: absolute;
+      width: 60px;
+      height: 70px;
+      background-color: transparent;
+      border: 2px solid #FFFFFF;
+      border-radius: 2px;
+      animation: hexagonGroupAppear 3.5s ease-in-out infinite;
+      opacity: 0;
+    }
+    body.light-mode .hexagon { border-color: #1A1A1A; }
+    .hexagon:nth-child(1) { top: 0; left: 0; }
+    .hexagon:nth-child(2) { top: 10px; left: 35px; transform: scale(0.85); opacity: 0.8; }
+    .hexagon:nth-child(3) { top: 10px; left: -35px; transform: scale(0.85); opacity: 0.8; }
+    .hexagon:nth-child(4) { top: 40px; left: 18px; transform: scale(0.7); opacity: 0.6; }
+    .hexagon:nth-child(5) { top: 40px; left: -18px; transform: scale(0.7); opacity: 0.6; }
+    @keyframes hexagonGroupAppear {
+      0% { opacity: 0; transform: scale(0.8) rotate(10deg); }
+      20% { opacity: 1; transform: scale(1) rotate(0); }
+      80% { opacity: 1; transform: scale(1) rotate(0); }
+      100% { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+    }
+    .logo-main { font-size: 2.5rem; font-weight: 700; letter-spacing: 1px; line-height: 1.2; color: #FFFFFF; }
+    body.light-mode .logo-main { color: #1A1A1A; }
+    .logo-sub { font-size: 1.5rem; font-weight: 500; margin-top: 8px; line-height: 1.2; color: #FFFFFF; }
+    body.light-mode .logo-sub { color: #1A1A1A; }
+    .subtitle { font-size: 1.1rem; font-weight: 300; color: #CCCCCC; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+    body.light-mode .subtitle { color: #666666; }
+    
+    .exam-master { max-width: 1200px; margin: 0 auto; }
+    .reborn-header {
+      background: var(--panel-white);
+      border-radius: 32px;
+      padding: 18px 28px;
+      margin-bottom: 24px;
+      margin-top: 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      text-align: center;
+    }
+    .reborn-header h1 { font-weight: 700; font-size: 28px; color: var(--primary-green); margin: 0; }
+    .reborn-header p { font-size: 14px; color: var(--text-soft); margin-top: 6px; }
+    .audio-section, .instruction-box, .questions-panel {
+      background: var(--panel-white);
+      border-radius: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      margin-bottom: 24px;
+    }
+    .audio-section { padding: 16px 24px; }
+    .instruction-box, .questions-panel { padding: 20px 28px; }
+    .audio-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .badge { font-weight: 600; color: var(--primary-green); background: var(--primary-light); padding: 5px 16px; border-radius: 40px; font-size: 14px; display: inline-block; }
+    .btn-sm, .btn-primary { background: var(--primary-light); border: 1px solid var(--border-light); padding: 6px 16px; border-radius: 32px; font-weight: 500; cursor: pointer; color: var(--primary-green); transition: all 0.2s; }
+    .btn-primary { background: var(--primary-green); color: white; border: none; padding: 8px 24px; }
+    .btn-primary:hover, .btn-sm:hover { transform: translateY(-1px); opacity: 0.9; }
+    .import-bar { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .audio-player { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 12px; }
+    .play-pause-btn { background: var(--primary-green); border: none; color: white; width: 44px; height: 44px; border-radius: 44px; font-size: 18px; cursor: pointer; transition: all 0.2s; }
+    .play-pause-btn:hover { transform: scale(1.05); background: #0a5252; }
+    .play-pause-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .progress-container { flex: 1; cursor: pointer; min-width: 200px; }
+    .progress-bar-wrapper { width: 100%; height: 6px; background: #dfecec; border-radius: 10px; overflow: hidden; }
+    .progress-bar { width: 0; height: 100%; background: var(--primary-green); border-radius: 10px; transition: width 0.1s linear; }
+    .time-display { font-size: 13px; font-family: monospace; min-width: 110px; color: var(--text-soft); }
+    .speed-select { background: var(--bg-soft); border: 1px solid var(--border-light); border-radius: 20px; padding: 6px 12px; font-size: 13px; cursor: pointer; color: var(--text-dark); }
+    .group { border: 1px solid var(--border-light); border-radius: 20px; padding: 18px 22px; margin: 24px 0; background: var(--panel-white); }
+    .group h4 { color: var(--primary-green); font-weight: 600; margin-bottom: 12px; font-size: 1.2rem; }
+    .group h5 { color: var(--primary-green); font-weight: 500; margin-bottom: 10px; font-size: 1rem; }
+    .instructions { background: var(--bg-soft); padding: 10px 14px; border-radius: 14px; margin-bottom: 20px; font-size: 14px; color: var(--text-dark); }
+    p { margin: 12px 0; line-height: 1.8; color: var(--text-dark); }
+    ul { margin-left: 20px; margin-bottom: 15px; }
+    li { margin: 8px 0; line-height: 1.8; color: var(--text-dark); }
+    input.blank {
+      border: 1.5px solid var(--border-light);
+      border-radius: 8px;
+      padding: 8px 12px;
+      width: 140px;
+      font-size: 0.95rem;
+      background: var(--bg-soft);
+      color: var(--text-dark);
+      transition: all 0.2s;
+      margin: 0 8px;
+    }
+    input.blank:focus { outline: none; border-color: var(--primary-green); box-shadow: 0 0 0 2px var(--primary-light); }
+    input.blank.correct-highlight { border-color: #4ade80; background: #dcfce7; }
+    input.blank.incorrect-highlight { border-color: #f87171; background: #fee2e2; }
+    .bottom-bar {
+      margin-top: 20px; display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 15px; background: var(--panel-white); border-radius: 60px;
+      padding: 12px 24px; border: 1px solid var(--border-light);
+    }
+    .q-nav-container { display: flex; gap: 8px; flex-wrap: wrap; }
+    .q-nav-item {
+      background: var(--bg-soft); border-radius: 30px; padding: 6px 14px;
+      font-weight: 500; font-size: 14px; cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      color: var(--text-dark);
+    }
+    .q-nav-item:hover { transform: scale(1.05); background: var(--primary-light); }
+    .q-nav-item.answered { background: var(--answered-bg); border-color: var(--answered-border); color: var(--primary-green); }
+    .q-nav-item.correct { background: var(--correct-bg); border-color: var(--correct-border); }
+    .q-nav-item.incorrect { background: var(--incorrect-bg); border-color: var(--incorrect-border); }
+    .bb-center { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    #timer { font-family: monospace; font-size: 18px; font-weight: 600; color: var(--primary-green); }
+    .early-submit { background: #c97e5a; color: white; border: none; padding: 8px 16px; border-radius: 32px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+    .early-submit:hover { background: #b06a48; }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+      background: var(--panel-white);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .results-table th, .results-table td {
+      border: 1px solid var(--border-light);
+      padding: 12px 16px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    .results-table th {
+      background: var(--primary-green);
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .results-table td {
+      background: var(--panel-white);
+      color: var(--text-dark);
+    }
+    .result-correct {
+      color: #15803d;
+      font-weight: 600;
+      background: #dcfce7;
+      text-align: center;
+    }
+    .result-incorrect {
+      color: #b91c1c;
+      font-weight: 600;
+      background: #fee2e2;
+      text-align: center;
+    }
+    .results-table td:first-child {
+      font-weight: 600;
+      background: var(--bg-soft);
+      text-align: center;
+      width: 80px;
+    }
+    #toast { position: fixed; bottom: 90px; right: 24px; background: var(--primary-green); color: white; padding: 10px 20px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; font-size: 14px; pointer-events: none; }
+    #toast.show { opacity: 1; }
+    .hl { background: #fff59d; }
+    .hl-blue { background: #CEDDFE; cursor: pointer; }
+    #selbar { position: absolute; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 6px; gap: 6px; display: inline-flex; z-index: 101; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    #selbar[hidden] { display: none; }
+    #selbar button { border: 1px solid #ccc; border-radius: 8px; padding: 4px 12px; background: #f0f0f0; cursor: pointer; font-size: 12px; }
+    #notes { position: fixed; right: -420px; top: 0; bottom: 0; width: 420px; background: var(--bg-soft); border-left: 1px solid var(--border-light); transition: right 0.25s ease; z-index: 99; display: flex; flex-direction: column; box-shadow: -4px 0 12px rgba(0,0,0,0.1); }
+    body.notes-open #notes { right: 0; }
+    body.notes-open { padding-right: 420px; }
+    .side-panel-header { display: flex; justify-content: space-between; padding: 12px 16px; background: var(--panel-white); border-bottom: 1px solid var(--border-light); font-weight: 600; color: var(--text-dark); }
+    #notes-list { overflow-y: auto; padding: 12px; flex: 1; }
+    .note-card { background: var(--panel-white); border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light); }
+    .note-quote { font-weight: 500; margin-bottom: 10px; padding: 6px; background: var(--bg-soft); border-radius: 8px; font-size: 13px; color: var(--text-dark); }
+    .note-card textarea { width: 100%; min-height: 60px; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-soft); font-family: inherit; color: var(--text-dark); resize: vertical; }
+    .note-actions button { background: #fee2e2; border: 1px solid #f87171; border-radius: 20px; padding: 4px 12px; margin-top: 8px; cursor: pointer; color: #b91c1c; font-size: 12px; }
+    #toggle-notes-btn { background: var(--bg-soft); border: 1px solid var(--border-light); border-radius: 30px; padding: 6px 14px; cursor: pointer; font-size: 14px; color: var(--text-dark); transition: all 0.2s; }
+    #toggle-notes-btn:hover { background: var(--primary-light); }
+    @media (max-width: 768px) {
+      .q-nav-container { justify-content: center; }
+      .audio-player { flex-direction: column; align-items: stretch; }
+      .progress-container { width: 100%; }
+      .results-table th, .results-table td { padding: 8px 10px; font-size: 12px; }
+      input.blank { width: 120px; }
+      body.notes-open { padding-right: 0; }
+      #notes { width: 100%; right: -100%; }
+      body.notes-open #notes { right: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="theme-slider-container">
+    <div class="theme-slider" id="themeSlider"><div class="slider-dot"></div></div>
+  </div>
+  
+  <!-- Logo区域（纯装饰，无外部链接） -->
+  <div class="logo-section">
+    <div class="logo-container">
+      <div class="hexagon-icon">
+        <div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div>
+        <div class="hexagon"></div><div class="hexagon"></div>
+      </div>
+      <div class="logo-main">Reborn新生留学</div>
+      <div class="logo-sub">密卷练习界面</div>
+    </div>
+    <div class="subtitle">Veni • Vidi • Vici</div>
+  </div>
+  
+  <div id="examContainer"></div>
+</div>
+
+<script>
+  // ======================= 考试核心逻辑（纳米技术，去除所有飞象老师元素） =======================
+  const EXAM_QUESTIONS_HTML = `
+  <div class="exam-master">
+      <div class="reborn-header">
+          <h1>🔬 Reborn新生留学 · IELTS Listening · Nanotechnology (Section 4)</h1>
+          <p>Lecture on nanotechnology and its applications in food, medicine, and cosmetics</p>
+      </div>
+      <div class="audio-section" id="audioSection"></div>
+      <div class="instruction-box">
+          <h3>📌 Test Instructions</h3>
+          <div>
+              <p>• <strong>Questions 31-40:</strong> Section 4 — a talk on nanotechnology.<br>
+              • 🎧 <strong>Exam mode:</strong> Import audio (MP3/MP4), click <strong>Confirm & Start Exam</strong> to begin.<br>
+              • Once started, audio plays automatically. <strong>No pause, no seek, no speed change</strong> during first play.<br>
+              • For Q31-40: Complete the notes with <strong>ONE WORD ONLY</strong> for each answer.<br>
+              • After audio finishes or click <strong>Early Submit</strong>, click <strong>Finish</strong> to submit and view detailed results.<br>
+              • Use <strong>Notes</strong> panel to save personal notes; highlight text by selecting and clicking "Highlight" or "Note".</p>
+          </div>
+      </div>
+      <div class="questions-panel" id="questionsPanel"></div>
+      <div class="bottom-bar">
+          <div id="qNavContainer" class="q-nav-container"></div>
+          <div class="bb-center">
+              <span id="timer">00:00</span>
+              <button id="earlySubmitBtn" class="early-submit" disabled>Early Submit</button>
+              <button id="finishBtn" disabled>Finish</button>
+              <button id="saveBtn">Save</button>
+              <button id="clearBtn">Clear All</button>
+              <button id="toggle-notes-btn">📝 Notes</button>
+          </div>
+      </div>
+  </div>
+  <div id="notes">
+      <div class="side-panel-header"><span>📔 My Notes</span><button id="notes-close" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button></div>
+      <div id="notes-list"></div>
+  </div>
+  <div id="selbar" hidden><button data-act="hl">✨ Highlight</button><button data-act="note">📝 Note</button><button data-act="del">🗑️ Clear</button></div>
+  <div id="toast">Saved</div>
+  `;
+  
+  // 纳米技术题目内容
+  const QUESTIONS_CONTENT_HTML = `
+    <div class="group">
+      <h4>Questions 31-40</h4>
+      <p class="instructions">Complete the notes below. Write <b>ONE WORD ONLY</b> for each answer.</p>
+      
+      <h4>About Nanotechnology</h4>
+      <p>It is a study on the scale of nanometre.</p>
+      <ul>
+        <li>The development in nanotechnology is the result of a new type of <b>31</b> <input type="text" name="q31" class="blank" autocomplete="off">.</li>
+        <li>People are worried that nanotech products are <b>32</b> <input type="text" name="q32" class="blank" autocomplete="off">.</li>
+      </ul>
+      
+      <h4>Food and household</h4>
+      <ul>
+        <li>The availability of <b>33</b> <input type="text" name="q33" class="blank" autocomplete="off"> in our diet (e.g. in potatoes) is greatly improved.</li>
+        <li>The packaging cost, particularly <b>34</b> <input type="text" name="q34" class="blank" autocomplete="off">, is reduced.</li>
+        <li>Nanotechnology can increase the <b>35</b> <input type="text" name="q35" class="blank" autocomplete="off"> of food.</li>
+        <li>Nanotechnology can be used to make new types of furniture.</li>
+      </ul>
+      
+      <h4>Agriculture</h4>
+      <ul>
+        <li>The efficiency of <b>36</b> <input type="text" name="q36" class="blank" autocomplete="off"> is increased.</li>
+      </ul>
+      
+      <h4>Health and medicine</h4>
+      <ul>
+        <li>Nanotubes allow more <b>37</b> <input type="text" name="q37" class="blank" autocomplete="off"> to enter veins.</li>
+        <li>As the most popular material, <b>38</b> <input type="text" name="q38" class="blank" autocomplete="off"> is used to kill bacteria.</li>
+        <li>Nanotechnology is also helpful in <b>39</b> <input type="text" name="q39" class="blank" autocomplete="off"> loss program.</li>
+      </ul>
+      
+      <h4>Cosmetic</h4>
+      <ul>
+        <li>Nanoparticles protect skin from the <b>40</b> <input type="text" name="q40" class="blank" autocomplete="off"> and help to improve the ability against aging.</li>
+        <li>Nanotechnology helps to deliver effective elements to the skin.</li>
+      </ul>
+    </div>
+    <div class="results-in-page"></div>
+  `;
+  
+  const ANSWER_KEY = {
+      text: { 
+          q31: 'microscope', q32: 'unnatural', q33: 'iron', q34: 'chocolate', 
+          q35: ['flavour', 'flavor'], q36: ['fertilizers', 'fertilisers'], q37: 'drugs', q38: 'silver', 
+          q39: 'weight', q40: 'sun' 
+      }
+  };
+  
+  const Q_LIST = ['31', '32', '33', '34', '35', '36', '37', '38', '39', '40'];
+  
+  let audioElement = null, examStarted = false, examCompleted = false, firstPlayActive = false;
+  let timerSeconds = 0, timerInterval = null, userAnswers = {}, isFinished = false;
+  
+  function formatTime(seconds) { 
+      if(isNaN(seconds)) return '00:00'; 
+      let m = Math.floor(seconds/60), s = Math.floor(seconds%60); 
+      return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; 
+  }
+  
+  function escapeHtml(s) { return s ? s.replace(/[&<>]/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) : ''; }
+  
+  function showToast(msg) { 
+      let t = document.getElementById('toast'); 
+      if(t) { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1500); } 
+  }
+  
+  function updateTimerUI() { let timerSpan = document.getElementById('timer'); if(timerSpan) timerSpan.textContent = formatTime(timerSeconds); }
+  function startTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = setInterval(()=>{ timerSeconds++; updateTimerUI(); },1000); }
+  function stopTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = null; }
+  
+  function saveToLocal() { 
+      let notesHTML = document.getElementById('notes-list') ? document.getElementById('notes-list').innerHTML : ''; 
+      localStorage.setItem('reborn_nanotech', JSON.stringify({ userAnswers, timerSeconds, isFinished, notesHTML })); 
+  }
+  
+  function loadFromLocal() { 
+      let raw = localStorage.getItem('reborn_nanotech'); 
+      if(raw) { 
+          let d = JSON.parse(raw); 
+          userAnswers = d.userAnswers || {}; 
+          timerSeconds = d.timerSeconds || 0; 
+          isFinished = d.isFinished || false; 
+          if(d.notesHTML && document.getElementById('notes-list')) document.getElementById('notes-list').innerHTML = d.notesHTML;
+          updateTimerUI(); 
+          if(isFinished) finishTest(); 
+          renderQuestions(); 
+      } else renderQuestions(); 
+  }
+  
+  function renderQuestions() { 
+      let panel = document.getElementById('questionsPanel'); 
+      if(panel) {
+          if (!panel.innerHTML.includes('group')) {
+              panel.innerHTML = QUESTIONS_CONTENT_HTML;
+          }
+      }
+      attachInputEvents(); 
+      buildNav(); 
+      restoreAnswers(); 
+  }
+  
+  function attachInputEvents() { 
+      document.querySelectorAll('input.blank').forEach(inp => { 
+          inp.addEventListener('input', (e) => { 
+              if(!isFinished) { 
+                  userAnswers[e.target.name] = e.target.value; 
+                  updateNav(); 
+                  saveToLocal(); 
+              } 
+          }); 
+      }); 
+  }
+  
+  function restoreAnswers() {
+      for(let i=31;i<=40;i++) { 
+          if(userAnswers['q'+i] !== undefined) { 
+              let inp = document.querySelector(`input[name="q${i}"]`); 
+              if(inp) inp.value = userAnswers['q'+i]; 
+          } 
+      }
+  }
+  
+  function buildNav() { 
+      let nav = document.getElementById('qNavContainer'); 
+      if(!nav) return; 
+      nav.innerHTML = ''; 
+      Q_LIST.forEach(num => { 
+          let div = document.createElement('div'); 
+          div.className = 'q-nav-item'; 
+          div.textContent = num; 
+          div.onclick = () => { 
+              let target = document.querySelector(`input[name="q${num}"]`); 
+              if(target) target.closest('.group').scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+          }; 
+          nav.appendChild(div); 
+      }); 
+      updateNav(); 
+  }
+  
+  function updateNav() { 
+      let items = document.querySelectorAll('.q-nav-item'); 
+      Q_LIST.forEach((num, idx) => { 
+          let item = items[idx]; 
+          if(!item) return; 
+          let inp = document.querySelector(`input[name="q${num}"]`); 
+          let answered = inp && inp.value.trim() !== ''; 
+          item.classList.toggle('answered', answered); 
+          if(isFinished) { 
+              let userVal = inp ? inp.value.trim().toLowerCase() : ''; 
+              let correctVal = ANSWER_KEY.text['q'+num];
+              let isCorrect = false;
+              if (Array.isArray(correctVal)) {
+                  isCorrect = correctVal.some(v => v.toLowerCase() === userVal);
+              } else {
+                  isCorrect = userVal === correctVal.toLowerCase();
+              }
+              item.classList.add(isCorrect ? 'correct' : 'incorrect');
+          } 
+      }); 
+  }
+  
+  function finishTest() {
+      if(isFinished) return; 
+      isFinished = true; 
+      stopTimer(); 
+      let finishBtn = document.getElementById('finishBtn'), earlyBtn = document.getElementById('earlySubmitBtn');
+      if(finishBtn) finishBtn.disabled = true; 
+      if(earlyBtn) earlyBtn.disabled = true;
+      
+      for(let i=31;i<=40;i++) { 
+          let input = document.querySelector(`input[name="q${i}"]`);
+          if(input) {
+              let userVal = input.value.trim().toLowerCase();
+              let correctVal = ANSWER_KEY.text['q'+i];
+              let isCorrect = false;
+              if (Array.isArray(correctVal)) {
+                  isCorrect = correctVal.some(v => v.toLowerCase() === userVal);
+              } else {
+                  isCorrect = userVal === correctVal.toLowerCase();
+              }
+              if(isCorrect) {
+                  input.classList.add('correct-highlight');
+                  input.classList.remove('incorrect-highlight');
+              } else if(userVal !== '') {
+                  input.classList.add('incorrect-highlight');
+                  input.classList.remove('correct-highlight');
+              }
+          }
+      }
+      
+      let tableHTML = '<h4 style="margin: 20px 0 10px 0; color: var(--primary-green); font-size: 1.2rem;">📊 Answer Review</h4><table class="results-table"><thead><tr><th style="text-align: center;">Question</th><th>Your Answer</th><th>Correct Answer</th><th style="text-align: center;">Result</th></tr></thead><tbody>';
+      for(let i=31;i<=40;i++) { 
+          let input = document.querySelector(`input[name="q${i}"]`);
+          let userAns = input && input.value.trim() ? input.value.trim() : '<i>No Answer</i>';
+          let correctAns = ANSWER_KEY.text['q'+i];
+          let correctAnsStr = Array.isArray(correctAns) ? correctAns.join(' / ') : correctAns;
+          
+          let userVal = input ? input.value.trim().toLowerCase() : '';
+          let isCorrect = false;
+          if (Array.isArray(correctAns)) {
+              isCorrect = correctAns.some(v => v.toLowerCase() === userVal);
+          } else {
+              isCorrect = userVal === correctAns.toLowerCase();
+          }
+          
+          tableHTML += `<tr><td style="text-align: center; font-weight: 600;">${i}</td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAnsStr)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}" style="text-align: center;">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td></tr>`;
+      }
+      tableHTML += '</tbody></table>';
+      let resultsDiv = document.querySelector('.results-in-page'); 
+      if(resultsDiv) resultsDiv.innerHTML = tableHTML; 
+      updateNav(); 
+      showToast('Answers submitted. Review table displayed.'); 
+      saveToLocal();
+  }
+  
+  function clearAll() { 
+      if(confirm('Clear all progress? This will reset your answers, timer, and notes.')) { 
+          localStorage.removeItem('reborn_nanotech'); 
+          location.reload(); 
+      } 
+  }
+  
+  // 音频播放器
+  function renderAudioManager() {
+      let audioSec = document.getElementById('audioSection');
+      if(!audioSec) return;
+      audioSec.innerHTML = `
+          <div class="audio-header"><span class="badge">🎧 Audio Player</span></div>
+          <div class="import-bar">
+              <button class="btn-primary" id="importAudioBtn">📁 Import Audio (MP3/MP4)</button>
+              <button class="btn-sm" id="clearAudioBtn">🗑️ Clear Audio</button>
+          </div>
+          <div id="audioPlayerPlaceholder" class="no-audio-msg" style="padding:12px; text-align:center; color:var(--text-soft);">No audio loaded. Click "Import Audio" to start.</div>
+      `;
+      document.getElementById('importAudioBtn')?.addEventListener('click', () => {
+          let inp = document.createElement('input'); inp.type='file'; inp.accept='audio/*';
+          inp.onchange = e => {
+              if(e.target.files[0]) {
+                  if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+                  let url = URL.createObjectURL(e.target.files[0]);
+                  audioElement = new Audio(url);
+                  let placeholder = document.getElementById('audioPlayerPlaceholder');
+                  if(placeholder) {
+                      placeholder.innerHTML = `
+                          <div class="audio-player">
+                              <button class="play-pause-btn" id="playPauseBtn">▶</button>
+                              <div class="progress-container" id="progressWrap">
+                                  <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
+                              </div>
+                              <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+                              <select id="speedSelect" class="speed-select">
+                                  <option value="0.7">0.7x</option><option value="1" selected>1.0x</option>
+                                  <option value="1.2">1.2x</option><option value="1.5">1.5x</option>
+                              </select>
+                          </div>
+                          <div class="import-bar" style="margin-top:12px">
+                              <button class="btn-primary" id="confirmStartBtn">✅ Confirm & Start Exam</button>
+                          </div>
+                      `;
+                      setupAudioControls();
+                  }
+              }
+          };
+          inp.click();
+      });
+      document.getElementById('clearAudioBtn')?.addEventListener('click', () => {
+          if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+          audioElement = null; examStarted = false; examCompleted = false; firstPlayActive = false;
+          const finishBtn = document.getElementById('finishBtn');
+          const earlyBtn = document.getElementById('earlySubmitBtn');
+          if(finishBtn) finishBtn.disabled = true;
+          if(earlyBtn) earlyBtn.disabled = true;
+          renderAudioManager();
+          showToast('Audio cleared');
+      });
+  }
+  
+  function setupAudioControls() {
+      let playBtn = document.getElementById('playPauseBtn');
+      let progressWrap = document.getElementById('progressWrap');
+      let progBar = document.getElementById('progressBar');
+      let timeSpan = document.getElementById('timeDisplay');
+      let speedSelect = document.getElementById('speedSelect');
+      let confirmBtn = document.getElementById('confirmStartBtn');
+      
+      function updateProgress() {
+          if(audioElement.duration) {
+              progBar.style.width = `${(audioElement.currentTime/audioElement.duration)*100}%`;
+              timeSpan.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
+          }
+      }
+      audioElement.ontimeupdate = updateProgress;
+      audioElement.onloadedmetadata = updateProgress;
+      
+      speedSelect.onchange = () => { if(!firstPlayActive || examCompleted) audioElement.playbackRate = parseFloat(speedSelect.value); };
+      
+      let scrubbing = false;
+      if(progressWrap) {
+          progressWrap.onmousedown = (e) => { if(!firstPlayActive || examCompleted) { scrubbing = true; setProgress(e); } };
+          window.onmousemove = (e) => { if(scrubbing) setProgress(e); };
+          window.onmouseup = () => scrubbing = false;
+      }
+      function setProgress(e) { if(!audioElement.duration) return; let rect=progressWrap.getBoundingClientRect(); let p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); audioElement.currentTime=p*audioElement.duration; updateProgress(); }
+      
+      if(playBtn) {
+          playBtn.onclick = () => {
+              if(firstPlayActive && !examCompleted) { showToast('First play must complete without interruption'); return; }
+              if(audioElement.paused) {
+                  audioElement.play();
+                  if(!examStarted && !firstPlayActive) {
+                      firstPlayActive = true; examStarted = true;
+                      const finishBtn = document.getElementById('finishBtn');
+                      const earlyBtn = document.getElementById('earlySubmitBtn');
+                      if(finishBtn) finishBtn.disabled = false;
+                      if(earlyBtn) earlyBtn.disabled = false;
+                      startTimer();
+                      audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+                  }
+              } else { audioElement.pause(); }
+              updatePlayButton();
+          };
+      }
+      
+      function updatePlayButton() { if(playBtn) playBtn.textContent = audioElement.paused ? '▶' : '❚❚'; }
+      audioElement.onplay = updatePlayButton;
+      audioElement.onpause = updatePlayButton;
+      
+      if(confirmBtn) {
+          confirmBtn.onclick = () => {
+              if(!audioElement) { showToast('No audio loaded'); return; }
+              if(examStarted) { showToast('Exam already started'); return; }
+              firstPlayActive = true; examStarted = true;
+              const finishBtn = document.getElementById('finishBtn');
+              const earlyBtn = document.getElementById('earlySubmitBtn');
+              if(finishBtn) finishBtn.disabled = false;
+              if(earlyBtn) earlyBtn.disabled = false;
+              startTimer();
+              audioElement.play();
+              audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+          };
+      }
+  }
+  
+  // 笔记系统
+  function initNotesSystem() {
+      let selbar = document.getElementById('selbar');
+      let currentRange = null;
+      document.addEventListener('mouseup', (e) => {
+          if(e.target.closest('#selbar, #notes')) return;
+          let sel = window.getSelection();
+          if(!sel.isCollapsed && sel.toString().trim()) {
+              currentRange = sel.getRangeAt(0);
+              let rect = currentRange.getBoundingClientRect();
+              if(selbar) { selbar.hidden = false; selbar.style.left = `${window.scrollX + rect.left + rect.width/2 - 80}px`; selbar.style.top = `${window.scrollY + rect.top - 45}px`; }
+          } else if(selbar) selbar.hidden = true;
+      });
+      if(selbar) {
+          selbar.addEventListener('click', (e) => {
+              let act = e.target.dataset.act;
+              if(!act || !currentRange) return;
+              if(act === 'hl') { let span = document.createElement('span'); span.className = 'hl'; try { currentRange.surroundContents(span); } catch(e) {} }
+              else if(act === 'note') {
+                  let span = document.createElement('span'); span.className = 'hl-blue'; let hid = 'note_'+Date.now(); span.dataset.hid = hid;
+                  try {
+                      currentRange.surroundContents(span);
+                      let card = document.createElement('div'); card.className = 'note-card'; card.dataset.hid = hid;
+                      card.innerHTML = `<div class="note-quote">${escapeHtml(span.textContent)}</div><textarea placeholder="Write your note..."></textarea><div class="note-actions"><button data-del="${hid}">Delete</button></div>`;
+                      card.querySelector('button').onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
+                      card.querySelector('textarea').addEventListener('input', () => saveToLocal());
+                      document.getElementById('notes-list').prepend(card);
+                      document.body.classList.add('notes-open');
+                      saveToLocal();
+                  } catch(e) {}
+              }
+              selbar.hidden = true; window.getSelection().removeAllRanges();
+          });
+      }
+      let toggleBtn = document.getElementById('toggle-notes-btn'), closeBtn = document.getElementById('notes-close');
+      if(toggleBtn) toggleBtn.onclick = () => document.body.classList.toggle('notes-open');
+      if(closeBtn) closeBtn.onclick = () => document.body.classList.remove('notes-open');
+      
+      const savedData = localStorage.getItem('reborn_nanotech');
+      if(savedData) {
+          try {
+              const data = JSON.parse(savedData);
+              if(data.notesHTML && document.getElementById('notes-list')) {
+                  document.getElementById('notes-list').innerHTML = data.notesHTML;
+                  document.querySelectorAll('.note-card').forEach(card => {
+                      const hid = card.dataset.hid;
+                      const delBtn = card.querySelector('button');
+                      const textarea = card.querySelector('textarea');
+                      if(delBtn) delBtn.onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
+                      if(textarea) textarea.addEventListener('input', () => saveToLocal());
+                  });
+              }
+          } catch(e) {}
+      }
+  }
+  
+  function initFull() {
+      const container = document.getElementById('examContainer');
+      container.innerHTML = EXAM_QUESTIONS_HTML;
+      const questionsPanel = document.getElementById('questionsPanel');
+      if (questionsPanel) questionsPanel.innerHTML = QUESTIONS_CONTENT_HTML;
+      
+      document.getElementById('finishBtn').onclick = () => { if(!isFinished && examCompleted) finishTest(); else if(!examCompleted) showToast("Wait for audio to finish or use Early Submit"); else finishTest(); };
+      document.getElementById('earlySubmitBtn').onclick = () => { if(examStarted && !examCompleted) { if(confirm('Early submission?')) { if(audioElement) audioElement.pause(); examStarted = false; examCompleted = true; finishTest(); } } };
+      document.getElementById('saveBtn').onclick = () => { saveToLocal(); showToast('Progress saved'); };
+      document.getElementById('clearBtn').onclick = clearAll;
+      
+      renderAudioManager();
+      initNotesSystem();
+      loadFromLocal();
+  }
+  
+  // 主题切换
+  function setupTheme() {
+      const slider = document.getElementById('themeSlider');
+      if(slider) {
+          slider.addEventListener('click', () => {
+              document.body.classList.toggle('light-mode');
+              localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+          });
+      }
+      if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+  }
+  
+  setupTheme();
+  initFull();
+</script>
+</body>
+</html>
