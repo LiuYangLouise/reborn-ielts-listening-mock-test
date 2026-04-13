@@ -670,5 +670,39 @@ function init() {
 }
 init();
 </script>
+ <script>
+// 自动加载GitHub同名音频到页面自带播放器（完全适配你的页面）
+window.addEventListener('load', () => {
+  // 1. 获取当前页面文件名，生成对应音频地址（和页面名完全一致，改后缀）
+  const pageName = location.pathname.split('/').pop().replace('.html', '');
+  const audioUrl = pageName + '.mp3';
+
+  // 2. 自动创建音频文件对象，填入页面播放器
+  fetch(audioUrl)
+    .then(response => {
+      if (!response.ok) throw new Error('音频加载失败');
+      return response.blob();
+    })
+    .then(blob => {
+      // 3. 把音频文件自动填入页面的Import Audio逻辑
+      const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+
+      // 4. 找到页面的文件输入框，自动赋值（适配你的播放器UI）
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) {
+        fileInput.files = dataTransfer.files;
+        // 5. 触发页面的音频加载事件，自动显示播放器
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        console.log('✅ 音频自动加载成功：', audioUrl);
+      }
+    })
+    .catch(err => {
+      console.error('❌ 音频加载失败：', err);
+      alert('音频加载失败，请检查文件名是否匹配');
+    });
+});
+</script>
 </body>
 </html>
