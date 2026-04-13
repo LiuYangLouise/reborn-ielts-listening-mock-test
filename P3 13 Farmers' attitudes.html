@@ -960,36 +960,5 @@
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
         updateDate(); setupTheme(); setInterval(updateDate, 86400000);
     </script>
-   <script>
-// 自动加载音频（支持密码页 + 无密码页，自动重试）
-function tryLoadAudio() {
-  const pageName = location.pathname.split('/').pop().replace('.html', '');
-  const audioUrl = pageName + '.mp3';
-  const fileInput = document.querySelector('input[type="file"]');
-
-  if (!fileInput) return;
-  if (fileInput.files.length > 0) return;
-
-  fetch(audioUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('音频不存在');
-      return response.blob();
-    })
-    .then(blob => {
-      const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      fileInput.files = dataTransfer.files;
-      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-      console.log('✅ 音频自动加载成功:', audioUrl);
-    })
-    .catch(err => {});
-}
-
-window.addEventListener('load', () => {
-  tryLoadAudio();
-  setInterval(tryLoadAudio, 1000);
-});
-</script>
 </body>
 </html>
