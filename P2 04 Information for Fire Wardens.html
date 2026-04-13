@@ -724,35 +724,44 @@
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
         updateDate(); setupTheme(); setInterval(updateDate, 86400000);
     </script>
-   <script>
-// 自动加载音频（支持密码页 + 无密码页，自动重试）
-function tryLoadAudio() {
-  const pageName = location.pathname.split('/').pop().replace('.html', '');
-  const audioUrl = pageName + '.mp3';
-  const fileInput = document.querySelector('input[type="file"]');
 
-  if (!fileInput) return;
-  if (fileInput.files.length > 0) return;
+<script>
+// 稳定版自动加载音频（只执行一次，不重复）
+let autoAudioLoaded = false;
+function autoLoadAudio() {
+  if (autoAudioLoaded) return;
+  const fileName = location.pathname.split("/").pop().split(".")[0];
+  const audioFile = `${fileName}.mp3`;
 
-  fetch(audioUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('音频不存在');
-      return response.blob();
+  const importBtn = document.getElementById("importAudioBtn");
+  if (!importBtn) return;
+
+  fetch(audioFile)
+    .then(res => {
+      if (!res.ok) throw new Error("音频不存在");
+      return res.blob();
     })
     .then(blob => {
-      const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
+      const file = new File([blob], audioFile, { type: "audio/mpeg" });
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "audio/*";
+
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
-      fileInput.files = dataTransfer.files;
-      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-      console.log('✅ 音频自动加载成功:', audioUrl);
+      input.files = dataTransfer.files;
+
+      importBtn.onclick = () => {
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      importBtn.click();
+      autoAudioLoaded = true;
     })
-    .catch(err => {});
+    .catch(() => {});
 }
 
-window.addEventListener('load', () => {
-  tryLoadAudio();
-  setInterval(tryLoadAudio, 1000);
+window.addEventListener("load", () => {
+  setTimeout(autoLoadAudio, 300);
 });
 </script>
 </body>
