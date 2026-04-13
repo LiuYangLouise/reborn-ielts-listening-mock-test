@@ -180,6 +180,7 @@
     <!-- P3 做题页面容器 -->
     <div id="p3Container" class="hidden-page p3-wrapper"></div>
     <div id="toast"></div>
+    <input type="file" id="p3AudioFileInput" accept="audio/*,video/mp4" style="display: none;">
 
     <script>
         // ==================== 密码管理 ====================
@@ -210,7 +211,6 @@
             const errorDiv = document.getElementById('errorMsg');
             const val = input.value;
             
-            // 隐藏修改密码功能
             if(val === "liuyangfromxinchangzhejiang") {
                 pendingModify = true;
                 newPasswordStep = 0;
@@ -238,13 +238,10 @@
                 }
             }
             
-            // 正常密码验证
             if(val === currentPassword) {
-                // 隐藏密码页，显示做题页
                 document.getElementById('passwordPage').classList.add('hidden-page');
                 const p3Container = document.getElementById('p3Container');
                 p3Container.classList.remove('hidden-page');
-                // 加载P3内容（如果还没加载）
                 if(!window.p3Loaded) {
                     loadP3Content();
                 }
@@ -276,11 +273,11 @@
             const finishBtn = document.getElementById('p3FinishBtn'); if(finishBtn) finishBtn.disabled = true;
             const earlyBtn = document.getElementById('p3EarlySubmitBtn'); if(earlyBtn) earlyBtn.disabled = true;
             p3RenderAudioManager();
-            p3ShowToast('Audio cleared');
+            p3ShowToast('音频已清除');
         }
         
         function p3HandleAudioImport(file) {
-            if(!file || !file.name.match(/\.(mp3|mp4|m4a|wav)$/i)) { p3ShowToast('MP3/MP4/M4A only'); return; }
+            if(!file || !file.name.match(/\.(mp3|mp4|m4a|wav)$/i)) { p3ShowToast('请选择MP3/MP4/M4A文件'); return; }
             if(p3Audio) p3ClearAudio();
             let url = URL.createObjectURL(file);
             p3AudioSrc = url;
@@ -289,14 +286,14 @@
             const finishBtn = document.getElementById('p3FinishBtn'); if(finishBtn) finishBtn.disabled = true;
             const earlyBtn = document.getElementById('p3EarlySubmitBtn'); if(earlyBtn) earlyBtn.disabled = true;
             p3RenderAudioManager();
-            p3ShowToast(`Loaded: ${file.name}`);
+            p3ShowToast(`已加载: ${file.name}`);
         }
         
         function p3RenderAudioManager() {
             const section = document.getElementById('p3AudioSection');
             if(!section) return;
             if(!p3Audio) {
-                section.innerHTML = `<div class="audio-header"><span>🎧 Audio Player</span></div><div class="no-audio">No audio loaded. Import MP3 / MP4.</div><div class="import-bar"><button class="btn-primary" id="p3ImportAudioBtn">📁 Import Audio</button><button class="btn-sm" id="p3ClearAudioBtn">🗑️ Clear</button></div>`;
+                section.innerHTML = `<div class="audio-header"><span>🎧 Audio Player</span></div><div class="no-audio">未加载音频。请导入MP3/MP4。</div><div class="import-bar"><button class="btn-primary" id="p3ImportAudioBtn">📁 导入音频</button><button class="btn-sm" id="p3ClearAudioBtn">🗑️ 清除</button></div>`;
                 const importBtn = document.getElementById('p3ImportAudioBtn');
                 const clearBtn = document.getElementById('p3ClearAudioBtn');
                 if(importBtn) importBtn.addEventListener('click', () => document.getElementById('p3AudioFileInput').click());
@@ -305,7 +302,7 @@
             }
             const isLocked = p3FirstPlayActive && !p3ExamCompleted;
             section.innerHTML = `
-                <div class="audio-header"><span>🎵 Current Audio</span><button class="btn-sm" id="p3DeleteAudioBtn">🗑️ Delete</button></div>
+                <div class="audio-header"><span>🎵 当前音频</span><button class="btn-sm" id="p3DeleteAudioBtn">🗑️ 删除</button></div>
                 <div class="audio-player">
                     <button class="play-pause-btn" id="p3PlayPauseBtn" ${isLocked ? 'disabled' : ''}>${p3Audio.paused ? '▶' : '❚❚'}</button>
                     <div class="progress-container" id="p3ProgressWrap" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}">
@@ -314,7 +311,7 @@
                     <div class="time-display" id="p3TimeDisplay">00:00 / 00:00</div>
                     <select id="p3SpeedSelect" ${isLocked ? 'disabled' : ''}><option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option></select>
                 </div>
-                <div class="import-bar"><button class="btn-primary" id="p3ConfirmStartBtn">✅ Confirm & Start Exam</button><button class="btn-sm" id="p3ClearAudioBtn2">🗑️ Clear</button></div>
+                <div class="import-bar"><button class="btn-primary" id="p3ConfirmStartBtn">✅ 确认并开始考试</button><button class="btn-sm" id="p3ClearAudioBtn2">🗑️ 清除</button></div>
             `;
             
             const playBtn = document.getElementById('p3PlayPauseBtn');
@@ -345,7 +342,7 @@
             
             if(playBtn) {
                 playBtn.onclick = () => {
-                    if(isLocked) { p3ShowToast('First play must complete without interruption'); return; }
+                    if(isLocked) { p3ShowToast('首次播放不可暂停或拖动'); return; }
                     if(p3Audio.paused) {
                         p3Audio.play();
                         if(!p3ExamStarted && !p3FirstPlayActive) {
@@ -358,13 +355,13 @@
                                 p3ExamCompleted = true;
                                 p3ExamStarted = false;
                                 p3FirstPlayActive = false;
-                                p3ShowToast('Audio finished. Click Finish to submit.');
+                                p3ShowToast('音频播放完毕。点击“完成”提交答案。');
                                 p3RenderAudioManager();
-                            });
+                            }, { once: true });
                             p3RenderAudioManager();
                         }
                     } else {
-                        if(p3FirstPlayActive && !p3ExamCompleted) { p3ShowToast('Cannot pause during first play'); return; }
+                        if(p3FirstPlayActive && !p3ExamCompleted) { p3ShowToast('首次播放不可暂停'); return; }
                         p3Audio.pause();
                         p3RenderAudioManager();
                     }
@@ -374,8 +371,8 @@
             const confirmBtn = document.getElementById('p3ConfirmStartBtn');
             if(confirmBtn) {
                 confirmBtn.onclick = () => {
-                    if(!p3Audio) { p3ShowToast('No audio loaded'); return; }
-                    if(p3ExamStarted) { p3ShowToast('Exam already started'); return; }
+                    if(!p3Audio) { p3ShowToast('请先加载音频'); return; }
+                    if(p3ExamStarted) { p3ShowToast('考试已经开始'); return; }
                     p3FirstPlayActive = true;
                     p3ExamStarted = true;
                     const finishBtn = document.getElementById('p3FinishBtn'); if(finishBtn) finishBtn.disabled = false;
@@ -386,9 +383,9 @@
                         p3ExamCompleted = true;
                         p3ExamStarted = false;
                         p3FirstPlayActive = false;
-                        p3ShowToast('Audio finished.');
+                        p3ShowToast('音频播放完毕。');
                         p3RenderAudioManager();
-                    });
+                    }, { once: true });
                     p3RenderAudioManager();
                 };
             }
@@ -541,7 +538,6 @@
             const finishBtn = document.getElementById('p3FinishBtn'); if(finishBtn) finishBtn.disabled = true;
             const earlyBtn = document.getElementById('p3EarlySubmitBtn'); if(earlyBtn) earlyBtn.disabled = true;
             
-            // 高亮显示正确/错误
             for(let i=21; i<=25; i++) {
                 const radios = document.querySelectorAll(`input[name="q${i}"]`);
                 const correct = P3_ANSWER_KEY.single[`q${i}`];
@@ -561,31 +557,32 @@
                 else { slot.style.borderColor = '#f87171'; slot.style.backgroundColor = 'var(--incorrect-bg)'; }
             }
             
-            let html = '<h4>📊 Answer Review</h4><table class="results-table"><thead><tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th></tr></thead><tbody>';
+            let html = '<h4>📊 答案核对</h4><table class="results-table"><thead><tr><th>题目</th><th>你的答案</th><th>正确答案</th><th>结果</th></tr></thead><tbody>';
             for(let i=21; i<=30; i++) {
                 let userAns = '', correctAns = '', isCorrect = false;
                 if(i<=25) {
                     const checked = document.querySelector(`input[name="q${i}"]:checked`);
-                    userAns = checked ? (checked.value === 'A' ? 'A' : checked.value === 'B' ? 'B' : 'C') : '<i>No Answer</i>';
+                    userAns = checked ? (checked.value === 'A' ? 'A' : checked.value === 'B' ? 'B' : 'C') : '<i>未作答</i>';
                     const correctLetter = P3_ANSWER_KEY.single[`q${i}`];
                     correctAns = correctLetter;
                     isCorrect = checked?.value === correctLetter;
                 } else {
                     const tag = document.querySelector(`.match-slot[data-q="${i}"] .tag`);
-                    userAns = tag ? tag.textContent : '<i>No Answer</i>';
+                    userAns = tag ? tag.textContent : '<i>未作答</i>';
                     const correctLetter = P3_ANSWER_KEY.matching[`q${i}`];
                     const correctOpt = document.querySelector(`.drag-option[data-value="${correctLetter}"]`);
                     correctAns = correctOpt ? correctOpt.textContent : correctLetter;
                     isCorrect = tag?.dataset.value === correctLetter;
                 }
-                html += `<tr><td><b>${i}</b></td><td>${userAns}</td><td>${correctAns}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td></tr>`;
+                html += `<tr><td><b>${i}</b></td><td>${userAns}</td><td>${correctAns}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ 正确' : '✖ 错误'}</td></tr>`;
             }
             html += '</tbody></table>';
             let container = document.querySelector('.results-in-page');
             if(!container) { container = document.createElement('div'); container.className = 'results-in-page'; document.getElementById('p3QuestionsPanel').appendChild(container); }
             container.innerHTML = html;
             p3UpdateNav();
-            p3ShowToast('Answers submitted. Review table displayed.');
+            p3SaveToLocal();
+            p3ShowToast('答案已提交，核对表已显示');
         }
         
         function p3SaveToLocal() { localStorage.setItem('reborn_internship_p3', JSON.stringify({ userAnswers: p3UserAnswers, timerSeconds: p3TimerSeconds, isFinished: p3IsFinished })); }
@@ -595,30 +592,42 @@
                 try { const d = JSON.parse(raw); p3UserAnswers = d.userAnswers || {}; p3TimerSeconds = d.timerSeconds || 0; p3IsFinished = d.isFinished || false; p3UpdateTimerUI(); if(p3IsFinished) p3FinishTest(); else p3RestoreUserAnswers(); } catch(e){}
             }
         }
-        function p3ClearAll() { if(confirm('Clear all progress?')) { localStorage.removeItem('reborn_internship_p3'); window.location.reload(); } }
+        function p3ClearAll() { if(confirm('清除所有进度？')) { localStorage.removeItem('reborn_internship_p3'); window.location.reload(); } }
+        
+        // 自动加载同名MP3 (核心修复)
+        async function autoLoadSameNameMP3() {
+            const fileInput = document.getElementById('p3AudioFileInput');
+            if (!fileInput) return;
+            const pagePath = window.location.pathname;
+            const fileName = pagePath.split('/').pop().replace('.html', '');
+            if (!fileName) return;
+            const audioPath = fileName + '.mp3';
+            try {
+                const response = await fetch(audioPath, { method: 'HEAD' });
+                if (response.ok) {
+                    const blob = await fetch(audioPath).then(r => r.blob());
+                    const file = new File([blob], audioPath, { type: 'audio/mpeg' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            } catch(e) { }
+        }
         
         function loadP3Content() {
             const container = document.getElementById('p3Container');
             container.innerHTML = `
                 <div class="reborn-header"><h1>💼 Reborn新生留学 · IELTS Listening · Internship Options (Section 3)</h1><p>Students discussing internship choices · Multiple choice + Matching</p></div>
                 <div class="audio-section" id="p3AudioSection"></div>
-                <div class="instruction-box"><h3>📌 Test Instructions</h3><p>• Import audio (MP3/MP4), click Confirm & Start Exam to begin.<br>• First play: no pause, no seek, no speed change.<br>• Q21-25: Choose A, B or C.<br>• Q26-30: Drag answers to each company.<br>• After audio finishes, click Finish to submit and view results.</p></div>
+                <div class="instruction-box"><h3>📌 考试说明</h3><p>• 自动加载同名MP3，点击“确认并开始考试”即可开始。<br>• 首次播放：不可暂停、不可拖动、不可调速。<br>• Q21-25: 单选 A/B/C。<br>• Q26-30: 拖拽匹配至对应公司。<br>• 音频结束后点击“完成”提交并核对答案。</p></div>
                 <div class="questions-panel" id="p3QuestionsPanel"></div>
-                <div class="bottom-bar"><div id="p3QNavContainer" class="q-nav-container"></div><div class="bb-center"><span id="p3Timer">00:00</span><button id="p3EarlySubmitBtn" class="early-submit" disabled>Early Submit</button><button id="p3FinishBtn" disabled>Finish</button><button id="p3SaveBtn">Save</button><button id="p3ClearAllBtn">Clear All</button></div></div>
+                <div class="bottom-bar"><div id="p3QNavContainer" class="q-nav-container"></div><div class="bb-center"><span id="p3Timer">00:00</span><button id="p3EarlySubmitBtn" class="early-submit" disabled>提前交卷</button><button id="p3FinishBtn" disabled>完成</button><button id="p3SaveBtn">保存进度</button><button id="p3ClearAllBtn">全部清除</button></div></div>
             `;
             
             const questionsHTML = `<div class="group"><h4>Questions 21-25</h4><p><b>21</b> What skills does Peter want to learn?</p><div class="radio-option"><input type="radio" name="q21" value="A"><label><b>A</b> how to organise ideas</label></div><div class="radio-option"><input type="radio" name="q21" value="B"><label><b>B</b> how to handle data</label></div><div class="radio-option"><input type="radio" name="q21" value="C"><label><b>C</b> how to write a business proposal</label></div><p><b>22</b> What is Peter's main strength?</p><div class="radio-option"><input type="radio" name="q22" value="A"><label><b>A</b> he is a good leader</label></div><div class="radio-option"><input type="radio" name="q22" value="B"><label><b>B</b> he can work long hours</label></div><div class="radio-option"><input type="radio" name="q22" value="C"><label><b>C</b> he can communicate well with many people</label></div><p><b>23</b> What will the careers officer help Peter with?</p><div class="radio-option"><input type="radio" name="q23" value="A"><label><b>A</b> CV</label></div><div class="radio-option"><input type="radio" name="q23" value="B"><label><b>B</b> personal statement</label></div><div class="radio-option"><input type="radio" name="q23" value="C"><label><b>C</b> school application form</label></div><p><b>24</b> Why did Peter choose the IT business?</p><div class="radio-option"><input type="radio" name="q24" value="A"><label><b>A</b> to update his knowledge in the area</label></div><div class="radio-option"><input type="radio" name="q24" value="B"><label><b>B</b> to be good at presentations</label></div><div class="radio-option"><input type="radio" name="q24" value="C"><label><b>C</b> to prepare himself for lectures</label></div><p><b>25</b> What will Peter do for the next term?</p><div class="radio-option"><input type="radio" name="q25" value="A"><label><b>A</b> continue with the same language</label></div><div class="radio-option"><input type="radio" name="q25" value="B"><label><b>B</b> change to another language</label></div><div class="radio-option"><input type="radio" name="q25" value="C"><label><b>C</b> discontinue the language course</label></div></div><div class="group"><h4>Questions 26-30</h4><div class="matching-flex"><div class="match-list"><div class="match-row"><span class="match-q"><b>26</b> SAIC</span><span class="match-slot" data-q="26"></span></div><div class="match-row"><span class="match-q"><b>27</b> Gemini Technologies</span><span class="match-slot" data-q="27"></span></div><div class="match-row"><span class="match-q"><b>28</b> Deloitte</span><span class="match-slot" data-q="28"></span></div><div class="match-row"><span class="match-q"><b>29</b> Kearney</span><span class="match-slot" data-q="29"></span></div><div class="match-row"><span class="match-q"><b>30</b> Vortex</span><span class="match-slot" data-q="30"></span></div></div><div class="matching-options"><strong>Job opportunities</strong><div class="drag-pool" id="p3DragPool"><div class="drag-option" draggable="true" data-value="A"><b>A</b> make business contacts</div><div class="drag-option" draggable="true" data-value="B"><b>B</b> understand customer relations</div><div class="drag-option" draggable="true" data-value="C"><b>C</b> learn time management</div><div class="drag-option" draggable="true" data-value="D"><b>D</b> use a foreign language</div><div class="drag-option" draggable="true" data-value="E"><b>E</b> travel to another country</div><div class="drag-option" draggable="true" data-value="F"><b>F</b> receive financial training</div><div class="drag-option" draggable="true" data-value="G"><b>G</b> learn project management</div></div></div></div></div><div class="results-in-page"></div>`;
             
             document.getElementById('p3QuestionsPanel').innerHTML = questionsHTML;
-            
-            // 创建隐藏的文件输入
-            let fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.id = 'p3AudioFileInput';
-            fileInput.accept = 'audio/*,video/mp4';
-            fileInput.style.display = 'none';
-            document.body.appendChild(fileInput);
-            fileInput.addEventListener('change', e => { if(e.target.files.length) p3HandleAudioImport(e.target.files[0]); fileInput.value = ''; });
             
             p3RenderAudioManager();
             p3AttachRadioEvents();
@@ -626,51 +635,22 @@
             p3BuildNav();
             p3LoadFromLocal();
             
-            document.getElementById('p3FinishBtn').onclick = () => { if(!p3IsFinished && p3ExamCompleted) p3FinishTest(); else if(!p3ExamCompleted && p3Audio) p3ShowToast("Wait for audio to finish or use Early Submit"); else if(!p3Audio) p3ShowToast("Load audio and start exam first"); else p3FinishTest(); };
-            document.getElementById('p3EarlySubmitBtn').onclick = () => { if(!p3ExamStarted || p3ExamCompleted) p3ShowToast("Exam not in progress"); else { if(confirm("Early submission will end exam?")) { if(p3Audio) p3Audio.pause(); p3ExamStarted = false; p3ExamCompleted = true; p3FirstPlayActive = false; p3FinishTest(); } } };
-            document.getElementById('p3SaveBtn').onclick = () => { p3SaveToLocal(); p3ShowToast('Progress saved'); };
+            document.getElementById('p3FinishBtn').onclick = () => { if(!p3IsFinished && p3ExamCompleted) p3FinishTest(); else if(!p3ExamCompleted && p3Audio) p3ShowToast("请等待音频播放完毕或使用提前交卷"); else if(!p3Audio) p3ShowToast("请先加载音频并开始考试"); else p3FinishTest(); };
+            document.getElementById('p3EarlySubmitBtn').onclick = () => { if(!p3ExamStarted || p3ExamCompleted) p3ShowToast("考试未进行中"); else { if(confirm("提前交卷将结束考试，是否继续？")) { if(p3Audio) p3Audio.pause(); p3ExamStarted = false; p3ExamCompleted = true; p3FirstPlayActive = false; p3FinishTest(); } } };
+            document.getElementById('p3SaveBtn').onclick = () => { p3SaveToLocal(); p3ShowToast('进度已保存'); };
             document.getElementById('p3ClearAllBtn').onclick = () => p3ClearAll();
+            
+            // 关键修复：页面加载后自动尝试加载同名MP3
+            autoLoadSameNameMP3();
             
             window.p3Loaded = true;
         }
         
-        // 初始化事件
         document.getElementById('confirmPwdBtn').addEventListener('click', handlePassword);
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
         updateDate();
         setupTheme();
         setInterval(updateDate, 86400000);
     </script>
-
-<script>
-// 自动加载同名MP3（和之前完全一致）
-function tryAutoLoadAudio() {
-  const fileName = location.pathname.split('/').pop().split('.html')[0];
-  const audioPath = fileName + '.mp3';
-  const fileInput = document.querySelector('#p3AudioFileInput');
-
-  if (!fileInput || fileInput.files.length > 0) return;
-
-  fetch(audioPath)
-    .then(res => {
-      if (!res.ok) throw new Error('音频不存在');
-      return res.blob();
-    })
-    .then(blob => {
-      const file = new File([blob], audioPath, { type: 'audio/mpeg' });
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      fileInput.files = dt.files;
-      fileInput.dispatchEvent(new Event('change'));
-      console.log('✅ 自动加载音频:', audioPath);
-    })
-    .catch(() => {});
-}
-
-window.addEventListener('load', () => {
-  tryAutoLoadAudio();
-  setInterval(tryAutoLoadAudio, 800);
-});
-</script>
 </body>
 </html>
