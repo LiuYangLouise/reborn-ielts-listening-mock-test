@@ -117,5 +117,25 @@
         document.body.classList.toggle('light-mode');
     });
 </script>
+    <script>
+// 全局自动播放同名音频（方案A：零改页面，全局生效）
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('.button');
+  if (!target) return;
+
+  // 1. 获取点击的题目页面地址
+  const onclickAttr = target.getAttribute('onclick');
+  const hrefMatch = onclickAttr.match(/location\.href='([^']+)'/);
+  if (!hrefMatch) return;
+  const pageUrl = hrefMatch[1];
+  if (!pageUrl.endsWith('.html')) return;
+
+  // 2. 生成对应音频地址（和页面名完全一致，改后缀）
+  const audioUrl = pageUrl.replace('.html', '.mp3');
+
+  // 3. 打开页面时，自动携带音频参数
+  window.open(pageUrl + '?autoPlayAudio=' + encodeURIComponent(audioUrl), '_blank');
+});
+</script>
 </body>
 </html>
