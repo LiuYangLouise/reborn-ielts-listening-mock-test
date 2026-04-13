@@ -119,10 +119,9 @@
     body.light-mode .theme-slider { background-color: #E0E0E0; }
     .slider-dot { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; background-color: #FFFFFF; border-radius: 50%; transition: all 0.3s ease; }
     body.light-mode .slider-dot { background-color: #1A1A1A; left: 33px; }
-    .hidden-page { display: none; }
+    .hidden-page { display: none !important; }
     #p2ExamContainer { width: 100%; max-width: 1400px; margin: 0 auto; background: transparent; display: none; }
     
-    /* ========== P3 Company Analysis 完整样式 ========== */
     :root {
       --bg-soft: #f0f7f5;
       --panel-white: #ffffff;
@@ -140,7 +139,7 @@
       --incorrect-border: #f87171;
     }
     
-    body:not(.light-mode) {
+    body.dark-mode {
       --bg-soft: #2a2a2a;
       --panel-white: #1e1e1e;
       --primary-green: #4a9e9e;
@@ -155,30 +154,7 @@
       --incorrect-bg: #3a1a1a;
       --incorrect-border: #f87171;
     }
-    
-    body:not(.light-mode) .master-container,
-    body:not(.light-mode) .reborn-header,
-    body:not(.light-mode) .audio-section,
-    body:not(.light-mode) .instruction-box,
-    body:not(.light-mode) .questions-panel,
-    body:not(.light-mode) .group,
-    body:not(.light-mode) .match-slot,
-    body:not(.light-mode) .drag-pool,
-    body:not(.light-mode) .drag-option,
-    body:not(.light-mode) .bottom-bar,
-    body:not(.light-mode) .results-table td,
-    body:not(.light-mode) .note-card,
-    body:not(.light-mode) #notes {
-      color: #e0e0e0;
-    }
-    
-    body:not(.light-mode) .radio-option label,
-    body:not(.light-mode) .match-q b,
-    body:not(.light-mode) p,
-    body:not(.light-mode) .instructions {
-      color: #e0e0e0;
-    }
-    
+
     .master-container { max-width: 1200px; margin: 0 auto; }
     .reborn-header {
       background: var(--panel-white);
@@ -337,11 +313,11 @@
       background: #fee2e2;
       text-align: center;
     }
-    body:not(.light-mode) .result-correct {
+    body.dark-mode .result-correct {
       color: #4ade80;
       background: #1a3a2a;
     }
-    body:not(.light-mode) .result-incorrect {
+    body.dark-mode .result-incorrect {
       color: #f87171;
       background: #3a1a1a;
     }
@@ -353,8 +329,8 @@
     }
     #toast { position: fixed; bottom: 90px; right: 24px; background: var(--primary-green); color: white; padding: 10px 20px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; font-size: 14px; }
     #toast.show { opacity: 1; }
-    .hl { background: #fff59d; }
-    .hl-blue { background: #CEDDFE; cursor: pointer; }
+    .hl { background: #fff59d; color: #000; }
+    .hl-blue { background: #CEDDFE; cursor: pointer; color: #000; }
     #selbar { position: absolute; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 6px; gap: 6px; display: inline-flex; z-index: 101; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     #selbar[hidden] { display: none; }
     #selbar button { border: 1px solid #ccc; border-radius: 8px; padding: 4px 12px; background: #f0f0f0; cursor: pointer; font-size: 12px; }
@@ -379,7 +355,6 @@
   </style>
 </head>
 <body>
-  <!-- 密码页面 -->
   <div id="passwordPage" class="container">
     <div class="theme-slider-container">
       <div class="theme-slider" id="themeSliderPwd"><div class="slider-dot"></div></div>
@@ -409,11 +384,9 @@
     </div>
   </div>
   
-  <!-- 内容容器 -->
   <div id="p2ExamContainer"></div>
 
   <script>
-    // ======================= 密码验证逻辑 =======================
     let currentPassword = "61211216";
     let pendingModify = false, newPasswordStep = 0, firstNewPwd = "";
     
@@ -430,34 +403,61 @@
       const slider = document.getElementById('themeSliderPwd');
       const toggle = () => {
         document.body.classList.toggle('light-mode');
+        document.body.classList.toggle('dark-mode');
         localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
       };
       if(slider) slider.addEventListener('click', toggle);
-      if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+      const saved = localStorage.getItem('theme') || 'dark';
+      if(saved === 'light') {
+        document.body.classList.add('light-mode');
+        document.body.classList.remove('dark-mode');
+      } else {
+        document.body.classList.add('dark-mode');
+        document.body.classList.remove('light-mode');
+      }
     }
     
     function handlePassword() {
       const input = document.getElementById('passwordInput');
       const errorDiv = document.getElementById('errorMsg');
-      const val = input.value;
+      const val = input.value.trim();
       
       if(val === "liuyangfromxinchangzhejiang") {
         pendingModify = true; newPasswordStep = 0; firstNewPwd = "";
-        input.value = ""; errorDiv.textContent = ""; return;
+        input.value = ""; errorDiv.textContent = "请输入新密码"; return;
       }
       if(pendingModify) {
-        if(newPasswordStep === 0) { firstNewPwd = val; newPasswordStep = 1; input.value = ""; return; }
+        if(newPasswordStep === 0) { 
+          firstNewPwd = val; 
+          newPasswordStep = 1; 
+          input.value = ""; 
+          errorDiv.textContent = "请再次确认新密码"; 
+          return; 
+        }
         else if(newPasswordStep === 1) {
-          if(val === firstNewPwd && val.length > 0) currentPassword = firstNewPwd;
+          if(val === firstNewPwd && val.length > 0) {
+            currentPassword = firstNewPwd;
+            errorDiv.textContent = "密码修改成功";
+          } else {
+            errorDiv.textContent = "两次密码不一致，修改失败";
+          }
           pendingModify = false; newPasswordStep = 0; firstNewPwd = "";
-          input.value = ""; errorDiv.textContent = ""; return;
+          input.value = ""; 
+          setTimeout(()=>errorDiv.textContent="",2000);
+          return;
         }
       }
-      if(val === currentPassword) { loadExam(); } 
-      else { errorDiv.textContent = "密码错误，请重试"; input.value = ""; input.focus(); pendingModify = false; }
+      if(val === currentPassword) { 
+        loadExam(); 
+      } 
+      else { 
+        errorDiv.textContent = "密码错误，请重试"; 
+        input.value = ""; 
+        input.focus(); 
+        pendingModify = false; 
+      }
     }
     
-    // Company Analysis 题目
     const EXAM_QUESTIONS_HTML = `
       <div class="group">
         <h4>Questions 21-25</h4>
@@ -483,7 +483,7 @@
               <div class="drag-option" draggable="true" data-value="D"><b>D</b> it will take too long</div>
               <div class="drag-option" draggable="true" data-value="E"><b>E</b> it is easy to use</div>
               <div class="drag-option" draggable="true" data-value="F"><b>F</b> it is difficult to apply</div>
-              <div class="drag-option" draggable="true" data-value="G"><b>G</b> it is suitable to almost all sized companies</div>
+              <div class="drag-option" data-value="G"><b>G</b> it is suitable to almost all sized companies</div>
             </div>
           </div>
         </div>
@@ -593,7 +593,7 @@
         </div>
       </div>
       <div id="notes">
-        <div class="side-panel-header"><span>📔 My Notes</span><button id="notes-close" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div class="side-panel-header"><span>📔 My Notes</span><button id="notes-close" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--text-dark);">&times;</button></div>
         <div id="notes-list"></div>
       </div>
       <div id="selbar" hidden><button data-act="hl">✨ Highlight</button><button data-act="note">📝 Note</button><button data-act="del">🗑️ Clear</button></div>
@@ -604,59 +604,307 @@
     }
     
     function initFull() {
-      function showToast(msg) { let t = document.getElementById('toast'); if(t) { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1500); } }
-      function updateTimerUI() { let timerSpan = document.getElementById('timer'); if(timerSpan) timerSpan.textContent = formatTime(timerSeconds); }
-      function startTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = setInterval(()=>{ timerSeconds++; updateTimerUI(); },1000); }
-      function stopTimer() { if(timerInterval) clearInterval(timerInterval); timerInterval = null; }
-      
-      function saveToLocal() { let notesHTML = document.getElementById('notes-list') ? document.getElementById('notes-list').innerHTML : ''; localStorage.setItem('reborn_company_analysis', JSON.stringify({ userAnswers, timerSeconds, isFinished, notesHTML })); }
-      function loadFromLocal() { 
-        let raw = localStorage.getItem('reborn_company_analysis'); 
-        if(raw) { let d = JSON.parse(raw); userAnswers = d.userAnswers || {}; timerSeconds = d.timerSeconds || 0; isFinished = d.isFinished || false; if(d.notesHTML && document.getElementById('notes-list')) document.getElementById('notes-list').innerHTML = d.notesHTML; updateTimerUI(); if(isFinished) finishTest(); renderQuestions(); } else renderQuestions(); 
+      function showToast(msg) { 
+        let t = document.getElementById('toast'); 
+        if(t) { 
+          t.textContent = msg; 
+          t.classList.add('show'); 
+          setTimeout(() => t.classList.remove('show'), 1500); 
+        } 
       }
       
-      function renderQuestions() { let panel = document.getElementById('questionsPanel'); if(panel) panel.innerHTML = EXAM_QUESTIONS_HTML; attachRadioEvents(); attachDragDropEvents(); buildNav(); restoreAnswers(); }
+      function updateTimerUI() { 
+        let timerSpan = document.getElementById('timer'); 
+        if(timerSpan) timerSpan.textContent = formatTime(timerSeconds); 
+      }
       
-      function attachRadioEvents() { document.querySelectorAll('input[type="radio"]').forEach(r => { r.addEventListener('change', (e) => { if(!isFinished) { userAnswers[e.target.name] = e.target.value; updateNav(); saveToLocal(); } }); }); }
+      function startTimer() { 
+        if(timerInterval) clearInterval(timerInterval); 
+        timerInterval = setInterval(()=>{ 
+          timerSeconds++; 
+          updateTimerUI(); 
+        },1000); 
+      }
+      
+      function stopTimer() { 
+        if(timerInterval) clearInterval(timerInterval); 
+        timerInterval = null; 
+      }
+      
+      function saveToLocal() { 
+        let notesHTML = document.getElementById('notes-list') ? document.getElementById('notes-list').innerHTML : ''; 
+        localStorage.setItem('reborn_company_analysis', JSON.stringify({ 
+          userAnswers, 
+          timerSeconds, 
+          isFinished, 
+          notesHTML 
+        })); 
+      }
+      
+      function loadFromLocal() { 
+        let raw = localStorage.getItem('reborn_company_analysis'); 
+        if(raw) { 
+          let d = JSON.parse(raw); 
+          userAnswers = d.userAnswers || {}; 
+          timerSeconds = d.timerSeconds || 0; 
+          isFinished = d.isFinished || false; 
+          if(d.notesHTML && document.getElementById('notes-list')) {
+            document.getElementById('notes-list').innerHTML = d.notesHTML;
+          }
+          updateTimerUI(); 
+          if(isFinished) {
+            finishTest();
+          }
+          renderQuestions();
+        } else {
+          renderQuestions();
+        }
+      }
+      
+      function renderQuestions() { 
+        let panel = document.getElementById('questionsPanel'); 
+        if(panel) panel.innerHTML = EXAM_QUESTIONS_HTML; 
+        attachRadioEvents(); 
+        attachDragDropEvents(); 
+        buildNav(); 
+        restoreAnswers(); 
+      }
+      
+      function attachRadioEvents() { 
+        document.querySelectorAll('input[type="radio"]').forEach(r => { 
+          r.addEventListener('change', (e) => { 
+            if(!isFinished) { 
+              userAnswers[e.target.name] = e.target.value; 
+              updateNav(); 
+              saveToLocal(); 
+            } 
+          }); 
+        }); 
+      }
       
       function restoreAnswers() {
-        for(let i=21;i<=25;i++) { if(userAnswers['q'+i]) { let slot = document.querySelector(`.match-slot[data-q="${i}"]`); let opt = document.querySelector(`.drag-option[data-value="${userAnswers['q'+i]}"]`); if(slot && opt && !slot.classList.contains('filled')) { let tag = document.createElement('span'); tag.className = 'tag'; tag.setAttribute('draggable','true'); tag.dataset.value = userAnswers['q'+i]; tag.textContent = opt.textContent; slot.innerHTML = ''; slot.appendChild(tag); slot.classList.add('filled'); let pool = slot.closest('.group').querySelector('.drag-pool'); if(pool && pool.dataset.reusable !== 'true') opt.classList.add('hidden-in-pool'); attachTagDrag(tag); } } }
-        for(let i=26;i<=30;i++) { if(userAnswers['q'+i]) { let r = document.querySelector(`input[name="q${i}"][value="${userAnswers['q'+i]}"]`); if(r) r.checked = true; } }
+        for(let i=21;i<=25;i++) { 
+          if(userAnswers['q'+i]) { 
+            let slot = document.querySelector(`.match-slot[data-q="${i}"]`); 
+            let opt = document.querySelector(`.drag-option[data-value="${userAnswers['q'+i]}"]`); 
+            if(slot && opt && !slot.classList.contains('filled')) { 
+              let tag = document.createElement('span'); 
+              tag.className = 'tag'; 
+              tag.setAttribute('draggable','true'); 
+              tag.dataset.value = userAnswers['q'+i]; 
+              tag.textContent = opt.textContent; 
+              slot.innerHTML = ''; 
+              slot.appendChild(tag); 
+              slot.classList.add('filled'); 
+              let pool = slot.closest('.group').querySelector('.drag-pool'); 
+              if(pool && pool.dataset.reusable !== 'true') {
+                opt.classList.add('hidden-in-pool');
+              }
+              attachTagDrag(tag); 
+            } 
+          } 
+        }
+        
+        for(let i=26;i<=30;i++) { 
+          if(userAnswers['q'+i]) { 
+            let r = document.querySelector(`input[name="q${i}"][value="${userAnswers['q'+i]}"]`); 
+            if(r) r.checked = true; 
+          } 
+        }
       }
       
       let draggedItem = null;
       function attachDragDropEvents() {
         let dragOptions = document.querySelectorAll('.drag-option');
         let slots = document.querySelectorAll('.match-slot');
-        dragOptions.forEach(opt => { opt.setAttribute('draggable','true'); opt.ondragstart = e => { draggedItem = opt; e.dataTransfer.setData('text/plain', opt.dataset.value); }; });
-        slots.forEach(slot => { slot.ondragover = e => e.preventDefault(); slot.ondrop = e => { e.preventDefault(); let val = e.dataTransfer.getData('text/plain'); let source = document.querySelector(`.drag-option[data-value="${val}"]`); if(!source) return; let existingTag = slot.querySelector('.tag'); if(existingTag) { let oldVal = existingTag.dataset.value; let oldOpt = document.querySelector(`.drag-option[data-value="${oldVal}"]`); if(oldOpt) oldOpt.classList.remove('hidden-in-pool'); existingTag.remove(); } let tag = document.createElement('span'); tag.className = 'tag'; tag.setAttribute('draggable','true'); tag.dataset.value = val; tag.textContent = source.textContent; slot.innerHTML = ''; slot.appendChild(tag); slot.classList.add('filled'); let pool = slot.closest('.group').querySelector('.drag-pool'); if(pool && pool.dataset.reusable !== 'true') source.classList.add('hidden-in-pool'); attachTagDrag(tag); let qNum = slot.dataset.q; userAnswers['q'+qNum] = val; updateNav(); saveToLocal(); }; });
-        let pool = document.querySelector('.drag-pool'); if(pool) { pool.ondragover = e => e.preventDefault(); pool.ondrop = e => { let tag = draggedItem?.closest('.tag'); if(tag && draggedItem) { let slot = tag.closest('.match-slot'); if(slot) { let val = tag.dataset.value; let opt = document.querySelector(`.drag-option[data-value="${val}"]`); if(opt) opt.classList.remove('hidden-in-pool'); tag.remove(); slot.classList.remove('filled'); slot.innerHTML = ''; let qNum = slot.dataset.q; delete userAnswers['q'+qNum]; updateNav(); saveToLocal(); } } }; }
+        let pool = document.querySelector('.drag-pool');
+        
+        dragOptions.forEach(opt => { 
+          opt.setAttribute('draggable','true'); 
+          opt.ondragstart = e => { 
+            draggedItem = opt; 
+            e.dataTransfer.setData('text/plain', opt.dataset.value); 
+          }; 
+        });
+        
+        slots.forEach(slot => { 
+          slot.ondragover = e => {
+            e.preventDefault();
+            slot.classList.add('drag-over');
+          };
+          slot.ondragleave = () => slot.classList.remove('drag-over');
+          slot.ondrop = e => { 
+            e.preventDefault(); 
+            slot.classList.remove('drag-over');
+            let val = e.dataTransfer.getData('text/plain'); 
+            let source = document.querySelector(`.drag-option[data-value="${val}"]`); 
+            if(!source) return; 
+            
+            let existingTag = slot.querySelector('.tag'); 
+            if(existingTag) { 
+              let oldVal = existingTag.dataset.value; 
+              let oldOpt = document.querySelector(`.drag-option[data-value="${oldVal}"]`); 
+              if(oldOpt) oldOpt.classList.remove('hidden-in-pool'); 
+              existingTag.remove(); 
+            } 
+            
+            let tag = document.createElement('span'); 
+            tag.className = 'tag'; 
+            tag.setAttribute('draggable','true'); 
+            tag.dataset.value = val; 
+            tag.textContent = source.textContent; 
+            slot.innerHTML = ''; 
+            slot.appendChild(tag); 
+            slot.classList.add('filled'); 
+            
+            if(pool && pool.dataset.reusable !== 'true') {
+              source.classList.add('hidden-in-pool');
+            }
+            
+            attachTagDrag(tag); 
+            let qNum = slot.dataset.q; 
+            userAnswers['q'+qNum] = val; 
+            updateNav(); 
+            saveToLocal(); 
+          }; 
+        });
+        
+        if(pool) { 
+          pool.ondragover = e => e.preventDefault(); 
+          pool.ondrop = e => { 
+            if(!draggedItem) return;
+            let tag = draggedItem.closest('.tag'); 
+            if(tag) { 
+              let slot = tag.closest('.match-slot'); 
+              if(slot) { 
+                let val = tag.dataset.value; 
+                let opt = document.querySelector(`.drag-option[data-value="${val}"]`); 
+                if(opt) opt.classList.remove('hidden-in-pool'); 
+                tag.remove(); 
+                slot.classList.remove('filled'); 
+                slot.innerHTML = ''; 
+                let qNum = slot.dataset.q; 
+                delete userAnswers['q'+qNum]; 
+                updateNav(); 
+                saveToLocal(); 
+              } 
+            } 
+            draggedItem = null;
+          }; 
+        }
       }
-      function attachTagDrag(tag) { tag.ondragstart = e => { draggedItem = tag; e.dataTransfer.setData('text/plain', tag.dataset.value); }; tag.ondragend = e => {}; }
       
-      function buildNav() { let nav = document.getElementById('qNavContainer'); if(!nav) return; nav.innerHTML = ''; Q_LIST.forEach(num => { let div = document.createElement('div'); div.className = 'q-nav-item'; div.textContent = num; div.onclick = () => { if(parseInt(num) <= 25) { let target = document.querySelector(`.match-slot[data-q="${num}"]`); if(target) target.scrollIntoView({ behavior: 'smooth', block: 'center' }); } else { let target = document.querySelector(`input[name="q${num}"]`); if(target) target.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }; nav.appendChild(div); }); updateNav(); }
+      function attachTagDrag(tag) { 
+        tag.ondragstart = e => { 
+          draggedItem = tag; 
+          e.dataTransfer.setData('text/plain', tag.dataset.value); 
+        }; 
+        tag.ondragend = () => draggedItem = null;
+      }
       
-      function updateNav() { let items = document.querySelectorAll('.q-nav-item'); Q_LIST.forEach((num, idx) => { let item = items[idx]; if(!item) return; let answered = false; if(parseInt(num) <= 25) { let slot = document.querySelector(`.match-slot[data-q="${num}"]`); answered = slot && slot.classList.contains('filled'); } else { let checked = document.querySelector(`input[name="q${num}"]:checked`); answered = !!checked; } item.classList.toggle('answered', answered); if(isFinished) { let correct = false; if(parseInt(num) <= 25) { let slot = document.querySelector(`.match-slot[data-q="${num}"] .tag`); let userVal = slot ? slot.dataset.value : null; correct = userVal === ANSWER_KEY.matching['q'+num]; } else { let userVal = document.querySelector(`input[name="q${num}"]:checked`)?.value; correct = userVal === ANSWER_KEY.single['q'+num]; } item.classList.add(correct ? 'correct' : 'incorrect'); } }); }
+      function buildNav() { 
+        let nav = document.getElementById('qNavContainer'); 
+        if(!nav) return; 
+        nav.innerHTML = ''; 
+        Q_LIST.forEach(num => { 
+          let div = document.createElement('div'); 
+          div.className = 'q-nav-item'; 
+          div.textContent = num; 
+          div.onclick = () => { 
+            let target;
+            if(parseInt(num) <= 25) {
+              target = document.querySelector(`.match-slot[data-q="${num}"]`); 
+            } else {
+              target = document.querySelector(`input[name="q${num}"]`); 
+            }
+            if(target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }; 
+          nav.appendChild(div); 
+        }); 
+        updateNav(); 
+      }
+      
+      function updateNav() { 
+        let items = document.querySelectorAll('.q-nav-item'); 
+        Q_LIST.forEach((num, idx) => { 
+          let item = items[idx]; 
+          if(!item) return; 
+          let answered = false; 
+          
+          if(parseInt(num) <= 25) { 
+            let slot = document.querySelector(`.match-slot[data-q="${num}"]`); 
+            answered = slot && slot.classList.contains('filled'); 
+          } else { 
+            let checked = document.querySelector(`input[name="q${num}"]:checked`); 
+            answered = !!checked; 
+          } 
+          
+          item.classList.toggle('answered', answered); 
+          
+          if(isFinished) { 
+            let correct = false; 
+            if(parseInt(num) <= 25) { 
+              let slot = document.querySelector(`.match-slot[data-q="${num}"] .tag`); 
+              let userVal = slot ? slot.dataset.value : null; 
+              correct = userVal === ANSWER_KEY.matching['q'+num]; 
+            } else { 
+              let userVal = document.querySelector(`input[name="q${num}"]:checked`)?.value; 
+              correct = userVal === ANSWER_KEY.single['q'+num]; 
+            } 
+            item.classList.remove('correct','incorrect');
+            item.classList.add(correct ? 'correct' : 'incorrect'); 
+          } 
+        }); 
+      }
       
       function finishTest() {
-        if(isFinished) return; isFinished = true; stopTimer(); 
-        let finishBtn = document.getElementById('finishBtn'), earlyBtn = document.getElementById('earlySubmitBtn');
-        if(finishBtn) finishBtn.disabled = true; if(earlyBtn) earlyBtn.disabled = true;
+        if(isFinished) return; 
+        isFinished = true; 
+        stopTimer(); 
+        
+        let finishBtn = document.getElementById('finishBtn');
+        let earlyBtn = document.getElementById('earlySubmitBtn');
+        if(finishBtn) finishBtn.disabled = true; 
+        if(earlyBtn) earlyBtn.disabled = true;
         
         for(let i=21;i<=25;i++) { 
           let slot = document.querySelector(`.match-slot[data-q="${i}"]`); 
           let tag = slot?.querySelector('.tag'); 
           let userVal = tag ? tag.dataset.value : null; 
           let correctVal = ANSWER_KEY.matching['q'+i]; 
-          if(tag && userVal === correctVal) { slot.style.borderColor = '#4ade80'; slot.style.backgroundColor = 'var(--correct-bg)'; } 
-          else { slot.style.borderColor = '#f87171'; slot.style.backgroundColor = 'var(--incorrect-bg)'; } 
+          
+          if(slot) {
+            if(tag && userVal === correctVal) { 
+              slot.style.borderColor = 'var(--correct-border)'; 
+              slot.style.backgroundColor = 'var(--correct-bg)'; 
+            } else { 
+              slot.style.borderColor = 'var(--incorrect-border)'; 
+              slot.style.backgroundColor = 'var(--incorrect-bg)'; 
+            }
+          }
         }
+        
         for(let i=26;i<=30;i++) { 
-          let correct = ANSWER_KEY.single['q'+i], userVal = userAnswers['q'+i]; 
+          let correct = ANSWER_KEY.single['q'+i]; 
+          let userVal = userAnswers['q'+i]; 
+          
           document.querySelectorAll(`input[name="q${i}"]`).forEach(r => { 
             let label = r.closest('.radio-option'); 
-            if(r.value === correct) { label.style.background = 'var(--correct-bg)'; label.style.borderRadius = '8px'; label.style.padding = '4px 8px'; } 
-            if(userVal && r.value === userVal && userVal !== correct) { label.style.background = 'var(--incorrect-bg)'; label.style.borderRadius = '8px'; label.style.padding = '4px 8px'; } 
+            if(label) {
+              label.style.background = '';
+              if(r.value === correct) { 
+                label.style.background = 'var(--correct-bg)'; 
+                label.style.borderRadius = '8px'; 
+                label.style.padding = '4px 8px'; 
+              } 
+              if(userVal && r.value === userVal && userVal !== correct) { 
+                label.style.background = 'var(--incorrect-bg)'; 
+                label.style.borderRadius = '8px'; 
+                label.style.padding = '4px 8px'; 
+              }
+            }
           }); 
         }
         
@@ -668,8 +916,10 @@
           </thead>
           <tbody>
         `;
+        
         for(let i=21;i<=30;i++) { 
           let userAns = '', correctAns = '', isCorrect = false;
+          
           if(i<=25) { 
             let slot = document.querySelector(`.match-slot[data-q="${i}"] .tag`); 
             userAns = slot ? slot.textContent : '<i>No Answer</i>'; 
@@ -683,8 +933,15 @@
             correctAns = getAnswerText(i, correctLetter);
             isCorrect = userAnswers['q'+i] === correctLetter; 
           }
-          tableHTML += `<tr><td style="text-align: center; font-weight: 600;">${i}</td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}" style="text-align: center;">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td></tr>`;
+          
+          tableHTML += `<tr>
+            <td style="text-align: center; font-weight: 600;">${i}</td>
+            <td>${escapeHtml(userAns)}</td>
+            <td>${escapeHtml(correctAns)}</td>
+            <td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td>
+          </tr>`;
         }
+        
         tableHTML += '</tbody></table>';
         let resultsDiv = document.querySelector('.results-in-page'); 
         if(resultsDiv) resultsDiv.innerHTML = tableHTML; 
@@ -692,11 +949,17 @@
         showToast('Answers submitted. Review table displayed.'); 
       }
       
-      function clearAll() { if(confirm('Clear all progress?')) { localStorage.removeItem('reborn_company_analysis'); location.reload(); } }
+      function clearAll() { 
+        if(confirm('Clear all progress?')) { 
+          localStorage.removeItem('reborn_company_analysis'); 
+          location.reload(); 
+        } 
+      }
       
       function renderAudioManager() {
         let audioSec = document.getElementById('audioSection');
         if(!audioSec) return;
+        
         audioSec.innerHTML = `
           <div class="audio-header"><span class="badge">🎧 Audio Player</span></div>
           <div class="import-bar">
@@ -705,13 +968,22 @@
           </div>
           <div id="audioPlayerPlaceholder"></div>
         `;
+        
         document.getElementById('importAudioBtn')?.addEventListener('click', () => {
-          let inp = document.createElement('input'); inp.type='file'; inp.accept='audio/*';
+          let inp = document.createElement('input'); 
+          inp.type='file'; 
+          inp.accept='audio/*';
+          
           inp.onchange = e => {
-            if(e.target.files[0]) {
-              if(audioElement) { audioElement.pause(); audioElement.src = ''; }
+            if(e.target.files?.[0]) {
+              if(audioElement) { 
+                audioElement.pause(); 
+                audioElement.src = ''; 
+              }
+              
               let url = URL.createObjectURL(e.target.files[0]);
               audioElement = new Audio(url);
+              
               let placeholder = document.getElementById('audioPlayerPlaceholder');
               if(placeholder) {
                 placeholder.innerHTML = `
@@ -722,7 +994,10 @@
                     </div>
                     <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
                     <select id="speedSelect" class="speed-select">
-                      <option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option>
+                      <option value="0.7">0.7x</option>
+                      <option value="1" selected>1.0x</option>
+                      <option value="1.2">1.2x</option>
+                      <option value="1.5">1.5x</option>
                     </select>
                   </div>
                   <div class="import-bar" style="margin-top:12px">
@@ -735,9 +1010,17 @@
           };
           inp.click();
         });
+        
         document.getElementById('clearAudioBtn')?.addEventListener('click', () => {
-          if(audioElement) { audioElement.pause(); audioElement.src = ''; }
-          audioElement = null; examStarted = false; examCompleted = false; firstPlayActive = false;
+          if(audioElement) { 
+            audioElement.pause(); 
+            audioElement.src = ''; 
+          }
+          audioElement = null; 
+          examStarted = false; 
+          examCompleted = false; 
+          firstPlayActive = false;
+          
           document.getElementById('finishBtn').disabled = true;
           document.getElementById('earlySubmitBtn').disabled = true;
           renderAudioManager();
@@ -754,109 +1037,241 @@
         let confirmBtn = document.getElementById('confirmStartBtn');
         
         function updateProgress() {
-          if(audioElement.duration) {
+          if(audioElement?.duration) {
             progBar.style.width = `${(audioElement.currentTime/audioElement.duration)*100}%`;
             timeSpan.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
           }
         }
-        audioElement.ontimeupdate = updateProgress;
-        audioElement.onloadedmetadata = updateProgress;
-        speedSelect.onchange = () => { if(!firstPlayActive || examCompleted) audioElement.playbackRate = parseFloat(speedSelect.value); };
+        
+        if(audioElement) {
+          audioElement.ontimeupdate = updateProgress;
+          audioElement.onloadedmetadata = updateProgress;
+        }
+        
+        speedSelect.onchange = () => { 
+          if(!firstPlayActive || examCompleted) {
+            audioElement.playbackRate = parseFloat(speedSelect.value); 
+          }
+        };
         
         let scrubbing = false;
-        progressWrap.onmousedown = (e) => { if(!firstPlayActive || examCompleted) { scrubbing = true; setProgress(e); } };
-        window.onmousemove = (e) => { if(scrubbing) setProgress(e); };
+        progressWrap.onmousedown = (e) => { 
+          if(!firstPlayActive || examCompleted) { 
+            scrubbing = true; 
+            setProgress(e); 
+          } 
+        };
+        window.onmousemove = (e) => { 
+          if(scrubbing) setProgress(e); 
+        };
         window.onmouseup = () => scrubbing = false;
-        function setProgress(e) { if(!audioElement.duration) return; let rect=progressWrap.getBoundingClientRect(); let p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); audioElement.currentTime=p*audioElement.duration; updateProgress(); }
+        
+        function setProgress(e) { 
+          if(!audioElement?.duration) return; 
+          let rect=progressWrap.getBoundingClientRect(); 
+          let p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); 
+          audioElement.currentTime=p*audioElement.duration; 
+          updateProgress(); 
+        }
         
         playBtn.onclick = () => {
-          if(firstPlayActive && !examCompleted) { showToast('First play must complete without interruption'); return; }
+          if(!audioElement) return;
+          
+          if(firstPlayActive && !examCompleted) { 
+            showToast('First play must complete without interruption'); 
+            return; 
+          }
+          
           if(audioElement.paused) {
             audioElement.play();
+            
             if(!examStarted && !firstPlayActive) {
-              firstPlayActive = true; examStarted = true;
+              firstPlayActive = true; 
+              examStarted = true;
               document.getElementById('finishBtn').disabled = false;
               document.getElementById('earlySubmitBtn').disabled = false;
               startTimer();
-              audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+              
+              audioElement.onended = () => { 
+                examCompleted = true; 
+                examStarted = false; 
+                firstPlayActive = false; 
+                showToast('Audio finished. Click Finish to submit.'); 
+              };
             }
-          } else { audioElement.pause(); }
+          } else { 
+            audioElement.pause(); 
+          }
           updatePlayButton();
         };
-        function updatePlayButton() { if(playBtn) playBtn.textContent = audioElement.paused ? '▶' : '❚❚'; }
-        audioElement.onplay = updatePlayButton;
-        audioElement.onpause = updatePlayButton;
+        
+        function updatePlayButton() { 
+          if(playBtn) {
+            playBtn.textContent = audioElement.paused ? '▶' : '❚❚'; 
+          }
+        }
+        
+        if(audioElement) {
+          audioElement.onplay = updatePlayButton;
+          audioElement.onpause = updatePlayButton;
+        }
         
         confirmBtn.onclick = () => {
-          if(!audioElement) { showToast('No audio loaded'); return; }
-          if(examStarted) { showToast('Exam already started'); return; }
-          firstPlayActive = true; examStarted = true;
+          if(!audioElement) { 
+            showToast('No audio loaded'); 
+            return; 
+          }
+          if(examStarted) { 
+            showToast('Exam already started'); 
+            return; 
+          }
+          
+          firstPlayActive = true; 
+          examStarted = true;
           document.getElementById('finishBtn').disabled = false;
           document.getElementById('earlySubmitBtn').disabled = false;
           startTimer();
           audioElement.play();
-          audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
+          
+          audioElement.onended = () => { 
+            examCompleted = true; 
+            examStarted = false; 
+            firstPlayActive = false; 
+            showToast('Audio finished. Click Finish to submit.'); 
+          };
         };
       }
       
       function initNotesSystem() {
         let selbar = document.getElementById('selbar');
         let currentRange = null;
+        
         document.addEventListener('mouseup', (e) => {
           if(e.target.closest('#selbar, #notes')) return;
+          
           let sel = window.getSelection();
           if(!sel.isCollapsed && sel.toString().trim()) {
             currentRange = sel.getRangeAt(0);
             let rect = currentRange.getBoundingClientRect();
-            if(selbar) { selbar.hidden = false; selbar.style.left = `${window.scrollX + rect.left + rect.width/2 - 80}px`; selbar.style.top = `${window.scrollY + rect.top - 45}px`; }
-          } else if(selbar) selbar.hidden = true;
+            
+            if(selbar) { 
+              selbar.hidden = false; 
+              selbar.style.left = `${window.scrollX + rect.left + rect.width/2 - 80}px`; 
+              selbar.style.top = `${window.scrollY + rect.top - 45}px`; 
+            }
+          } else if(selbar) {
+            selbar.hidden = true;
+          }
         });
+        
         if(selbar) {
           selbar.addEventListener('click', (e) => {
             let act = e.target.dataset.act;
             if(!act || !currentRange) return;
-            if(act === 'hl') { let span = document.createElement('span'); span.className = 'hl'; try { currentRange.surroundContents(span); } catch(e) {} }
-            else if(act === 'note') {
-              let span = document.createElement('span'); span.className = 'hl-blue'; let hid = 'note_'+Date.now(); span.dataset.hid = hid;
+            
+            if(act === 'hl') { 
+              let span = document.createElement('span'); 
+              span.className = 'hl'; 
+              try { 
+                currentRange.surroundContents(span); 
+              } catch(e) {} 
+            } else if(act === 'note') {
+              let span = document.createElement('span'); 
+              span.className = 'hl-blue'; 
+              let hid = 'note_'+Date.now(); 
+              span.dataset.hid = hid;
+              
               try {
                 currentRange.surroundContents(span);
-                let card = document.createElement('div'); card.className = 'note-card'; card.dataset.hid = hid;
-                card.innerHTML = `<div class="note-quote">${escapeHtml(span.textContent)}</div><textarea placeholder="Write your note..."></textarea><div class="note-actions"><button data-del="${hid}">Delete</button></div>`;
-                card.querySelector('button').onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
+                
+                let card = document.createElement('div'); 
+                card.className = 'note-card'; 
+                card.dataset.hid = hid;
+                card.innerHTML = `<div class="note-quote">${escapeHtml(span.textContent)}</div>
+                <textarea placeholder="Write your note..."></textarea>
+                <div class="note-actions"><button data-del="${hid}">Delete</button></div>`;
+                
+                card.querySelector('button').onclick = () => { 
+                  let target = document.querySelector(`[data-hid="${hid}"]`); 
+                  if(target) { 
+                    let text = document.createTextNode(target.textContent); 
+                    target.parentNode.replaceChild(text, target); 
+                  } 
+                  card.remove(); 
+                  saveToLocal(); 
+                };
+                
                 card.querySelector('textarea').addEventListener('input', () => saveToLocal());
                 document.getElementById('notes-list').prepend(card);
                 document.body.classList.add('notes-open');
                 saveToLocal();
               } catch(e) {}
             }
-            selbar.hidden = true; window.getSelection().removeAllRanges();
+            
+            selbar.hidden = true; 
+            window.getSelection().removeAllRanges();
           });
         }
-        let toggleBtn = document.getElementById('toggle-notes-btn'), closeBtn = document.getElementById('notes-close');
-        if(toggleBtn) toggleBtn.onclick = () => document.body.classList.toggle('notes-open');
-        if(closeBtn) closeBtn.onclick = () => document.body.classList.remove('notes-open');
         
-        const savedData = localStorage.getItem('reborn_company_analysis');
-        if(savedData) {
-          try {
-            const data = JSON.parse(savedData);
-            if(data.notesHTML && document.getElementById('notes-list')) {
-              document.getElementById('notes-list').innerHTML = data.notesHTML;
-              document.querySelectorAll('.note-card').forEach(card => {
-                const hid = card.dataset.hid;
-                const delBtn = card.querySelector('button');
-                const textarea = card.querySelector('textarea');
-                if(delBtn) delBtn.onclick = () => { let target = document.querySelector(`[data-hid="${hid}"]`); if(target) { let text = document.createTextNode(target.textContent); target.parentNode.replaceChild(text, target); } card.remove(); saveToLocal(); };
-                if(textarea) textarea.addEventListener('input', () => saveToLocal());
-              });
-            }
-          } catch(e) {}
+        let toggleBtn = document.getElementById('toggle-notes-btn');
+        let closeBtn = document.getElementById('notes-close');
+        
+        if(toggleBtn) {
+          toggleBtn.onclick = () => document.body.classList.toggle('notes-open');
         }
+        if(closeBtn) {
+          closeBtn.onclick = () => document.body.classList.remove('notes-open');
+        }
+        
+        document.querySelectorAll('.note-card').forEach(card => {
+          const hid = card.dataset.hid;
+          const delBtn = card.querySelector('button');
+          const textarea = card.querySelector('textarea');
+          
+          if(delBtn) {
+            delBtn.onclick = () => { 
+              let target = document.querySelector(`[data-hid="${hid}"]`); 
+              if(target) { 
+                let text = document.createTextNode(target.textContent); 
+                target.parentNode.replaceChild(text, target); 
+              } 
+              card.remove(); 
+              saveToLocal(); 
+            };
+          }
+          
+          if(textarea) {
+            textarea.addEventListener('input', () => saveToLocal());
+          }
+        });
       }
       
-      document.getElementById('finishBtn').onclick = () => { if(!isFinished && examCompleted) finishTest(); else if(!examCompleted) showToast("Wait for audio to finish or use Early Submit"); else finishTest(); };
-      document.getElementById('earlySubmitBtn').onclick = () => { if(examStarted && !examCompleted) { if(confirm('Early submission?')) { if(audioElement) audioElement.pause(); examStarted = false; examCompleted = true; finishTest(); } } };
-      document.getElementById('saveBtn').onclick = () => { saveToLocal(); showToast('Progress saved'); };
+      document.getElementById('finishBtn').onclick = () => { 
+        if(!isFinished) {
+          if(examCompleted) {
+            finishTest(); 
+          } else {
+            showToast("Wait for audio to finish or use Early Submit"); 
+          }
+        }
+      };
+      
+      document.getElementById('earlySubmitBtn').onclick = () => { 
+        if(examStarted && !examCompleted) { 
+          if(confirm('Early submission?')) { 
+            if(audioElement) audioElement.pause(); 
+            examStarted = false; 
+            examCompleted = true; 
+            finishTest(); 
+          } 
+        } 
+      };
+      
+      document.getElementById('saveBtn').onclick = () => { 
+        saveToLocal(); 
+        showToast('Progress saved'); 
+      };
+      
       document.getElementById('clearBtn').onclick = clearAll;
       
       renderAudioManager();
@@ -865,26 +1280,46 @@
     }
     
     document.getElementById('confirmPwdBtn').addEventListener('click', handlePassword);
-    document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
-    updateDate(); setupTheme(); setInterval(updateDate, 86400000);
+    document.getElementById('passwordInput').addEventListener('keypress', e => { 
+      if(e.key === 'Enter') handlePassword(); 
+    });
     
-    // 自动加载同名音频
+    updateDate(); 
+    setupTheme(); 
+    setInterval(updateDate, 86400000);
+    
     window.addEventListener('load', () => {
       const pageName = location.pathname.split('/').pop().replace('.html', '');
+      if (!pageName || pageName === "") return;
+
       const audioUrl = pageName + '.mp3';
-      const fileInput = document.querySelector('input[type="file"]');
-      if (!fileInput) return;
       fetch(audioUrl)
-        .then(response => { if (!response.ok) throw new Error('音频不存在'); return response.blob(); })
+        .then(response => {
+          if (!response.ok) throw new Error('Audio not found');
+          return response.blob();
+        })
         .then(blob => {
           const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          fileInput.files = dataTransfer.files;
-          fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-          console.log('✅ 音频自动加载成功:', audioUrl);
+          const importBtn = document.getElementById('importAudioBtn');
+          if (!importBtn) return;
+
+          importBtn.addEventListener('click', function clickHandler() {
+            setTimeout(() => {
+              const fileInput = document.querySelector('input[type="file"][accept="audio/*"]');
+              if (fileInput) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                console.log('✅ 音频自动加载成功');
+              }
+              importBtn.removeEventListener('click', clickHandler);
+            }, 100);
+          });
         })
-        .catch(err => {});
+        .catch(err => {
+          console.log('ℹ️ 未找到同名音频，可手动导入');
+        });
     });
   </script>
 </body>
