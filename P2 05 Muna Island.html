@@ -698,35 +698,54 @@
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
         updateDate(); setupTheme(); setInterval(updateDate, 86400000);
     </script>
-   <script>
-// 自动加载音频（支持密码页 + 无密码页，自动重试）
-function tryLoadAudio() {
-  const pageName = location.pathname.split('/').pop().replace('.html', '');
-  const audioUrl = pageName + '.mp3';
-  const fileInput = document.querySelector('input[type="file"]');
+    
+<!-- 自动加载同名音频（稳定版） -->
+<script>
+let autoLoadAttempts = 0;
+const maxAttempts = 10;
 
-  if (!fileInput) return;
-  if (fileInput.files.length > 0) return;
+function autoLoadAudio() {
+  if (autoLoadAttempts >= maxAttempts) return;
+  autoLoadAttempts++;
 
-  fetch(audioUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('音频不存在');
-      return response.blob();
-    })
-    .then(blob => {
-      const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      fileInput.files = dataTransfer.files;
-      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-      console.log('✅ 音频自动加载成功:', audioUrl);
-    })
-    .catch(err => {});
+  const importBtn = document.getElementById('importAudioBtn');
+  if (!importBtn) return;
+
+  const pageName = location.pathname.split('/').pop().split('.')[0];
+  const audioFileName = pageName + '.mp3';
+
+  if (document.querySelector('input#auto-audio-loaded')) return;
+
+  importBtn.click();
+
+  setTimeout(() => {
+    const fileInput = document.querySelector('input[type="file"][accept="audio/*"]');
+    if (!fileInput) return;
+
+    fetch(audioFileName)
+      .then(res => {
+        if (!res.ok) throw new Error('音频不存在');
+        return res.blob();
+      })
+      .then(blob => {
+        const file = new File([blob], audioFileName, { type: 'audio/mpeg' });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
+
+        fileInput.id = 'auto-audio-loaded';
+        console.log('✅ 音频自动加载完成：' + audioFileName);
+        autoLoadAttempts = maxAttempts;
+      })
+      .catch(() => {});
+  }, 300);
 }
 
 window.addEventListener('load', () => {
-  tryLoadAudio();
-  setInterval(tryLoadAudio, 1000);
+  setInterval(autoLoadAudio, 800);
 });
 </script>
 </body>
