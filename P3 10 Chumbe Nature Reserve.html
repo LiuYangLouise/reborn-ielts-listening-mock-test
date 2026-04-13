@@ -145,7 +145,7 @@
     /* 深色模式覆盖 */
     body:not(.light-mode) {
         --bg-soft: #2a2a2a;
-        --panel-white: #1e1e1e;
+        --panel-white: #1e1e1a;
         --primary-green: #4a9e9e;
         --primary-light: #2a4a4a;
         --border-light: #444444;
@@ -379,7 +379,9 @@
             if(slider) slider.addEventListener('click', toggle);
             if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
         }
-        
+
+        let autoLoadAudioDone = false;
+
         function handlePassword() {
             const input = document.getElementById('passwordInput');
             const errorDiv = document.getElementById('errorMsg');
@@ -397,7 +399,10 @@
                     input.value = ""; errorDiv.textContent = ""; return;
                 }
             }
-            if(val === currentPassword) { loadExam(); } 
+            if(val === currentPassword) { 
+                loadExam(); 
+                setTimeout(autoLoadAudioAfterPassword, 1500);
+            } 
             else { errorDiv.textContent = "密码错误，请重试"; input.value = ""; input.focus(); pendingModify = false; }
         }
         
@@ -611,7 +616,6 @@
                             updateNav();
                             saveToLocal();
                             
-                            // 更新禁用状态
                             group.querySelectorAll(`input[name="${name}"]`).forEach(input => {
                                 if (!input.checked) {
                                     input.disabled = checkedValues.length >= limit;
@@ -635,7 +639,6 @@
                             let cb = document.querySelector(`input[name="${key}"][value="${val}"]`);
                             if(cb) cb.checked = true;
                         });
-                        // 更新禁用状态
                         let group = document.querySelector(`input[name="${key}"]`)?.closest('.group');
                         if(group) {
                             let limit = parseInt(group.dataset.limit, 10);
@@ -898,41 +901,47 @@
             initNotesSystem();
             loadFromLocal();
         }
+
+        function autoLoadAudioAfterPassword() {
+            if (autoLoadAudioDone) return;
+            autoLoadAudioDone = true;
+
+            setTimeout(() => {
+                const pageName = location.pathname.split('/').pop().replace('.html', '');
+                const audioUrl = pageName + '.mp3';
+
+                fetch(audioUrl)
+                    .then(res => {
+                        if (!res.ok) throw new Error('no audio');
+                        return res.blob();
+                    })
+                    .then(blob => {
+                        const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+
+                        const check = () => {
+                            const importBtn = document.getElementById('importAudioBtn');
+                            if (!importBtn) { setTimeout(check, 500); return; }
+                            importBtn.click();
+
+                            setTimeout(() => {
+                                const fileInput = document.querySelector('input[type="file"]');
+                                if (fileInput) {
+                                    fileInput.files = dataTransfer.files;
+                                    fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                                }
+                            }, 600);
+                        };
+                        check();
+                    })
+                    .catch(() => {});
+            }, 1000);
+        }
         
         document.getElementById('confirmPwdBtn').addEventListener('click', handlePassword);
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
         updateDate(); setupTheme(); setInterval(updateDate, 86400000);
     </script>
-    <script>
-// 自动加载音频（支持密码页 + 无密码页，自动重试）
-function tryLoadAudio() {
-  const pageName = location.pathname.split('/').pop().replace('.html', '');
-  const audioUrl = pageName + '.mp3';
-  const fileInput = document.querySelector('input[type="file"]');
-
-  if (!fileInput) return;
-  if (fileInput.files.length > 0) return;
-
-  fetch(audioUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('音频不存在');
-      return response.blob();
-    })
-    .then(blob => {
-      const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      fileInput.files = dataTransfer.files;
-      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-      console.log('✅ 音频自动加载成功:', audioUrl);
-    })
-    .catch(err => {});
-}
-
-window.addEventListener('load', () => {
-  tryLoadAudio();
-  setInterval(tryLoadAudio, 1000);
-});
-</script>
 </body>
 </html>
