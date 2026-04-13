@@ -162,7 +162,7 @@
       padding: 18px 28px;
       margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border-light);
+      border: 1px var(--border-light) solid;
       text-align: center;
     }
     .reborn-header h1 { font-weight: 700; font-size: 28px; color: var(--primary-green); margin: 0; }
@@ -171,7 +171,7 @@
       background: var(--panel-white);
       border-radius: 28px;
       box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border-light);
+      border: 1px var(--border-light) solid;
       margin-bottom: 24px;
     }
     .audio-section { padding: 16px 24px; }
@@ -1290,36 +1290,26 @@
     
     window.addEventListener('load', () => {
       const pageName = location.pathname.split('/').pop().replace('.html', '');
-      if (!pageName || pageName === "") return;
+      if (!pageName) return;
+      const audioPath = pageName + '.mp3';
 
-      const audioUrl = pageName + '.mp3';
-      fetch(audioUrl)
-        .then(response => {
-          if (!response.ok) throw new Error('Audio not found');
-          return response.blob();
-        })
-        .then(blob => {
-          const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
+      const testAudio = new Audio();
+      testAudio.src = audioPath;
+      testAudio.oncanplaythrough = () => {
+        setTimeout(() => {
           const importBtn = document.getElementById('importAudioBtn');
-          if (!importBtn) return;
-
-          importBtn.addEventListener('click', function clickHandler() {
-            setTimeout(() => {
-              const fileInput = document.querySelector('input[type="file"][accept="audio/*"]');
-              if (fileInput) {
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                fileInput.files = dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log('✅ 音频自动加载成功');
-              }
-              importBtn.removeEventListener('click', clickHandler);
-            }, 100);
-          });
-        })
-        .catch(err => {
-          console.log('ℹ️ 未找到同名音频，可手动导入');
-        });
+          if (importBtn) importBtn.click();
+          
+          setTimeout(() => {
+            try {
+              if (audioElement) audioElement.src = audioPath;
+            } catch (e) {}
+          }, 300);
+        }, 500);
+      };
+      testAudio.onerror = () => {
+        console.log('未找到同名音频，使用手动导入');
+      };
     });
   </script>
 </body>
