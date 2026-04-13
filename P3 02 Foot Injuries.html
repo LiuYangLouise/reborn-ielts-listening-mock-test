@@ -580,7 +580,7 @@
                 });
             });
             
-            let html = '<h4>📊 Answer Review</h4><table class="results-table"><thead>汽<th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th> </thead><tbody>';
+            let html = '<h4>📊 Answer Review</h4><table class="results-table"><thead><tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th></tr></thead><tbody>';
             for(let i=21; i<=26; i++) {
                 const userRadio = document.querySelector(`input[name="q${i}"]:checked`);
                 const userAns = userRadio ? userRadio.closest('label').textContent.trim() : '<i>No Answer</i>';
@@ -588,7 +588,7 @@
                 const correctLabel = document.querySelector(`input[name="q${i}"][value="${correctLetter}"]`)?.closest('label')?.textContent.trim() || correctLetter;
                 const correctAns = `${correctLetter} - ${correctLabel}`;
                 const isCorrect = userRadio?.value === correctLetter;
-                html += `<tr><td style="font-weight:600">${i}</td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td>`;
+                html += `<tr><td style="font-weight:600">${i}</td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect ? 'result-correct' : 'result-incorrect'}">${isCorrect ? '✔ Correct' : '✖ Incorrect'}</td></tr>`;
             }
             const groupsRes = [
                 { name: '27-28', correct: P3_ANSWER_KEY.multiple.q27_28, correctLabels: ['rest', 'massage'] },
@@ -663,35 +663,38 @@
         setupTheme();
         setInterval(updateDate, 86400000);
     </script>
- <script>
-// 自动加载音频（支持密码页 + 无密码页，自动重试）
+<script>
+// 优化版自动加载音频（无死循环，只加载一次）
+let audioAutoLoadAttempted = false;
 function tryLoadAudio() {
+  if (audioAutoLoadAttempted) return;
+  const fileInput = document.querySelector('#p3AudioFileInput');
+  if (!fileInput || fileInput.files.length > 0) return;
+
+  audioAutoLoadAttempted = true;
   const pageName = location.pathname.split('/').pop().replace('.html', '');
   const audioUrl = pageName + '.mp3';
-  const fileInput = document.querySelector('input[type="file"]');
-
-  if (!fileInput) return;
-  if (fileInput.files.length > 0) return;
 
   fetch(audioUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('音频不存在');
-      return response.blob();
+    .then(res => {
+      if (!res.ok) throw new Error('音频不存在');
+      return res.blob();
     })
     .then(blob => {
       const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      fileInput.files = dataTransfer.files;
-      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-      console.log('✅ 音频自动加载成功:', audioUrl);
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      fileInput.dispatchEvent(new Event('change'));
+      console.log('✅ 音频自动加载成功');
     })
-    .catch(err => {});
+    .catch(() => {
+      console.log('ℹ️ 未找到同名音频，可手动上传');
+    });
 }
 
 window.addEventListener('load', () => {
-  tryLoadAudio();
-  setInterval(tryLoadAudio, 1000);
+  setTimeout(tryLoadAudio, 500);
 });
 </script>
 </body>
