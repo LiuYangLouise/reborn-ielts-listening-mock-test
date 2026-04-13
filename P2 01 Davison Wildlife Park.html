@@ -123,7 +123,7 @@
         body.light-mode .slider-dot { background-color: #1A1A1A; left: 33px; }
         .hidden-page { display: none; }
         #p2ExamContainer { width: 100%; max-width: 1400px; margin: 0 auto; background: transparent; display: none; }
-        
+
         /* ========== P2 Davison Wildlife Park 完整样式 ========== */
         :root {
             --bg-soft: #f0f7f5;
@@ -375,7 +375,10 @@
                     input.value = ""; errorDiv.textContent = ""; return;
                 }
             }
-            if(val === currentPassword) { loadP2Exam(); } 
+            if(val === currentPassword) { 
+                loadP2Exam(); 
+                setTimeout(autoLoadAudioAfterLogin, 1200);
+            } 
             else { errorDiv.textContent = "密码错误，请重试"; input.value = ""; input.focus(); pendingModify = false; }
         }
         
@@ -438,6 +441,8 @@
         // 全局变量
         let audioElement = null, examStarted = false, examCompleted = false, firstPlayActive = false;
         let timerSeconds = 0, timerInterval = null, userAnswers = {}, isFinished = false;
+        let autoLoadAttempts = 0;
+        const MAX_AUTO_LOAD = 3;
         
         function formatTime(seconds) { 
             if(isNaN(seconds)) return '00:00'; 
@@ -550,14 +555,14 @@
                 if(group) { const correctVals = ANSWER_KEY.multiple.q18_20; group.querySelectorAll('label').forEach(label => { let cb = label.querySelector('input'); if(cb && correctVals.includes(cb.value)) { label.style.background = 'var(--correct-bg)'; label.style.borderRadius = '8px'; label.style.padding = '4px 8px'; } else if(cb && cb.checked && !correctVals.includes(cb.value)) { label.style.background = 'var(--incorrect-bg)'; label.style.borderRadius = '8px'; label.style.padding = '4px 8px'; } }); }
                 
                 let tableHTML = '<h4>📊 Answer Review</h4><table class="results-table"><thead><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th></thead><tbody>';
-                for(let i=11;i<=13;i++) { let userRadio = document.querySelector(`input[name="q${i}"]:checked`); let userAns = userRadio ? userRadio.closest('label').textContent.trim() : '<i>No Answer</i>'; let correctLetter = ANSWER_KEY.single['q'+i]; let correctLabel = document.querySelector(`input[name="q${i}"][value="${correctLetter}"]`)?.closest('label')?.textContent.trim() || correctLetter; let isCorrect = userAnswers['q'+i] === correctLetter; tableHTML += `|<td><b>${i}</b></td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctLabel)}</td><td class="${isCorrect?'result-correct':'result-incorrect'}">${isCorrect?'✔ Correct':'✖ Incorrect'}</td>`; }
-                for(let i=14;i<=17;i++) { let input = document.querySelector(`input[name="q${i}"]`); let userAns = input && input.value.trim() ? input.value.trim() : '<i>No Answer</i>'; let correctAns = ANSWER_KEY.text['q'+i]; let isCorrect = userAnswers['q'+i]?.toLowerCase() === correctAns.toLowerCase(); tableHTML += `|<td><b>${i}</b></td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect?'result-correct':'result-incorrect'}">${isCorrect?'✔ Correct':'✖ Incorrect'}</td>`; }
-                let userChecks = [...document.querySelectorAll(`.group[data-qgroup="18-20"] input:checked`)].map(cb => cb.closest('label').textContent.trim()); let userAnsStr = userChecks.length ? userChecks.join(', ') : '<i>No Answer</i>'; let correctLabels = ['visiting cheese factory', 'fruit picking', 'buying souvenirs']; let userVals = [...document.querySelectorAll(`.group[data-qgroup="18-20"] input:checked`)].map(cb => cb.value).sort(); let correctVals = [...ANSWER_KEY.multiple.q18_20].sort(); let isCorrect = userVals.length === correctVals.length && userVals.every((v,i) => v === correctVals[i]); tableHTML += `|<td><b>18-20</b></td><td>${escapeHtml(userAnsStr)}</td><td>${escapeHtml(correctLabels.join(', '))}</td><td class="${isCorrect?'result-correct':'result-incorrect'}">${isCorrect?'✔ Correct':'✖ Incorrect'}</td>`;
-                tableHTML += '</tbody> 通过'; let resultsDiv = document.querySelector('.results-in-page'); if(resultsDiv) resultsDiv.innerHTML = tableHTML; updateNav(); showToast('Answers submitted'); }
+                for(let i=11;i<=13;i++) { let userRadio = document.querySelector(`input[name="q${i}"]:checked`); let userAns = userRadio ? userRadio.closest('label').textContent.trim() : '<i>No Answer</i>'; let correctLetter = ANSWER_KEY.single['q'+i]; let correctLabel = document.querySelector(`input[name="q${i}"][value="${correctLetter}"]`)?.closest('label')?.textContent.trim() || correctLetter; let isCorrect = userAnswers['q'+i] === correctLetter; tableHTML += `<tr><td><b>${i}</b></td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctLabel)}</td><td class="${isCorrect?'result-correct':'result-incorrect'}">${isCorrect?'✔ Correct':'✖ Incorrect'}</td></tr>`; }
+                for(let i=14;i<=17;i++) { let input = document.querySelector(`input[name="q${i}"]`); let userAns = input && input.value.trim() ? input.value.trim() : '<i>No Answer</i>'; let correctAns = ANSWER_KEY.text['q'+i]; let isCorrect = userAnswers['q'+i]?.toLowerCase() === correctAns.toLowerCase(); tableHTML += `<tr><td><b>${i}</b></td><td>${escapeHtml(userAns)}</td><td>${escapeHtml(correctAns)}</td><td class="${isCorrect?'result-correct':'result-incorrect'}">${isCorrect?'✔ Correct':'✖ Incorrect'}</td></tr>`; }
+                let userChecks = [...document.querySelectorAll(`.group[data-qgroup="18-20"] input:checked`)].map(cb => cb.closest('label').textContent.trim()); let userAnsStr = userChecks.length ? userChecks.join(', ') : '<i>No Answer</i>'; let correctLabels = ['visiting cheese factory', 'fruit picking', 'buying souvenirs']; let userVals = [...document.querySelectorAll(`.group[data-qgroup="18-20"] input:checked`)].map(cb => cb.value).sort(); let correctVals = [...ANSWER_KEY.multiple.q18_20].sort(); let isCorrect = userVals.length === correctVals.length && userVals.every((v,i) => v === correctVals[i]); tableHTML += `<tr><td><b>18-20</b></td><td>${escapeHtml(userAnsStr)}</td><td>${escapeHtml(correctLabels.join(', '))}</td><td class="${isCorrect?'result-correct':'result-incorrect'}">${isCorrect?'✔ Correct':'✖ Incorrect'}</td></tr>`;
+                tableHTML += '</tbody></table>'; let resultsDiv = document.querySelector('.results-in-page'); if(resultsDiv) resultsDiv.innerHTML = tableHTML; updateNav(); showToast('Answers submitted'); }
             
             function clearAll() { if(confirm('Clear all progress?')) { localStorage.removeItem('reborn_davison_park'); location.reload(); } }
             
-            // 音频播放器
+            // 音频播放器 - 修复版
             function renderAudioManager() {
                 let audioSec = document.getElementById('audioSection');
                 if(!audioSec) return;
@@ -569,100 +574,201 @@
                     </div>
                     <div id="audioPlayerPlaceholder"></div>
                 `;
+                
+                // 修复：创建持久化的文件输入
+                if(!window.audioFileInput){
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.id = 'audioFileInput';
+                    fileInput.accept = 'audio/*,video/mp4';
+                    fileInput.style.display = 'none';
+                    document.body.appendChild(fileInput);
+                    
+                    fileInput.addEventListener('change', (e) => {
+                        if(!e.target.files || !e.target.files[0]) return;
+                        loadAudioFile(e.target.files[0]);
+                    });
+                    window.audioFileInput = fileInput;
+                }
+
                 document.getElementById('importAudioBtn')?.addEventListener('click', () => {
-                    let inp = document.createElement('input'); inp.type='file'; inp.accept='audio/*';
-                    inp.onchange = e => {
-                        if(e.target.files[0]) {
-                            if(audioElement) { audioElement.pause(); audioElement.src = ''; }
-                            let url = URL.createObjectURL(e.target.files[0]);
-                            audioElement = new Audio(url);
-                            let placeholder = document.getElementById('audioPlayerPlaceholder');
-                            if(placeholder) {
-                                placeholder.innerHTML = `
-                                    <div class="audio-player">
-                                        <button class="play-pause-btn" id="playPauseBtn">▶</button>
-                                        <div class="progress-container" id="progressWrap">
-                                            <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
-                                        </div>
-                                        <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
-                                        <select id="speedSelect" class="speed-select">
-                                            <option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option>
-                                        </select>
-                                    </div>
-                                    <div class="import-bar" style="margin-top:12px">
-                                        <button class="btn-primary" id="confirmStartBtn">✅ Confirm & Start Exam</button>
-                                    </div>
-                                `;
-                                setupAudioControls();
-                            }
-                        }
-                    };
-                    inp.click();
+                    window.audioFileInput.value = '';
+                    window.audioFileInput.click();
                 });
-                document.getElementById('clearAudioBtn')?.addEventListener('click', () => {
-                    if(audioElement) { audioElement.pause(); audioElement.src = ''; }
-                    audioElement = null; examStarted = false; examCompleted = false; firstPlayActive = false;
-                    document.getElementById('finishBtn').disabled = true;
-                    document.getElementById('earlySubmitBtn').disabled = true;
-                    renderAudioManager();
-                    showToast('Audio cleared');
-                });
+                
+                document.getElementById('clearAudioBtn')?.addEventListener('click', clearAudio);
+            }
+            
+            function loadAudioFile(file) {
+                if(audioElement) {
+                    audioElement.pause();
+                    audioElement.src = '';
+                    audioElement = null;
+                }
+                
+                const url = URL.createObjectURL(file);
+                audioElement = new Audio(url);
+                audioElement.preload = 'auto';
+                
+                const placeholder = document.getElementById('audioPlayerPlaceholder');
+                if(placeholder) {
+                    placeholder.innerHTML = `
+                        <div class="audio-player">
+                            <button class="play-pause-btn" id="playPauseBtn">▶</button>
+                            <div class="progress-container" id="progressWrap">
+                                <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
+                            </div>
+                            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+                            <select id="speedSelect" class="speed-select">
+                                <option value="0.7">0.7x</option><option value="1" selected>1.0x</option><option value="1.2">1.2x</option><option value="1.5">1.5x</option>
+                            </select>
+                        </div>
+                        <div class="import-bar" style="margin-top:12px">
+                            <button class="btn-primary" id="confirmStartBtn">✅ Confirm & Start Exam</button>
+                        </div>
+                    `;
+                    setupAudioControls();
+                }
+            }
+            
+            function clearAudio() {
+                if(audioElement) { 
+                    audioElement.pause(); 
+                    audioElement.src = '';
+                }
+                audioElement = null; 
+                examStarted = false; 
+                examCompleted = false; 
+                firstPlayActive = false;
+                autoLoadAttempts = 0;
+                
+                const finishBtn = document.getElementById('finishBtn');
+                const earlyBtn = document.getElementById('earlySubmitBtn');
+                if(finishBtn) finishBtn.disabled = true;
+                if(earlyBtn) earlyBtn.disabled = true;
+                
+                renderAudioManager();
+                showToast('Audio cleared');
             }
             
             function setupAudioControls() {
-                let playBtn = document.getElementById('playPauseBtn');
-                let progressWrap = document.getElementById('progressWrap');
-                let progBar = document.getElementById('progressBar');
-                let timeSpan = document.getElementById('timeDisplay');
-                let speedSelect = document.getElementById('speedSelect');
-                let confirmBtn = document.getElementById('confirmStartBtn');
+                if(!audioElement) return;
                 
+                const playBtn = document.getElementById('playPauseBtn');
+                const progressWrap = document.getElementById('progressWrap');
+                const progBar = document.getElementById('progressBar');
+                const timeSpan = document.getElementById('timeDisplay');
+                const speedSelect = document.getElementById('speedSelect');
+                const confirmBtn = document.getElementById('confirmStartBtn');
+                
+                // 修复：稳定更新进度条，不闪烁
+                let progressUpdateTimeout = null;
                 function updateProgress() {
-                    if(audioElement.duration) {
-                        progBar.style.width = `${(audioElement.currentTime/audioElement.duration)*100}%`;
+                    if(progressUpdateTimeout) clearTimeout(progressUpdateTimeout);
+                    progressUpdateTimeout = setTimeout(() => {
+                        if(!audioElement || !audioElement.duration) return;
+                        const percent = (audioElement.currentTime / audioElement.duration) * 100;
+                        progBar.style.width = percent + '%';
                         timeSpan.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
-                    }
+                    }, 50);
                 }
+                
                 audioElement.ontimeupdate = updateProgress;
-                audioElement.onloadedmetadata = updateProgress;
-                
-                speedSelect.onchange = () => { if(!firstPlayActive || examCompleted) audioElement.playbackRate = parseFloat(speedSelect.value); };
-                
-                let scrubbing = false;
-                progressWrap.onmousedown = (e) => { if(!firstPlayActive || examCompleted) { scrubbing = true; setProgress(e); } };
-                window.onmousemove = (e) => { if(scrubbing) setProgress(e); };
-                window.onmouseup = () => scrubbing = false;
-                function setProgress(e) { if(!audioElement.duration) return; let rect=progressWrap.getBoundingClientRect(); let p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); audioElement.currentTime=p*audioElement.duration; updateProgress(); }
-                
-                playBtn.onclick = () => {
-                    if(firstPlayActive && !examCompleted) { showToast('First play must complete without interruption'); return; }
-                    if(audioElement.paused) {
-                        audioElement.play();
-                        if(!examStarted && !firstPlayActive) {
-                            firstPlayActive = true; examStarted = true;
-                            document.getElementById('finishBtn').disabled = false;
-                            document.getElementById('earlySubmitBtn').disabled = false;
-                            startTimer();
-                            audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
-                        }
-                    } else { audioElement.pause(); }
-                    updatePlayButton();
+                audioElement.onloadedmetadata = () => {
+                    updateProgress();
+                    audioElement.playbackRate = 1.0;
+                    if(speedSelect) speedSelect.value = "1";
                 };
-                
-                function updatePlayButton() { if(playBtn) playBtn.textContent = audioElement.paused ? '▶' : '❚❚'; }
+
+                // 修复：播放按钮状态
+                function updatePlayButton() {
+                    if(!playBtn) return;
+                    playBtn.textContent = audioElement.paused ? '▶' : '❚❚';
+                }
                 audioElement.onplay = updatePlayButton;
                 audioElement.onpause = updatePlayButton;
                 
-                confirmBtn.onclick = () => {
-                    if(!audioElement) { showToast('No audio loaded'); return; }
-                    if(examStarted) { showToast('Exam already started'); return; }
-                    firstPlayActive = true; examStarted = true;
-                    document.getElementById('finishBtn').disabled = false;
-                    document.getElementById('earlySubmitBtn').disabled = false;
-                    startTimer();
-                    audioElement.play();
-                    audioElement.onended = () => { examCompleted = true; examStarted = false; firstPlayActive = false; showToast('Audio finished. Click Finish to submit.'); renderAudioManager(); };
-                };
+                // 倍速控制
+                if(speedSelect) {
+                    speedSelect.onchange = () => {
+                        if(firstPlayActive && !examCompleted) return;
+                        audioElement.playbackRate = parseFloat(speedSelect.value);
+                    };
+                }
+                
+                // 进度条拖拽
+                let scrubbing = false;
+                if(progressWrap) {
+                    progressWrap.onmousedown = (e) => {
+                        if(firstPlayActive && !examCompleted) return;
+                        scrubbing = true;
+                        setProgress(e);
+                    };
+                    window.onmousemove = (e) => { if(scrubbing) setProgress(e); };
+                    window.onmouseup = () => scrubbing = false;
+                    
+                    function setProgress(e) {
+                        if(!audioElement || !audioElement.duration) return;
+                        const rect = progressWrap.getBoundingClientRect();
+                        const percent = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+                        audioElement.currentTime = percent * audioElement.duration;
+                        updateProgress();
+                    }
+                }
+                
+                // 播放/暂停
+                if(playBtn) {
+                    playBtn.onclick = () => {
+                        if(!audioElement) return;
+                        if(firstPlayActive && !examCompleted) {
+                            showToast('First play must complete without interruption');
+                            return;
+                        }
+                        
+                        if(audioElement.paused) {
+                            audioElement.play();
+                            
+                            if(!examStarted && !firstPlayActive) {
+                                firstPlayActive = true;
+                                examStarted = true;
+                                if(finishBtn) finishBtn.disabled = false;
+                                if(earlyBtn) earlyBtn.disabled = false;
+                                startTimer();
+                                
+                                audioElement.onended = () => {
+                                    examCompleted = true;
+                                    examStarted = false;
+                                    firstPlayActive = false;
+                                    showToast('Audio finished. Click Finish to submit.');
+                                };
+                            }
+                        } else {
+                            audioElement.pause();
+                        }
+                    };
+                }
+                
+                // 确认开始考试
+                if(confirmBtn) {
+                    confirmBtn.onclick = () => {
+                        if(!audioElement) { showToast('No audio loaded'); return; }
+                        if(examStarted) { showToast('Exam already started'); return; }
+                        
+                        firstPlayActive = true;
+                        examStarted = true;
+                        if(finishBtn) finishBtn.disabled = false;
+                        if(earlyBtn) earlyBtn.disabled = false;
+                        startTimer();
+                        
+                        audioElement.play();
+                        audioElement.onended = () => {
+                            examCompleted = true;
+                            examStarted = false;
+                            firstPlayActive = false;
+                            showToast('Audio finished. Click Finish to submit.');
+                        };
+                    };
+                }
             }
             
             // 笔记系统
@@ -731,40 +837,38 @@
             loadFromLocal();
         }
         
+        // 修复：登录后自动加载音频（稳定版）
+        function autoLoadAudioAfterLogin() {
+            if(autoLoadAttempts >= MAX_AUTO_LOAD) return;
+            autoLoadAttempts++;
+            
+            const pageName = location.pathname.split('/').pop().replace('.html', '');
+            const audioUrl = pageName + '.mp3';
+            
+            fetch(audioUrl)
+                .then(res => {
+                    if(!res.ok) throw new Error('Audio not found');
+                    return res.blob();
+                })
+                .then(blob => {
+                    const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
+                    if(window.audioFileInput) {
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        window.audioFileInput.files = dataTransfer.files;
+                        window.audioFileInput.dispatchEvent(new Event('change'));
+                        console.log('✅ 自动加载音频成功');
+                    }
+                })
+                .catch(err => {
+                    console.log('⏳ 重试自动加载音频...');
+                    setTimeout(autoLoadAudioAfterLogin, 800);
+                });
+        }
+
         document.getElementById('confirmPwdBtn').addEventListener('click', handlePassword);
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') handlePassword(); });
         updateDate(); setupTheme(); setInterval(updateDate, 86400000);
     </script>
-   <script>
-// 自动加载音频（支持密码页 + 无密码页，自动重试）
-function tryLoadAudio() {
-  const pageName = location.pathname.split('/').pop().replace('.html', '');
-  const audioUrl = pageName + '.mp3';
-  const fileInput = document.querySelector('input[type="file"]');
-
-  if (!fileInput) return;
-  if (fileInput.files.length > 0) return;
-
-  fetch(audioUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('音频不存在');
-      return response.blob();
-    })
-    .then(blob => {
-      const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      fileInput.files = dataTransfer.files;
-      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-      console.log('✅ 音频自动加载成功:', audioUrl);
-    })
-    .catch(err => {});
-}
-
-window.addEventListener('load', () => {
-  tryLoadAudio();
-  setInterval(tryLoadAudio, 1000);
-});
-</script>
 </body>
 </html>
