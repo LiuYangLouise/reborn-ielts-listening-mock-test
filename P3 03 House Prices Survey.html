@@ -648,35 +648,40 @@
         setupTheme();
         setInterval(updateDate, 86400000);
     </script>
- <script>
-// 自动加载音频（支持密码页 + 无密码页，自动重试）
+<script>
+// 稳定自动加载同名音频（兼容密码页/做题页，自动重试）
+let audioLoadInterval;
 function tryLoadAudio() {
-  const pageName = location.pathname.split('/').pop().replace('.html', '');
-  const audioUrl = pageName + '.mp3';
-  const fileInput = document.querySelector('input[type="file"]');
-
+  const fileInput = document.querySelector('#p3AudioFileInput');
   if (!fileInput) return;
-  if (fileInput.files.length > 0) return;
+  if (fileInput.files.length > 0) {
+    clearInterval(audioLoadInterval);
+    return;
+  }
+
+  const pageName = location.pathname.split('/').pop().split('.').shift();
+  const audioUrl = pageName + '.mp3';
 
   fetch(audioUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('音频不存在');
-      return response.blob();
+    .then(res => {
+      if (!res.ok) throw new Error('音频不存在');
+      return res.blob();
     })
     .then(blob => {
       const file = new File([blob], audioUrl, { type: 'audio/mpeg' });
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       fileInput.files = dataTransfer.files;
-      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-      console.log('✅ 音频自动加载成功:', audioUrl);
+      fileInput.dispatchEvent(new Event('change'));
+      clearInterval(audioLoadInterval);
     })
-    .catch(err => {});
+    .catch(() => {});
 }
 
 window.addEventListener('load', () => {
-  tryLoadAudio();
-  setInterval(tryLoadAudio, 1000);
+  setTimeout(() => {
+    audioLoadInterval = setInterval(tryLoadAudio, 600);
+  }, 500);
 });
 </script>
 </body>
